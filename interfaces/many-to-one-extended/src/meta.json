@@ -1,0 +1,62 @@
+{
+  "name": "Many to One Extended",
+  "version": "1.1.0",
+  "types": ["m2o"],
+  "relation": "m2o",
+  "icon": "call_merge",
+  "options": {
+    "template": {
+      "name": "Dropdown Template",
+      "comment": "How to format the dropdown options",
+      "interface": "text-input",
+      "options": {
+        "placeholder": "{{title}} — {{author}}"
+      }
+    },
+    "visible_fields": {
+      "name": "Visible Fields",
+      "comment": "CSV of fields visible when selecting an item in the modal",
+      "interface": "text-input",
+      "options": {
+        "placeholder": "title,author"
+      }
+    },
+    "placeholder": {
+      "name": "Placeholder",
+      "comment": "Enter placeholder text",
+      "interface": "text-input",
+      "length": 200,
+      "default": "Select One"
+    },
+    "threshold": {
+      "name": "Threshold",
+      "comment": "The number of items after which a modal will be used instead of a dropdown",
+      "interface": "numeric",
+      "advanced": true,
+      "default": 0
+    },
+    "filters": {
+      "name": "Filters",
+      "comment": "The filters to use when loading from the related collection",
+      "interface": "json",
+      "advanced": true,
+      "options": {
+        "language": "application/json"
+      },
+      "default": {}
+    },
+    "html": {
+      "name": "Display HTML String",
+      "comment": "Only display HTML you trust such as HTML Snippets",
+      "default": false,
+      "interface": "toggle",
+      "advanced": true
+    },
+    "icon": {
+      "name": "Icon",
+      "comment": "Choose an optional icon to display on the left of the input",
+      "interface": "icon",
+      "advanced": true
+    }
+  }
+}

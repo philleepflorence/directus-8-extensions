@@ -1,0 +1,26 @@
+{
+  "name": "text-input-html",
+  "version": "1.0.0",
+  "description": "Renders a Text Field for displaying HTML Snippets",
+  "main": "",
+  "scripts": {
+    "build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/text-input-html",
+    "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/text-input-html"
+  },
+  "keywords": [
+    "html",
+    "code",
+    "snippet"
+  ],
+  "author": "Philleep Florence",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@directus/extension-toolkit": "^0.0.1"
+  },
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^2.6.0",
+    "cssnano": "^4.1.10",
+    "sass": "^1.17.3",
+    "vue-template-compiler": "^2.6.10"
+  }
+}

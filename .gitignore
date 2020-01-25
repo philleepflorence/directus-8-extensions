@@ -1,0 +1,19 @@
+Icon
+.DS_Store
+*.log
+.cache
+.vscode
+.ddev
+icon.png
+
+# Ignore dev files
+/.idea
+node_modules
+yarn.lock
+package-lock.json
+/nbproject/
+/tests/api/tmp/
+
+# Exclude env vars and custom deployment scripts
+.env
+deploy.*
