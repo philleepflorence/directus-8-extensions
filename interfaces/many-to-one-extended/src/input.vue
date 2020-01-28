@@ -76,9 +76,12 @@
 		},
 		computed: {
 			displayValue() {
-				if (this.selectOptions && this.value) 
+				let PK = this.relatedPrimaryKeyField;
+				let property = this.value && this.value[PK] ? this.value[PK] : this.value;
+				
+				if (this.selectOptions && property) 
 				{
-					return this.selectOptions[this.value];
+					return this.selectOptions[property];
 				}
 	
 				return null;
@@ -278,7 +281,8 @@
 	}
 	
 	.interface-many-to-one-extended .many-to-one-extended-value span {
-		display: block;
+		display: flex; 
+		align-items: center;
 		padding: 10px 10px 10px 38px;
 	}
 	
