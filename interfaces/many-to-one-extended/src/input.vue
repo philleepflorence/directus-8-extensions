@@ -164,6 +164,19 @@
 		},
 		methods: {
 			/*
+				Parse the Filter Array into an Object
+			*/
+			formatFilters (filters) {
+				const parsedFilters = {};
+
+				filters.forEach(filter => {
+					parsedFilters[filter.field] = {};
+					parsedFilters[filter.field][filter.operator] = filter.value;
+				});
+			
+				return parsedFilters;
+			},
+			/*
 				We keep a local to-be-actually-staged copy of the value that's selected in the item-select component. 
 				This means that we can ignore saving this and set this back to null once the user closes the modal without selecting everything
 			*/ 
@@ -190,7 +203,7 @@
 					fields: "*.*",
 					meta: "total_count",
 					limit: 0,
-					filter: this.filters
+					filter: this.formatFilters(this.filters)
 				};
 	
 				return Promise.all([
@@ -228,7 +241,7 @@
 				const params = {
 					fields: "*.*",
 					limit: 1,
-					filter: this.filters
+					filter: this.formatFilters(this.filters)
 				};
 	
 				this.loading = true;
