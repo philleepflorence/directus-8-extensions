@@ -1,4 +1,4 @@
-# metadata Extension
+# dropdown-extended Extension
 
 ## Usage
 

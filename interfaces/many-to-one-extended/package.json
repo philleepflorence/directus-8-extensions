@@ -1,26 +1,28 @@
 {
-  "name": "many-to-one-extended",
-  "version": "1.1.0",
-  "description": "Renders a Many to One Interface that allows for displaying HTML and Filtering",
-  "main": "",
-  "scripts": {
-    "build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/many-to-one-extended",
-    "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/many-to-one-extended"
-  },
-  "keywords": [
-    "html",
-    "code",
-    "m2o"
-  ],
-  "author": "Philleep Florence",
-  "license": "GPL-3.0",
-  "dependencies": {
-    "@directus/extension-toolkit": "^0.0.1"
-  },
-  "devDependencies": {
-    "@vue/component-compiler-utils": "^2.6.0",
-    "cssnano": "^4.1.10",
-    "sass": "^1.17.3",
-    "vue-template-compiler": "^2.6.10"
-  }
+	"name": "many-to-one-extended",
+	"version": "1.2.0",
+	"description": "Renders a Many to One Interface that allows for displaying HTML and Filtering",
+	"main": "",
+	"scripts": {
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/many-to-one-extended",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/many-to-one-extended",
+		"dist": "directus-extensions build --input ./src --output ./dist"
+	},
+	"keywords": [
+		"many-to-one",
+		"filter",
+		"m2o"
+	],
+	"author": "Philleep Florence",
+	"license": "GPL-3.0",
+	"dependencies": {
+		"@directus/extension-toolkit": "^0.0.1",
+		"lodash": "^4.17.15"
+	},
+	"devDependencies": {
+		"@vue/component-compiler-utils": "^2.6.0",
+		"cssnano": "^4.1.10",
+		"sass": "^1.17.3",
+		"vue-template-compiler": "^2.6.10"
+	}
 }

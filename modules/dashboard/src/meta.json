@@ -1,0 +1,9 @@
+{
+	"name": "dashboard",
+	"version": "1.0.0",
+	"icon": "view_quilt",
+	"types": [
+		"string"
+	],
+	"options": {}
+}

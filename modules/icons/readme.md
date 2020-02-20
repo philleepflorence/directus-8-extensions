@@ -1,4 +1,4 @@
-# guide Extension
+# icons Extension
 
 ## Usage
 

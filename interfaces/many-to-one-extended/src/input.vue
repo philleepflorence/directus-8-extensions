@@ -57,6 +57,7 @@
 
 <script>
 	import mixin from "@directus/extension-toolkit/mixins/interface";
+	import { find, isObject, mapValues, keyBy } from 'lodash';
 	
 	export default {
 		name: "InterfaceManyToOneExtended",
@@ -104,7 +105,7 @@
 				The name of the field that holds the primary key in the related collection
 			*/
 			relatedPrimaryKeyField() {
-				return _.find(this.relation.collection_one.fields, {
+				return find(this.relation.collection_one.fields, {
 					primary_key: true
 				}).field;
 			},
@@ -116,7 +117,7 @@
 				If the value is already a primary key, we return that.
 			*/
 			valuePK() {
-				if (_.isObject(this.value)) return this.value[this.relatedPrimaryKeyField];
+				if (isObject(this.value)) return this.value[this.relatedPrimaryKeyField];
 	
 				return this.value;
 			},
@@ -143,7 +144,7 @@
 				
 				const render = this.$helpers.micromustache.compile(this.options.template);
 				
-				const items = _.mapValues(_.keyBy(this.items, this.relatedPrimaryKeyField), item => {
+				const items = mapValues(keyBy(this.items, this.relatedPrimaryKeyField), item => {
 					return render(item);
 				});
 				
@@ -157,7 +158,7 @@
 				}
 			}
 		},
-		created() {
+		created () {
 			if (this.relationSetup) {
 				this.fetchItems();
 			}
@@ -325,8 +326,7 @@
 		left: 0;
 		right: 0;
 		margin: 0 auto;
-		top: 50%;
-		transform: translateY(-50%);
+		top: 12px;
 	}
 	
 	.interface-many-to-one-extended .search {

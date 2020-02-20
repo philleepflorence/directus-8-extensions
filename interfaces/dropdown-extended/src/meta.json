@@ -1,0 +1,79 @@
+{
+	"name": "Dropdown Extended",
+	"version": "1.0.0",
+	"types": ["string"],
+	"icon": "arrow_drop_down_circle",
+	"recommended": {
+		"length": 100
+	},
+	"options": {
+		"choices": {
+			"name": "Choices",
+			"comment": "You can create pre-defined key:value dropdown options",
+			"interface": "key-value",
+			"type": "JSON",
+			"options": {
+				"keyInterface": "text-input",
+				"keyType": "string",
+				"keyOptions": {
+					"placeholder": "key",
+					"monospace": true
+				},
+				"valueInterface": "text-input",
+				"valueType": "string",
+				"valueOptions": {
+					"placeholder": "value",
+					"monospace": true
+				}
+			}
+		},
+		"collection": {
+			"name": "Collection",
+			"interface": "text-input",
+			"comment": "The collection to load the dynamic values",
+			"length": 50
+		},
+		"field": {
+			"name": "Field",
+			"interface": "text-input",
+			"comment": "The field in the collection to load the dynamic values",
+			"length": 50
+		},
+		"filters": {
+			"name": "Filters",
+			"comment": "The filters to use when loading from the collection",
+			"interface": "json",
+			"advanced": true,
+			"options": {
+				"language": "application/json"
+			},
+			"default": {}
+		},
+		"placeholder": {
+			"name": "Placeholder",
+			"interface": "text-input",
+			"comment": "The placeholder to display in the dropdown interface",
+			"default": "Click to select an option...",
+			"length": 200
+		},
+		"allow_other": {
+			"name": "Allow Other",
+			"comment": "Allow the user to add a new value other than the pre-defined key:value options",
+			"interface": "switch",
+			"default": false
+		},
+		"formatting": {
+			"name": "Show Display Text",
+			"comment": "Show the Text (Key) instead of the Value (Option)",
+			"interface": "switch",
+			"type": "BOOLEAN",
+			"default": true
+		},
+		"icon": {
+			"name": "Icon",
+			"comment": "Icon to display on the left of the dropdown interface",
+			"interface": "icon",
+			"advanced": true
+		}
+	}
+}

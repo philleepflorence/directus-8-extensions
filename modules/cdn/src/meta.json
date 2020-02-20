@@ -1,0 +1,9 @@
+{
+	"name": "cdn",
+	"version": "1.0.0",
+	"icon": "cloud",
+	"types": [
+		"string"
+	],
+	"options": {}
+}

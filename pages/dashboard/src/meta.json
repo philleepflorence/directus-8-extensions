@@ -1,7 +1,0 @@
-{
-  "name": "dashboard",
-  "version": "1.0.0",
-  "icon": "person",
-  "types": ["string"],
-  "options": {}
-}

@@ -5,7 +5,8 @@
   "main": "",
   "scripts": {
     "build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/text-input-html",
-    "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/text-input-html"
+    "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/text-input-html",
+    "dist": "directus-extensions build --input ./src --output ./dist"
   },
   "keywords": [
     "html",

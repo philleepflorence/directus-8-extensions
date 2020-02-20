@@ -1,17 +1,26 @@
 <template>
-	<v-input
-		v-bind:id="name"
-		type="url"
-		class="custom-interface-url"
-		v-bind:value="displayValue"
-		v-bind:readonly="disabled"
-		v-bind:placeholder="options.placeholder"
-		v-bind:maxlength="length"
-		v-bind:icon-left="options.iconLeft"
-		v-bind:charactercount="options.showCharacterCount"
-		v-on:input="input"
-		v-on:keyup.enter.prevent.stop="load"
-	></v-input>
+	<div class="interface-url">
+		<v-input
+			v-bind:id="name"
+			type="url"
+			class="custom-interface-url"
+			v-bind:value="displayValue"
+			v-bind:readonly="disabled"
+			v-bind:placeholder="options.placeholder"
+			v-bind:maxlength="length"
+			v-bind:icon-left="options.iconLeft"
+			v-bind:charactercount="options.showCharacterCount"
+			v-on:input="input"
+			v-on:keyup.enter.prevent.stop="load">
+		</v-input>
+		
+		<v-spinner
+			v-show="loading"
+			line-fg-color="var(--blue-grey-300)"
+			line-bg-color="var(--blue-grey-200)"
+			class="spinner">
+		</v-spinner>
+	</div>
 </template>
 
 <script>
@@ -20,6 +29,11 @@
 	export default {
 		name: "InterfaceURL",
 		mixins: [mixin],
+		data() {
+			return {
+				loading: false
+			};
+		},
 		computed: {
 			displayValue () {
 				return this.value || '';
@@ -34,11 +48,15 @@
 			},
 			load (value) {
 				if (this.readonly === true || !this.value) return;
+				
+				this.loading = true;
 												
 				this.$api.api.get('/custom/metadata/import', {
 					url: this.value
 				})
 				.then((response) => {
+					
+					this.loading = false;
 					
 					response.title = response.title || response.title;
 					response.description = response.description || response.sitename;
@@ -64,6 +82,8 @@
 				})
 				.catch((error) => {
 					this.error = error;
+					
+					this.loading = false;
 				});
 			},
 			preview () {
@@ -99,5 +119,15 @@
 		display: block;
 		width: 100%;
 		height: auto;
+	}	
+	.interface-url {
+		position: relative;
+	}
+	.interface-url .spinner {
+		position: absolute;
+		left: 0;
+		right: 0;
+		margin: 0 auto;
+		top: 12px;
 	}
 </style>

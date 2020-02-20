@@ -1,8 +1,0 @@
-{
-	"name": "Import Metadata",
-	"description": "Import Metadata Title, Description, and Images from an external page.",
-	"author": "Philleep Florence",
-	"version": "1.0.0",
-	"icon": "link",
-	"options": {}
-}

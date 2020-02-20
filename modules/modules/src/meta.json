@@ -1,0 +1,9 @@
+{
+	"name": "modules",
+	"version": "1.0.0",
+	"icon": "view_module",
+	"types": [
+		"string"
+	],
+	"options": {}
+}
