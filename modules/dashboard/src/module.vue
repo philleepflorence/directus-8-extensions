@@ -1,7 +1,7 @@
 <template>
 	<div class="modules-dashboard">
 		<v-header 
-			:title="contents.subtitle" 
+			:title="content('subtitle')" 
 			:breadcrumb="breadcrumb" 
 			icon="view_quilt" 
 			settings>
@@ -9,11 +9,11 @@
 		
 		<div class="modules-dashboard-content">
 			
-			<div class="modules-dashboard-grid modules-dashboard-modules animated fadeIn a-delay" @click="onClick(contents.modules.path)">
+			<div class="modules-dashboard-grid modules-dashboard-modules animated fadeIn a-delay" @click="onClick(content('modules.path'))">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>view_module</i></span>
-					<h3 class="font-accent">{{ contents.modules.title }}</h3>
-					<p class="lead">{{ contents.modules.description }}</p>
+					<h3 class="font-accent">{{ content('modules.title') }}</h3>
+					<p class="lead">{{ content('modules.description') }}</p>
 					<div class="modules-dashboard-analytics">
 						<v-spinner
 							v-show="loading"
@@ -24,14 +24,13 @@
 						<p class="lead animated fadeIn font-accent" v-if="analytics.modules">{{ analytics.modules.total }}</p>
 					</div>
 				</div>
-				<span class="graph-icon icon"><i>view_module</i></span>
 			</div>
 			
-			<div class="modules-dashboard-grid modules-dashboard-files animated fadeIn a-delay" @click="onClick(contents.files.path)">
+			<div class="modules-dashboard-grid modules-dashboard-files animated fadeIn a-delay" @click="onClick(content('files.path'))">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>cloud_done</i></span>
-					<h3 class="font-accent">{{ contents.files.title }}</h3>
-					<p class="lead">{{ contents.files.description }}</p>
+					<h3 class="font-accent">{{ content('files.title') }}</h3>
+					<p class="lead">{{ content('files.description') }}</p>
 					<div class="modules-dashboard-analytics">
 						<v-spinner
 							v-show="loading"
@@ -42,14 +41,13 @@
 						<p class="lead animated fadeIn font-accent" v-if="analytics.files">{{ analytics.files.total }}</p>
 					</div>
 				</div>
-				<span class="graph-icon icon"><i>cloud_done</i></span>
 			</div>
 			
-			<div class="modules-dashboard-grid modules-dashboard-collections animated fadeIn a-delay" @click="onClick(contents.collections.path)">
+			<div class="modules-dashboard-grid modules-dashboard-collections animated fadeIn a-delay" @click="onClick(content('collections.path'))">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>storage</i></span>
-					<h3 class="font-accent">{{ contents.collections.title }}</h3>
-					<p class="lead">{{ contents.collections.description }}</p>
+					<h3 class="font-accent">{{ content('collections.title') }}</h3>
+					<p class="lead">{{ content('collections.description') }}</p>
 					<div class="modules-dashboard-analytics">
 						<v-spinner
 							v-show="loading"
@@ -60,14 +58,13 @@
 						<p class="lead animated fadeIn font-accent" v-if="analytics.collections">{{ analytics.collections.total }}</p>
 					</div>
 				</div>
-				<span class="graph-icon icon"><i>storage</i></span>
 			</div>
 			
-			<div class="modules-dashboard-grid modules-dashboard-users animated fadeIn a-delay" @click="onClick(contents.users.path)">
+			<div class="modules-dashboard-grid modules-dashboard-users animated fadeIn a-delay" @click="onClick(content('users.path'))">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>supervised_user_circle</i></span>
-					<h3 class="font-accent">{{ contents.users.title }}</h3>
-					<p class="lead">{{ contents.users.description }}</p>
+					<h3 class="font-accent">{{ content('users.title') }}</h3>
+					<p class="lead">{{ content('users.description') }}</p>
 					<div class="modules-dashboard-analytics">
 						<v-spinner
 							v-show="loading"
@@ -78,27 +75,37 @@
 						<p class="lead animated fadeIn font-accent" v-if="analytics.users">{{ analytics.users.total }}</p>
 					</div>
 				</div>
-				<span class="graph-icon icon"><i>supervised_user_circle</i></span>
 			</div>
 			
 		</div>	
 
 		<v-info-sidebar wide>
-			<h2 class="type-note">{{ this.contents.title}}</h2>
-			<span class="type-note">{{ this.contents.description }}</span>
+			<h2 class="type-note">{{ this.content('title') }}</h2>
+			<span class="type-note">{{ this.content('description') }}</span>
 		</v-info-sidebar>
 	</div>
 </template>
 
 <script>
+	import { get } from 'lodash';
+	
 	export default {
 		name: 'Dashboard',		
 		computed: {
 			breadcrumb () {
 				return [];
+			},
+			locale () {
+				return get(this.$store.state, 'settings.values.default_locale');
 			}
 		},
 		methods: {
+			content (input) {
+				let translation = get(this.contents, this.locale);
+					translation = translation || get(this.contents, 'en-US');
+				
+				return get(translation, input);
+			},
 			load () {
 				this.loading = true;
 												
@@ -131,28 +138,30 @@
 			return {
 				analytics: {},
 				contents: {
-					title: "Dashboard",
-					subtitle: 'Dashboard - Getting Started',
-					description: 'Directus Core &amp; Custom Modules',
-					collections: {
-						title: "Collections",
-						description: "View all collections and items",
-						path: "/app/collections"
-					},
-					files: {
-						title: "Files",
-						description: "View all uploaded files",
-						path: "/app/files"
-					},
-					users: {
-						title: "Users",
-						description: "Directus Users Directory",
-						path: "/app/users"
-					},
-					modules: {
-						title: "Modules",
-						description: "View assets, analytics, reports, guides, and tools",
-						path: "/app/ext/modules"
+					"en-US" : {
+						"title": "Dashboard",
+						"subtitle": 'Dashboard - Modules Snapshot',
+						"description": 'Directus Core &amp; Custom Modules',
+						"collections": {
+							"title": "Collections",
+							"description": "View all collections and items",
+							"path": "/app/collections"
+						},
+						"files": {
+							"title": "Files",
+							"description": "View all uploaded files",
+							"path": "/app/files"
+						},
+						"users": {
+							"title": "Users",
+							"description": "Directus Users Directory",
+							"path": "/app/users"
+						},
+						"modules": {
+							"title": "Modules",
+							"description": "View assets, analytics, reports, guides, and tools",
+							"path": "/app/ext/modules"
+						}						
 					}				
 				},
 				loading: false
@@ -190,6 +199,15 @@
 				overflow: hidden;
 				animation-duration: 600ms;
 				
+				&.modules-dashboard-modules {
+					grid-column: 1/1 !important;
+					grid-row: 1/3 !important;
+				}
+				
+				&.modules-dashboard-files {
+					grid-column: 2/4 !important;
+				}
+				
 				.flex-item {
 					flex-grow: 1;
 					text-align: center;
@@ -211,28 +229,23 @@
 						width: 60px;
 						height: 60px;
 						background: rgba(white, 0.1);
-						margin: 0 auto 0.5rem auto;
+						margin: 0 auto 2rem auto;
 						border-radius: 50%;						
+					}
+					
+					.modules-dashboard-analytics {
+						position: relative;
+						padding: 1rem;
+						
+						p.lead {
+							color: rgba(white, 0.3);
+							font-size: 2.5rem !important;
+							font-weight: 300 !important;
+						}
 					}
 				}
 			}
 		}	
-	}
-	.modules-dashboard-analytics {
-		position: relative;
-		padding: 1rem;
-		
-		p.lead {
-			font-size: 3rem !important;
-			font-weight: 300 !important;
-		}
-	}
-	.modules-dashboard-modules {
-		grid-column: 1/1 !important;
-		grid-row: 1/3 !important;
-	}
-	.modules-dashboard-files {
-		grid-column: 2/4 !important;
 	}
 	.v-spinner {
 		margin: auto;
@@ -251,19 +264,6 @@
 		    white-space: nowrap;
 		    font-feature-settings: "liga";
 		    vertical-align: middle;
-		}
-		
-		&.graph-icon {
-			position: absolute;
-			width: 100%;
-			bottom: 0;
-			line-height: 10vw;
-			text-align: center;
-		
-			i {
-				font-size: 20vw;
-				color: rgba(black, 0.1);
-			}
 		}
 	}
 </style>
