@@ -9,11 +9,13 @@
 		
 		<div class="modules-dashboard-content">
 			
-			<div class="modules-dashboard-grid modules-dashboard-modules animated fadeIn a-delay" @click="onClick(content('modules.path'))">
+			<div v-for="(row, index) in content('modules')"
+				:class="`modules-dashboard-grid modules-dashboard-${index} animated fadeIn a-delay`" 				 
+				@click="onClick(row.path)">
 				<div class="flex-item">
-					<span class="v-icon icon"><i>view_module</i></span>
-					<h3 class="font-accent">{{ content('modules.title') }}</h3>
-					<p class="lead">{{ content('modules.description') }}</p>
+					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
+					<h3 class="font-accent">{{ row.title }}</h3>
+					<p class="lead">{{ row.description }}</p>
 					<div class="modules-dashboard-analytics">
 						<v-spinner
 							v-show="loading"
@@ -21,58 +23,7 @@
 							line-bg-color="var(--blue-grey-200)"
 							class="spinner">
 						</v-spinner>
-						<p class="lead animated fadeIn font-accent" v-if="analytics.modules">{{ analytics.modules.total }}</p>
-					</div>
-				</div>
-			</div>
-			
-			<div class="modules-dashboard-grid modules-dashboard-files animated fadeIn a-delay" @click="onClick(content('files.path'))">
-				<div class="flex-item">
-					<span class="v-icon icon"><i>cloud_done</i></span>
-					<h3 class="font-accent">{{ content('files.title') }}</h3>
-					<p class="lead">{{ content('files.description') }}</p>
-					<div class="modules-dashboard-analytics">
-						<v-spinner
-							v-show="loading"
-							line-fg-color="var(--blue-grey-300)"
-							line-bg-color="var(--blue-grey-200)"
-							class="spinner">
-						</v-spinner>
-						<p class="lead animated fadeIn font-accent" v-if="analytics.files">{{ analytics.files.total }}</p>
-					</div>
-				</div>
-			</div>
-			
-			<div class="modules-dashboard-grid modules-dashboard-collections animated fadeIn a-delay" @click="onClick(content('collections.path'))">
-				<div class="flex-item">
-					<span class="v-icon icon"><i>storage</i></span>
-					<h3 class="font-accent">{{ content('collections.title') }}</h3>
-					<p class="lead">{{ content('collections.description') }}</p>
-					<div class="modules-dashboard-analytics">
-						<v-spinner
-							v-show="loading"
-							line-fg-color="var(--blue-grey-300)"
-							line-bg-color="var(--blue-grey-200)"
-							class="spinner">
-						</v-spinner>
-						<p class="lead animated fadeIn font-accent" v-if="analytics.collections">{{ analytics.collections.total }}</p>
-					</div>
-				</div>
-			</div>
-			
-			<div class="modules-dashboard-grid modules-dashboard-users animated fadeIn a-delay" @click="onClick(content('users.path'))">
-				<div class="flex-item">
-					<span class="v-icon icon"><i>supervised_user_circle</i></span>
-					<h3 class="font-accent">{{ content('users.title') }}</h3>
-					<p class="lead">{{ content('users.description') }}</p>
-					<div class="modules-dashboard-analytics">
-						<v-spinner
-							v-show="loading"
-							line-fg-color="var(--blue-grey-300)"
-							line-bg-color="var(--blue-grey-200)"
-							class="spinner">
-						</v-spinner>
-						<p class="lead animated fadeIn font-accent" v-if="analytics.users">{{ analytics.users.total }}</p>
+						<p class="lead animated fadeIn font-accent" v-if="analytics[index]">{{ analytics[index].total }}</p>
 					</div>
 				</div>
 			</div>
@@ -103,7 +54,7 @@
 			content (input) {
 				let translation = get(this.contents, this.locale);
 					translation = translation || get(this.contents, 'en-US');
-				
+
 				return get(translation, input);
 			},
 			load () {
@@ -142,25 +93,31 @@
 						"title": "Dashboard",
 						"subtitle": 'Dashboard - Modules Snapshot',
 						"description": 'Directus Core &amp; Custom Modules',
-						"collections": {
-							"title": "Collections",
-							"description": "View all collections and items",
-							"path": "/app/collections"
-						},
-						"files": {
-							"title": "Files",
-							"description": "View all uploaded files",
-							"path": "/app/files"
-						},
-						"users": {
-							"title": "Users",
-							"description": "Directus Users Directory",
-							"path": "/app/users"
-						},
 						"modules": {
-							"title": "Modules",
-							"description": "View assets, analytics, reports, guides, and tools",
-							"path": "/app/ext/modules"
+							"modules": {
+								"title": "Modules",
+								"description": "View assets, analytics, reports, guides, and tools",
+								"path": "/app/ext/modules",
+								"icon": "supervised_user_circle"
+							},
+							"files": {
+								"title": "Files",
+								"description": "View all uploaded files",
+								"path": "/app/files",
+								"icon": "cloud_done"
+							},
+							"collections": {
+								"title": "Collections",
+								"description": "View all collections and items",
+								"path": "/app/collections",
+								"icon": "view_module"
+							},
+							"users": {
+								"title": "Users",
+								"description": "Directus Users Directory",
+								"path": "/app/users",
+								"icon": "storage"
+							}
 						}						
 					}				
 				},
