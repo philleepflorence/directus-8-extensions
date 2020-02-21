@@ -16,6 +16,8 @@
 					type="url"
 					class="modules-search-search-input"
 					:placeholder="content('input.placeholder')"
+					:value="query"
+					:model="query"
 					@input="onInput">
 				</v-input>
 			</div>
@@ -33,7 +35,7 @@
 			<div class="modules-search-results animated fadeIn" v-if="results">
 				<header class="modules-search-results">{{ content('results') }} {{ results.meta.total }}</header>
 				<div class="modules-search-results">
-					<section class="modules-search-result" v-for="row in results.data" @click="onClick(row.path)">
+					<section class="modules-search-result" v-for="row in results.data" @click="onClickNavigate(row.path)">
 						<h4>{{ row.title }}</h4>
 						<p>{{ row.description }}</p>
 						<small>{{ url }}{{ row.path }}</small>
@@ -52,7 +54,7 @@
 </template>
 
 <script>
-	import { get } from 'lodash';
+	import { get, set } from 'lodash';
 	
 	export default {
 		name: 'ModulesSearch',
@@ -90,7 +92,16 @@
 
 				return get(translation, input);
 			},
-			onClick (input) {
+			get (key) {
+				if (!window.sessionStorage) return null;
+				
+				let value = window.sessionStorage.getItem(key);
+				
+				if (typeof value === 'string') return JSON.parse(value);
+				
+				return null;
+			},
+			onClickNavigate (input) {
 				this.$router.push(input);
 			},
 			onInput (input) {
@@ -104,12 +115,18 @@
 			},
 			search (input) {
 				this.loading = true;
+				
+				this.set('extensions.modules.search.query', input);
+				
+				this.query = input;
 												
 				this.$api.api.get('/custom/search/database', {
 					query: input
 				}).then((response) => {
 					
 					this.loading = false;
+					
+					this.set('extensions.modules.search.results', response);
 					
 					this.results = response;
 					
@@ -119,6 +136,11 @@
 					
 					this.loading = false;
 				});
+			},
+			set (key, input) {
+				if (!window.sessionStorage) return null;
+				
+				return window.sessionStorage.setItem(key, JSON.stringify(input));
 			}
 		},
 		data () {
@@ -136,6 +158,7 @@
 					}						
 				},
 				loading: false,
+				query: null,
 				results: null,
 				timers: {
 					input: 0
@@ -146,6 +169,10 @@
 			return {
 				title: this.content('subtitle')
 			};
+		},
+		mounted () {
+			this.query = this.get('extensions.modules.search.query');
+			this.results = this.get('extensions.modules.search.results');
 		}
 	}
 </script>
