@@ -25,7 +25,7 @@
 					type="url"
 					class="modules-icons-search-input"
 					:placeholder="contents.input.placeholder"
-					@:input="onInput">
+					@input="onInput">
 				</v-input>
 			</div>
 			<div class="modules-icons-content">

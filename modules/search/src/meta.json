@@ -1,0 +1,9 @@
+{
+	"name": "search",
+	"version": "1.0.0",
+	"icon": "search",
+	"types": [
+		"string"
+	],
+	"options": {}
+}
