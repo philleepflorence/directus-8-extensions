@@ -1,63 +1,46 @@
 <template>
 	<div class="modules-modules">
+		
 		<v-header 
-			:title="contents.subtitle" 
+			:title="content('subtitle')" 
 			:breadcrumb="breadcrumb" 
-			icon="view_module" 
+			icon="view_quilt" 
 			settings>
 		</v-header>
 		
-		<div class="modules-modules-loading" v-if="loading">
-			<div class="flex-item">
-				<v-spinner
-					v-show="loading"
-					line-fg-color="var(--blue-grey-300)"
-					line-bg-color="var(--blue-grey-200)"
-					class="spinner">
-				</v-spinner>
+		<div class="modules-modules-content animated fadeIn">
+			
+			<div v-for="(row, index) in content('modules')"
+				:class="`modules-modules-grid modules-modules-${index} animated fadeIn a-delay`" 				 
+				@click="onClick(row.path)">
+				<div class="flex-item">
+					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
+					<h3 class="font-accent">{{ row.title }}</h3>
+					<p class="lead">{{ row.description }}</p>
+					<div class="modules-modules-analytics">
+						<v-spinner
+							v-show="loading"
+							line-fg-color="var(--blue-grey-300)"
+							line-bg-color="var(--blue-grey-200)"
+							class="spinner">
+						</v-spinner>
+						<p class="lead animated fadeIn font-accent" v-if="analytics[index]">{{ analytics[index].total }}</p>
+					</div>
+				</div>
 			</div>
-		</div>
-		
-		<div class="modules-modules-contents animated fadeIn" v-if="!loading">
-			<v-details :title="contents.headlines.assets" type="break" open>
-				<nav class="animated fadeIn">
-					<ul>					
-						<v-card
-							:title="contents.modules.cdn.title"
-							:subtitle="contents.modules.cdn.subtitle"
-							element="li"
-							:to="`/${currentProjectKey}/ext/cdn`"
-							icon="cloud">
-						</v-card>
-						<v-card
-							:title="contents.modules.icons.title"
-							:subtitle="contents.modules.icons.subtitle"
-							element="li"
-							:to="`/${currentProjectKey}/ext/icons`"
-							icon="insert_emoticon">
-						</v-card>
-					</ul>
-				</nav>
-			</v-details>
 			
-			<v-details :title="contents.headlines.analytics" type="break" open>
-				
-			</v-details>	
-			
-			<v-details :title="contents.headlines.guides" type="break" open>
-				
-			</v-details>
 		</div>	
 
 		<v-info-sidebar wide>
-			<h2 class="type-note">{{ this.contents.title}}</h2>
-			<span class="type-note">{{ this.contents.description }}</span>
+			<h2 class="type-note">{{ this.content('title') }}</h2>
+			<span class="type-note">{{ this.content('description') }}</span>
 		</v-info-sidebar>
+		
 	</div>
 </template>
 
 <script>
-	import { forEach, set } from 'lodash';
+	import { forEach, get, set } from 'lodash';
 	
 	export default {
 		name: 'Modules',
@@ -72,22 +55,29 @@
 			},
 			currentProjectKey () {
 				return this.$store.state.currentProjectKey;
+			},
+			locale () {
+				return get(this.$store.state, 'settings.values.default_locale');
 			}
 		},
 		methods: {
+			content (input) {
+				let translation = get(this.contents, this.locale);
+					translation = translation || get(this.contents, 'en-US');
+
+				return get(translation, input);
+			},
 			load () {
 				this.loading = true;
 												
-				this.$api.api.get('/custom/analytics/modules')
-				.then((response) => {
+				this.$api.api.get('/custom/analytics/modules').then((response) => {
 					
 					this.loading = false;
 					
-					forEach(response, (row, module) => {
-						set(this.contents.modules, `${ module }.subtitle`, `${ row.total } Items`);
-					});
-				})
-				.catch((error) => {
+					this.analytics = response;
+					
+				}).catch((error) => {
+					
 					this.error = error;
 					
 					this.loading = false;
@@ -107,55 +97,143 @@
 		},
 		data () {
 			return {
+				analytics: {},
 				contents: {
-					title: "Modules",
-					subtitle: 'Modules - Collection of Custom Modules',
-					description: 'Collection of Custom Modules',
-					headlines: {
-						analytics: "Analytics - Reports",						
-						assets: "Assets - Application",						
-						guides: "Guides - Tools"
-					},
-					modules: {
-						cdn: {
-							title: "CDN - Assets",
-							subtitle: ""
+					"en-US": {
+						"title": "Modules",
+						"subtitle": 'Modules - Collection of Custom Modules',
+						"description": 'Collection of Custom Modules',
+						"headlines": {
+							"analytics": "Analytics - Reports",						
+							"assets": "Assets - Application",						
+							"guides": "Guides - Tools"
 						},
-						icons: {
-							title: "Icons - Application",
-							subtitle: ""
+						"modules": {
+							"cdn": {
+								"title": "CDN",
+								"description": "View Static Assets in your CDN",
+								"path": "/app/ext/cdn",
+								"icon": "cloud"
+							},
+							"icons": {
+								"title": "Icons",
+								"description": "View all Icons available to your applications",
+								"path": "/app/ext/icons",
+								"icon": "insert_emoticon"
+							},
+							"search": {
+								"title": "Search",
+								"description": "Search all visible collection items",
+								"path": "/app/ext/search",
+								"icon": "search"
+							}
 						}
 					}						
 				},
-				loading: true
+				loading: false
 			};
 		},
 		metaInfo() {
 			return {
-				title: this.contents.subtitle
+				title: this.content('subtitle')
 			};
 		},
 		mounted () {
-			this.load();
+			this.$content = this.$el.querySelector('.modules-modules-content');
+			
+			if (this.$content) this.render();
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	.modules-modules {
-		padding: var(--page-padding-top) var(--page-padding) var(--page-padding-bottom);
+		padding: var(--page-padding);
 		
-		.content nav ul {
-			padding: 0;
+		.modules-modules-content {
 			display: grid;
-			grid-template-columns: repeat(auto-fill,var(--card-size));
-			grid-gap: var(--card-horizontal-gap);
-		}
+			grid-template-columns: repeat(3, 1fr);
+			grid-gap: 1rem;
+			
+			.modules-modules-grid {
+				background-color: rgba(white, 0.1);
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+				overflow: hidden;
+				animation-duration: 600ms;
+				
+				&.modules-modules-cdn {
+					grid-column: 1/3 !important;
+					grid-row: 1/2 !important;
+				}
+				
+				&.modules-modules-icons {
+					grid-column: 1/3 !important;
+				}
+				
+				&.modules-modules-search {
+					grid-row: 1/3 !important;
+				}
+				
+				.flex-item {
+					flex-grow: 1;
+					text-align: center;
+					color: var(--main-primary-color);
+					
+					h3 {
+						font-size: 2rem;
+						margin: 0.5rem auto;
+					}
+					
+					.lead {
+						font-size: 1.25rem;
+					}
+					
+					.icon {
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						width: 60px;
+						height: 60px;
+						background: rgba(white, 0.1);
+						margin: 0 auto 2rem auto;
+						border-radius: 50%;						
+					}
+					
+					.modules-modules-analytics {
+						position: relative;
+						padding: 1rem;
+						
+						p.lead {
+							color: rgba(white, 0.3);
+							font-size: 2.5rem !important;
+							font-weight: 300 !important;
+						}
+					}
+				}
+			}
+		}	
 	}
-	.modules-modules-loading {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-height: calc(100vh - 150px);
+	.v-spinner {
+		margin: auto;
+	}
+	.icon {
+		i {
+			font-size: 24px;
+		    font-family: Material Icons;
+		    font-weight: 400;
+		    font-style: normal;
+		    display: inline-block;
+		    line-height: 1;
+		    text-transform: none;
+		    letter-spacing: normal;
+		    word-wrap: normal;
+		    white-space: nowrap;
+		    font-feature-settings: "liga";
+		    vertical-align: middle;
+		}
 	}
 </style>

@@ -1,5 +1,6 @@
 <template>
 	<div class="modules-dashboard">
+		
 		<v-header 
 			:title="content('subtitle')" 
 			:breadcrumb="breadcrumb" 
@@ -34,6 +35,7 @@
 			<h2 class="type-note">{{ this.content('title') }}</h2>
 			<span class="type-note">{{ this.content('description') }}</span>
 		</v-info-sidebar>
+		
 	</div>
 </template>
 
@@ -60,14 +62,14 @@
 			load () {
 				this.loading = true;
 												
-				this.$api.api.get('/custom/analytics/dashboard')
-				.then((response) => {
+				this.$api.api.get('/custom/analytics/dashboard').then((response) => {
 					
 					this.loading = false;
 					
 					this.analytics = response;
-				})
-				.catch((error) => {
+					
+				}).catch((error) => {
+					
 					this.error = error;
 					
 					this.loading = false;
@@ -126,7 +128,7 @@
 		},
 		metaInfo() {
 			return {
-				title: this.contents.subtitle
+				title: this.content('subtitle')
 			};
 		},
 		mounted () {
