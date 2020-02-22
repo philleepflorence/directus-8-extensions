@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-modules">
+	<div class="modules-analytics">
 		
 		<v-header 
 			:title="content('subtitle')" 
@@ -8,26 +8,9 @@
 			settings>
 		</v-header>
 		
-		<div class="modules-modules-content animated fadeIn">
+		<div class="modules-analytics-content animated fadeIn">
 			
-			<div v-for="(row, index) in content('modules')"
-				:class="`modules-modules-grid modules-modules-${index} animated fadeIn a-delay`" 				 
-				@click="onClick(row.path)">
-				<div class="flex-item">
-					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
-					<h3 class="font-accent">{{ row.title }}</h3>
-					<p class="lead">{{ row.description }}</p>
-					<div class="modules-modules-analytics">
-						<v-spinner
-							v-show="loading"
-							line-fg-color="var(--blue-grey-300)"
-							line-bg-color="var(--blue-grey-200)"
-							class="spinner">
-						</v-spinner>
-						<p class="lead animated fadeIn font-accent" v-if="analytics[index]">{{ analytics[index].total }}<span>{{ row.analytics }}</span></p>
-					</div>
-				</div>
-			</div>
+			
 			
 		</div>	
 
@@ -43,13 +26,17 @@
 	import { forEach, get, set } from 'lodash';
 	
 	export default {
-		name: 'Modules',
+		name: 'ModulesAnalyticsApplication',
 		computed: {
 			breadcrumb () {
 				return [
 					{
 						name: 'Dashboard',
 						path: `/${this.currentProjectKey}/ext/dashboard`
+					},
+					{
+						name: 'Modules',
+						path: `/${this.currentProjectKey}/ext/modules`
 					}
 				];
 			},
@@ -70,7 +57,7 @@
 			load () {
 				this.loading = true;
 												
-				this.$api.api.get('/custom/analytics/modules').then((response) => {
+				this.$api.api.get('/custom/analytics/application').then((response) => {
 					
 					this.loading = false;
 					
@@ -100,42 +87,24 @@
 				analytics: {},
 				contents: {
 					"en-US": {
-						"title": "Modules",
-						"subtitle": 'Modules - Collection of Custom Modules',
-						"description": 'Collection of Custom Modules',
-						"headlines": {
-							"analytics": "Analytics - Reports",						
-							"assets": "Assets - Application",						
-							"guides": "Guides - Tools"
-						},
+						"title": "Analytics - Application",
+						"subtitle": 'Analytics - Report of the Application Visitors',
+						"description": 'Analytics Report of the Application Visitors',
 						"modules": {
-							"analytics": {
-								"title": "Application Analytics",
-								"description": "Analytics of the Application Visitors",
-								"path": "/app/ext/analytics-app",
-								"icon": "pie_chart",
-								"analytics": "sessions"
-							},
 							"cdn": {
-								"title": "CDN",
-								"description": "View Static Assets in your CDN",
-								"path": "/app/ext/cdn",
-								"icon": "cloud",
-								"analytics": "Items"
+								"browsers": "Browsers",
+								"description": "Analytics of the Browsers used to load the application",
+								"icon": "cloud"
 							},
-							"icons": {
-								"title": "Icons",
-								"description": "View all Icons available to your applications",
-								"path": "/app/ext/icons",
-								"icon": "insert_emoticon",
-								"analytics": "Icons"
+							"devices": {
+								"title": "Devices",
+								"description": "Analytics of the Devices used to load the application",
+								"icon": "insert_emoticon"
 							},
 							"search": {
-								"title": "Search",
-								"description": "Search all visible collection items",
-								"path": "/app/ext/search",
-								"icon": "search",
-								"analytics": "Collections"
+								"title": "Visitors",
+								"description": "Analytics of the Visitors to the application",
+								"icon": "search"
 							}
 						}
 					}						
@@ -149,7 +118,7 @@
 			};
 		},
 		mounted () {
-			this.$content = this.$el.querySelector('.modules-modules-content');
+			this.$content = this.$el.querySelector('.modules-analytics-content');
 			
 			if (this.$content) this.render();
 		}
@@ -157,15 +126,15 @@
 </script>
 
 <style lang="scss" scoped>
-	.modules-modules {
+	.modules-analytics {
 		padding: var(--page-padding);
 		
-		.modules-modules-content {
+		.modules-analytics-content {
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
 			grid-gap: 1rem;
 			
-			.modules-modules-grid {
+			.modules-analytics-grid {
 				background-color: rgba(white, 0.1);
 				cursor: pointer;
 				display: flex;
@@ -175,13 +144,17 @@
 				overflow: hidden;
 				animation-duration: 600ms;
 				
-				&.modules-modules-analytics {
+				&.modules-analytics-cdn {
 					grid-column: 1/3 !important;
 					grid-row: 1/2 !important;
 				}
 				
-				&.modules-modules-search {
-					grid-column: 2/4 !important;
+				&.modules-analytics-icons {
+					grid-column: 1/3 !important;
+				}
+				
+				&.modules-analytics-search {
+					grid-row: 1/3 !important;
 				}
 				
 				.flex-item {
@@ -209,7 +182,7 @@
 						border-radius: 50%;						
 					}
 					
-					.modules-modules-analytics {
+					.modules-analytics-analytics {
 						position: relative;
 						padding: 1rem;
 						
@@ -217,16 +190,6 @@
 							color: rgba(white, 0.3);
 							font-size: 2.5rem !important;
 							font-weight: 300 !important;
-							line-height: 1.5rem;
-							padding-top: 0.5rem;
-						
-							span {
-								display: block;
-								color: rgba(white, 0.2);
-								font-size: 1rem;
-								font-weight: 400 !important;
-								text-transform: lowercase;
-							}
 						}
 					}
 				}

@@ -1,0 +1,9 @@
+{
+	"name": "analytics-app",
+	"version": "1.0.0",
+	"icon": "pie_chart",
+	"types": [
+		"string"
+	],
+	"options": {}
+}
