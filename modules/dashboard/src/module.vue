@@ -24,7 +24,7 @@
 							line-bg-color="var(--blue-grey-200)"
 							class="spinner">
 						</v-spinner>
-						<p class="lead animated fadeIn font-accent" v-if="analytics[index]">{{ analytics[index].total }}</p>
+						<p class="lead animated fadeIn font-accent" v-if="analytics[index]">{{ analytics[index].total }}<span>{{ row.analytics }}</span></p>
 					</div>
 				</div>
 			</div>
@@ -100,25 +100,29 @@
 								"title": "Modules",
 								"description": "View assets, analytics, reports, guides, and tools",
 								"path": "/app/ext/modules",
-								"icon": "supervised_user_circle"
+								"icon": "supervised_user_circle",
+								"analytics": "Modules"
 							},
 							"files": {
 								"title": "Files",
 								"description": "View all uploaded files",
 								"path": "/app/files",
-								"icon": "cloud_done"
+								"icon": "cloud_done",
+								"analytics": "Files"
 							},
 							"collections": {
 								"title": "Collections",
 								"description": "View all collections and items",
 								"path": "/app/collections",
-								"icon": "view_module"
+								"icon": "view_module",
+								"analytics": "Collections"
 							},
 							"users": {
 								"title": "Users",
 								"description": "Directus Users Directory",
 								"path": "/app/users",
-								"icon": "storage"
+								"icon": "storage",
+								"analytics": "Users"
 							}
 						}						
 					}				
@@ -200,6 +204,16 @@
 							color: rgba(white, 0.3);
 							font-size: 2.5rem !important;
 							font-weight: 300 !important;
+							line-height: 1.75rem;
+							padding-top: 0.5rem;
+						
+							span {
+								display: block;
+								color: rgba(white, 0.2);
+								font-size: 1rem;
+								font-weight: 400 !important;
+								text-transform: lowercase;
+							}
 						}
 					}
 				}

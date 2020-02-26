@@ -11,7 +11,7 @@
 		<div class="modules-modules-content animated fadeIn">
 			
 			<div v-for="(row, index) in content('modules')"
-				:class="`modules-modules-grid modules-modules-${index} animated fadeIn a-delay`" 				 
+				:class="`modules-modules-grid modules-modules-${index} animated fadeInUpSmall a-delay`" 				 
 				@click="onClick(row.path)">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
@@ -217,7 +217,7 @@
 							color: rgba(white, 0.3);
 							font-size: 2.5rem !important;
 							font-weight: 300 !important;
-							line-height: 1.5rem;
+							line-height: 1.75rem;
 							padding-top: 0.5rem;
 						
 							span {
