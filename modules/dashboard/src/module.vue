@@ -11,7 +11,7 @@
 		<div class="modules-dashboard-content">
 			
 			<div v-for="(row, index) in content('modules')"
-				:class="`modules-dashboard-grid modules-dashboard-${index} animated fadeIn a-delay`" 				 
+				:class="`modules-dashboard-grid modules-dashboard-${index} animated fadeInUpSmall a-delay`" 				 
 				@click="onClick(row.path)">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
