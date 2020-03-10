@@ -2,118 +2,224 @@
 	<div class="modules-analytics">
 		
 		<v-header 
-			:title="content('subtitle')" 
+			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
 			icon="view_quilt" 
 			settings>
 		</v-header>
+						
+		<div class="modules-analytics-loading" v-if="loading">
+			<div class="flex-item">
+				<v-spinner
+					v-show="loading"
+					line-fg-color="var(--blue-grey-300)"
+					line-bg-color="var(--blue-grey-200)"
+					class="spinner">
+				</v-spinner>
+			</div>
+		</div>
 		
-		<!-- Sessions -->
+		<div class="modules-analytics-loading" v-else-if="loaded && !analytics.meta.total">
+			<div class="flex-item w-100 animated fadeInUpSmall">
+				<p class="lead" v-html="content('form.empty.message')"></p>
+			</div>
+		</div>
 		
-		<div class="modules-analytics-section animated fadeIn a-delay">
-		
-			<v-details :title="content('charts.titles.sessions')" type="break" open>
+		<div class="modules-analytics-loaded" v-else-if="loaded">
 			
-				<div class="modules-analytics-content modules-analytics-sessions animated fadeIn" v-if="loaded">
-					
-					<!-- Sessions - Overview -->
-					
-					<div class="modules-analytics-grid animated fadeIn a-delay" v-for="row in content('sections.sessions')">
-						<div class="flex-item">
-							<h3 class="font-accent">{{ row.headline }}</h3>
-							<p class="lead">{{ row.description }}</p>
-							<div class="modules-analytics-analytics">
-								<p class="lead animated fadeIn font-accent">{{ details(row.property) }}</p>
+			<!-- Sessions -->
+			
+			<div class="modules-analytics-section animated fadeIn a-delay" :data-section="kebabCase(content('charts.titles.sessions'))">
+			
+				<v-details :title="content('charts.titles.sessions')" type="break" open>
+				
+					<div class="modules-analytics-content modules-analytics-sessions animated fadeIn">
+						
+						<!-- Sessions - Overview -->
+						
+						<div class="modules-analytics-grid animated fadeIn a-delay" v-for="row in content('sections.sessions')">
+							<div class="flex-item">
+								<h3 class="font-accent">{{ row.headline }}</h3>
+								<p class="lead">{{ row.description }}</p>
+								<div class="modules-analytics-analytics">
+									<p class="lead animated fadeIn font-accent">{{ details(row.property) }}</p>
+								</div>
 							</div>
 						</div>
+						
+						<!-- Sessions - Charts -->
+						
+						<div class="modules-analytics-grid modules-analytics-chart animated fadeIn a-delay" data-chart="sessions" v-if="chart('sessions', 'Sessions')">
+							<doughnut-chart :chartdata="charts.sessions" :options="charts.options"></doughnut-chart>
+							<aside class="modules-analytics-overlay"><span></span></aside>
+							<footer class="modules-analytics-chart">
+								<p class="modules-analytics-chart">
+									<span class="modules-analytics-chart-legend font-accent" v-for="legend in legends.sessions" :data-label="legend.label" :data-legend-key="legend.key" :data-tooltip="`${ legend.legend }: ${ legend.ratio }`" :style="`color: ${ legend.color };`">{{ legend.legend }}</span>
+								</p>
+								<p class="modules-analytics-chart">{{ content('charts.headlines.sessions') }}</p>
+							</footer>
+						</div>
+						
 					</div>
-					
-					<!-- Sessions - Charts -->
-					
-					<div class="modules-analytics-grid modules-analytics-chart animated fadeIn a-delay" data-chart="sessions" v-if="chart('sessions', 'Sessions')">
-						<doughnut-chart v-bind:chartdata="charts.sessions" v-bind:options="charts.options"></doughnut-chart>
-						<footer class="modules-analytics-chart">
-							<p class="modules-analytics-chart">
-								<span class="modules-analytics-chart-legend font-accent" v-for="legend in legends.sessions" v-bind:style="`color: ${ legend.color };`">{{ legend.legend }}</span>
-							</p>
-							<p class="modules-analytics-chart">{{ content('charts.headlines.sessions') }}</p>
-						</footer>
-					</div>
-					
-				</div>
-			
-			</v-details>
-		
-		</div>	
-		
-		<!-- Locations -->
-		
-		<div class="modules-analytics-section animated fadeIn a-delay">
-		
-			<v-details :title="content('charts.titles.locations')" type="break" open>
-			
-				<!-- Locations - Charts -->
 				
-				<div class="modules-analytics-content modules-analytics-locations animated fadeIn" v-if="loaded">
-					
-					<div class="modules-analytics-grid modules-analytics-chart animated fadeIn a-delay" data-chart="locations" v-for="(row, key) in analytics.data.locations" v-if="chart(`locations.${ key }`)">
-						<pie-chart v-bind:chartdata="charts.locations[key]" v-bind:options="charts.options"></pie-chart>
-						<footer class="modules-analytics-chart">
-							<p class="modules-analytics-chart">
-								<span class="modules-analytics-chart-legend font-accent" v-for="legend in legends.locations[key]" v-bind:style="`color: ${ legend.color };`">{{ legend.legend }}</span>
-							</p>
-							<p class="modules-analytics-chart">{{ content(`sections.locations.${ key }.description`) }}</p>
-						</footer>
-					</div>
-					
-				</div>
+				</v-details>
 			
-			</v-details>
-		
-		</div>	
-		
-		<!-- Browsers -->
-		
-		<div class="modules-analytics-section animated fadeIn a-delay">
-		
-			<v-details :title="content('charts.titles.browsers')" type="break" open>
+			</div>	
 			
-				<!-- Browsers - Charts -->
+			<!-- Performance and Views -->
+			
+			<div class="modules-analytics-section animated fadeIn a-delay" :data-section="kebabCase(content('charts.titles.performance'))">
+			
+				<v-details :title="content('charts.titles.performance')" type="break" open>
+						
+					<!-- Performance - Overview -->
 				
-				<div class="modules-analytics-content modules-analytics-browsers animated fadeIn" v-if="loaded">
-					
-					<div class="modules-analytics-grid modules-analytics-chart animated fadeIn a-delay" data-chart="browsers" v-for="(row, key) in analytics.data.browsers" v-if="chart(`browsers.${ key }`)">
-						<doughnut-chart v-bind:chartdata="charts.browsers[key]" v-bind:options="charts.options"></doughnut-chart>
-						<footer class="modules-analytics-chart">
-							<p class="modules-analytics-chart">
-								<span class="modules-analytics-chart-legend font-accent" v-for="legend in legends.browsers[key]" v-bind:style="`color: ${ legend.color };`">{{ legend.legend }}</span>
-							</p>
-							<p class="modules-analytics-chart">{{ content(`sections.browsers.${ key }.description`) }}</p>
-						</footer>
+					<div class="modules-analytics-content modules-analytics-performance animated fadeIn" v-for="(section, index) in content('sections.performance')">
+						
+						<div class="modules-analytics-grid animated fadeIn a-delay" v-for="(description, name) in section">
+							<div class="flex-item">
+								<h3 class="font-accent text-capitalize">{{ index }} &mdash; {{ name }}</h3>
+								<p class="lead">{{ description }}</p>
+								<div class="modules-analytics-analytics">
+									<p class="lead animated fadeIn font-accent">{{ seconds( details(`data.performance.${ index }.${ name }`) ) }}</p>
+								</div>
+							</div>
+						</div>
+						
 					</div>
 					
-				</div>
+					<!-- Views - Charts -->
+					
+					<div class="modules-analytics-content modules-analytics-views animated fadeIn">
+						
+						<div class="modules-analytics-grid modules-analytics-chart animated fadeIn a-delay" data-chart-type="bar" data-chart-type="bar" v-for="(row, key) in analytics.data.views" v-if="chart(`views.${ key }`, null, true)">
+							<bar-chart :chartdata="charts.views[key]" :options="charts.options"></bar-chart>
+							<aside class="modules-analytics-overlay"><span></span></aside>
+							<footer class="modules-analytics-chart">
+								<p class="modules-analytics-chart">
+									<span class="modules-analytics-chart-legend font-accent" v-for="legend in legends.views[key]" :data-label="legend.label" :data-legend-key="legend.key" :data-tooltip="`${ legend.label }: ${ legend.total }`" :style="`color: ${ legend.color };`">{{ legend.legend }}</span>
+								</p>
+								<p class="modules-analytics-chart">{{ content(`sections.views.${ key }.description`) }}</p>
+							</footer>
+						</div>
+						
+					</div>
+				
+				</v-details>
 			
-			</v-details>
-		
-		</div>
+			</div>	
+			
+			<!-- Locations -->
+			
+			<div class="modules-analytics-section animated fadeIn a-delay" :data-section="kebabCase(content('charts.titles.locations'))">
+			
+				<v-details :title="content('charts.titles.locations')" type="break" open>
+				
+					<!-- Locations - Charts -->
+					
+					<div class="modules-analytics-content modules-analytics-locations animated fadeIn">
+						
+						<div class="modules-analytics-grid modules-analytics-chart animated fadeIn a-delay" data-chart="locations" v-for="(row, key) in analytics.data.locations" v-if="chart(`locations.${ key }`)">
+							<pie-chart :chartdata="charts.locations[key]" :options="charts.options"></pie-chart>
+							<aside class="modules-analytics-overlay"><span></span></aside>
+							<footer class="modules-analytics-chart">
+								<p class="modules-analytics-chart">
+									<span class="modules-analytics-chart-legend font-accent" v-for="legend in legends.locations[key]" :data-label="legend.label" :data-legend-key="legend.key" :data-tooltip="`${ legend.legend }: ${ legend.ratio }`" :style="`color: ${ legend.color };`">{{ legend.legend }}</span>
+								</p>
+								<p class="modules-analytics-chart">{{ content(`sections.locations.${ key }.description`) }}</p>
+							</footer>
+						</div>
+						
+					</div>
+				
+				</v-details>
+			
+			</div>	
+			
+			<!-- Browsers -->
+			
+			<div class="modules-analytics-section animated fadeIn a-delay" :data-section="kebabCase(content('charts.titles.browsers'))">
+			
+				<v-details :title="content('charts.titles.browsers')" type="break" open>
+				
+					<!-- Browsers - Charts -->
+					
+					<div class="modules-analytics-content modules-analytics-browsers animated fadeIn">
+						
+						<div class="modules-analytics-grid modules-analytics-chart animated fadeIn a-delay" data-chart="browsers" :data-chart-type="bar(row) ? 'bar' : 'pie'" v-for="(row, key) in analytics.data.browsers" v-if="chart(`browsers.${ key }`, null, bar(row))">
+							<bar-chart :chartdata="charts.browsers[key]" :options="charts.options" v-if="bar(row)"></bar-chart>
+							<doughnut-chart :chartdata="charts.browsers[key]" :options="charts.options" v-else></doughnut-chart>
+							<aside class="modules-analytics-overlay"><span></span></aside>
+							<footer class="modules-analytics-chart">
+								<p class="modules-analytics-chart">
+									<span class="modules-analytics-chart-legend font-accent" v-for="legend in legends.browsers[key]" :data-label="legend.label" :data-legend-key="legend.key" :data-tooltip="`${ bar(row) ? legend.label : legend.legend }: ${ bar(row) ? legend.total : legend.ratio }`" :style="`color: ${ legend.color };`">{{ legend.legend }}</span>
+								</p>
+								<p class="modules-analytics-chart">{{ content(`sections.browsers.${ key }.description`) }}</p>
+							</footer>
+						</div>
+						
+					</div>
+				
+				</v-details>
+			
+			</div>
+			
+		</div>		
 
-		<v-info-sidebar wide>
-			<h2 class="type-note">{{ this.content('title') }}</h2>
-			<span class="type-note">{{ this.content('description') }}</span>
+		<v-info-sidebar wide itemDetail>
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ content('title') }}</h2>
+				<p class="p">{{ content('description') }}</p>
+			</section>
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ content('form.headline') }}</h2>
+				<div class="info-sidebar-row">
+					<v-input
+						id="modules-analytics-start-date-input"
+						type="date"
+						:placeholder="content('form.startDate.placeholder')"
+						:model="startDate"
+						:value="startDate"
+						@input="onInputStartDate">
+					</v-input>
+				</div>
+				<div class="info-sidebar-row">
+					<v-input
+						id="modules-analytics-end-date-input"
+						type="date"
+						:placeholder="content('form.endDate.placeholder')"
+						:model="endDate"
+						:value="endDate"
+						@input="onInputEndDate">
+					</v-input>
+				</div>
+				<div class="info-sidebar-row">
+					<v-button
+						id="modules-analytics-button"
+						type="button"
+						@click="onSubmit"
+						block>{{ content('form.submit.label') }}
+					</v-button>
+				</div>
+			</section>	
+			<nav class="info-sidebar-section info-sidebar-nav" v-if="loaded && analytics.meta.total">
+				<a class="info-sidebar-nav" href="#" v-for="(row, key) in content('charts.titles')" @click.stop.prevent="onClickScroll(kebabCase(row))">{{ row }}</a>
+			</nav>		
 		</v-info-sidebar>
 		
 	</div>
 </template>
 
 <script>
-	import { forEach, get, set, shuffle, size, startCase } from 'lodash';
+	import { forEach, get, kebabCase, set, shuffle, size, startCase } from 'lodash';
+	import BarChart from './charts/bar.vue';
 	import DoughnutChart from './charts/doughnut.vue';
 	import PieChart from './charts/pie.vue';
 	
 	export default {
 		name: 'ModulesAnalyticsApplication',
 		components: {
+			'bar-chart': BarChart,
 			'doughnut-chart': DoughnutChart,
 			'pie-chart': PieChart
 		},
@@ -138,7 +244,10 @@
 			}
 		},
 		methods: {
-			chart (input, label) {
+			bar (input) {
+				return size(input) > 4;
+			},
+			chart (input, label, type) {
 				let $input = get(this.analytics, `data.${ input }`);
 								
 				if (!$input) return null;
@@ -171,13 +280,18 @@
 				
 				forEach($input, (row, key) => {
 					let title = row.title || key.toUpperCase();
+					let total = type === true ? row.total : row.ratio;
 					
 					data.labels.push(title);
-					data.datasets[0].data.push(row.ratio);
+					data.datasets[0].data.push(total);
 					
 					set(this.legends, `${ input }.${ key }`, {
+						key: `${ input }.${ key }`,
 						legend: title,
-						color: this.charts.colors[keys.indexOf(key)]
+						color: this.charts.colors[keys.indexOf(key)],
+						total: row.total,
+						ratio: row.ratio,
+						label: label
 					});
 				});
 				
@@ -194,6 +308,9 @@
 			details (input) {
 				return get(this.analytics, input);
 			},
+			kebabCase (input) {
+				return kebabCase(input);
+			},
 			load () {
 				this.loading = true;
 				let params = {};	
@@ -207,6 +324,12 @@
 											
 				this.$api.api.get('/custom/analytics/application', params).then((response) => {
 					
+					let startDate = get(response, 'meta.start_date');
+					let endDate = get(response, 'meta.end_date');
+					
+					this.startDate = startDate.split(' ')[0];
+					this.endDate = endDate.split(' ')[0];
+					
 					this.loading = false;
 					
 					this.analytics = response;
@@ -219,6 +342,62 @@
 					
 					this.loading = false;
 				});
+			},
+			onClickScroll (input) {
+				let $row = this.$el.querySelector(`.modules-analytics-section[data-section="${ input }"]`);
+				
+				if (!$row) return false;
+				
+				let props = $row.getBoundingClientRect();
+				let top = window.scrollY + (props.y - 100);
+				
+				if (top < 0) top = 0;
+				
+				window.scrollTo({
+					top: top,
+					behavior: 'smooth'
+				});
+			},
+			onInputStartDate (input) {
+				this.startDate = input;
+			},
+			onInputEndDate (input) {
+				this.endDate = input;
+			},
+			onSubmit (e) {
+				this.loaded = false;
+				
+				if (this.startDate && this.endDate) this.load();
+			},
+			seconds (input) {
+				input = parseInt(input);
+				
+				if (!input) return '';
+								
+				input = parseFloat(input / 1000).toFixed(2);
+				
+				return `${ input }s`;
+			},
+			tooltip (input) {
+				let body = get(input.body, '0.lines.0');
+				let title = get(input.title, '0');
+				
+				if (this.$overlay) this.$overlay.classList.remove('active');
+				
+				if (!body) return;
+				
+				let $legend = this.$el.querySelector(`[data-tooltip="${ body }"]`);
+				let $parent = $legend.closest('.modules-analytics-grid');
+				let $overlay = $parent.querySelector('.modules-analytics-overlay');
+				
+				let key = $legend.getAttribute('data-legend-key');
+				let legend = get(this.legends, key);
+				
+				$overlay.innerHTML = `<span style="color: ${ legend.color };">${ legend.label }<br>${ legend.legend }: ${ legend.total } &mdash; ${ legend.ratio }</span>`;
+				
+				$overlay.classList.add('active');
+				
+				this.$overlay = $overlay;
 			}
 		},
 		data () {
@@ -227,16 +406,19 @@
 				charts: {
 					options: {
 						responsive: true,
-						maintainAspectRatio: true,
+						maintainAspectRatio: false,
 						legend: {
 							display: false
+						},
+						tooltips: {
+							enabled: false,
+							custom: this.tooltip
 						}
 					},
 					colors: [
 						"#f44336",
 						"#ff9800",
 						"#ff5722",
-						"#795548",
 						"#ffeb3b",
 						"#4caf50",
 						"#2196f3",
@@ -248,9 +430,25 @@
 						"title": "Analytics - Application",
 						"subtitle": 'Analytics - Report of the Application Visitors',
 						"description": 'Analytics Report of the Application Visitors',
+						"form": {
+							"empty": {
+								"message": "Oooops! <br>No analytics data was downloaded for the start and end dates. <br>Please try adjusting the start and end dates."
+							},
+							"headline": "Start and End Dates",
+							"startDate": {
+								"placeholder": "Analytics Start Date"
+							},
+							"endDate": {
+								"placeholder": "Analytics End Date"
+							},
+							"submit": {
+								"label": "Update Analytics"
+							}
+						},
 						"charts": {
 							"titles": {
 								"sessions": "Visitors and Sessions",
+								"performance": "Performance and Views",
 								"locations": "Locations",
 								"browsers": "Browsers and Devices"
 							},
@@ -259,25 +457,56 @@
 							}
 						},
 						"sections": {
+							"performance": {
+								"loaded": {
+									"average": "The average # seconds it takes to download and render the App",
+									"min": "The minimum # seconds it takes to download and render the App",
+									"max": "The maximum # seconds it takes to download and render the App"
+								},
+								"downloaded": {
+									"average": "The average # seconds it takes to download the App",
+									"min": "The minimum # seconds it takes to download the App",
+									"max": "The maximum # seconds it takes to download the App"
+								},
+								"rendered": {
+									"average": "The average # seconds it takes to render the App",
+									"min": "The minimum # seconds it takes to load the App",
+									"max": "The maximum # seconds it takes to load the App"
+								}
+							},
+							"views": {
+								"viewsize": {
+									"headline": "View Sizes",
+									"description": "The width and height of the browser or the app container"
+								},
+								"screensize": {
+									"headline": "Screen Sizes",
+									"description": "The width and height of the device used to view the app"
+								},
+								"page": {
+									"headline": "Pages",
+									"description": "The most and least viewed pages or sections of the app"
+								}
+							},
 							"sessions": {
 								"sessions": {
 									"headline": "Sessions",
-									"description": "Number of times the application was loaded",
+									"description": "# times the App was loaded",
 									"property": "meta.total"
 								},
 								"visitors": {
 									"headline": "Unique Visitors",
-									"description": "Number of unique visitors to the App",
+									"description": "# unique visitors to the App",
 									"property": "meta.visitors"
 								},
 								"website": {
 									"headline": "Websites",
-									"description": "Number of times the application was loaded in a Browser",
+									"description": "# times the App was loaded in a Browser",
 									"property": "data.sessions.website.total"
 								},
 								"pwa": {
 									"headline": "PWAs",
-									"description": "Number of times the application was loaded as an App",
+									"description": "# times the App was loaded as an App",
 									"property": "data.sessions.pwa.total"
 								}
 							},
@@ -345,14 +574,40 @@
 <style lang="scss">
 	.modules-analytics {
 		padding: var(--page-padding);
+		position: relative;
+		
+		.modules-analytics-section {
+			position: relative;
+		}
+		
+		.modules-analytics-form {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			grid-gap: 1rem;
+			
+			.modules-analytics-column {
+				button {
+					height: 52px;
+				}
+			}
+		}
 		
 		.modules-analytics-content {
 			display: grid;
 			grid-template-columns: repeat(4, 1fr);
 			grid-gap: 1rem;
 			
+			& + .modules-analytics-content {
+				padding-top: 1rem;
+			}
+			
 			&.modules-analytics-browsers,
-			&.modules-analytics-locations {
+			&.modules-analytics-views {
+				grid-template-columns: repeat(2, 1fr);
+			}
+			
+			&.modules-analytics-locations,
+			&.modules-analytics-performance {
 				grid-template-columns: repeat(3, 1fr);
 			}
 			
@@ -372,8 +627,69 @@
 					grid-row: 1/3 !important;
 				}
 				
+				&[data-chart-type="bar"] {
+					max-height: 60vh;
+					
+					&:nth-child(1) {
+						grid-column: 1/3 !important;
+					}
+				}
+				
 				&.modules-analytics-chart {
 					padding-bottom: 6rem !important;
+					
+					&[data-chart-type="bar"] {
+						padding-bottom: 3rem !important;
+					}
+					
+					& > div {
+						max-height: 100%;
+						max-width: 100%;
+					}
+					
+					&[data-chart-type="bar"] {
+						& > div {
+							min-height: 100%;
+							min-width: 100%;
+						}
+						
+						footer.modules-analytics-chart {
+							span.modules-analytics-chart-legend {
+								display: none !important;
+							}
+						}
+					}
+					
+					aside.modules-analytics-overlay {
+						position: absolute;
+						top: 0;
+						left: 0;
+						bottom: 0;
+						right: 0;
+						background-color: rgba(#303030, 0.8);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						text-align: center;
+						pointer-events: none;
+						opacity: 0;
+						transition: opacity 500ms ease;
+						
+						&.active {
+							opacity: 1;
+						}
+						
+						span {
+							animation: fadeIn 650ms ease;	
+							font-family: var(--main-font-accent);	
+							line-height: 2rem;		
+							text-transform: capitalize;			
+							
+							&:after {
+								content: '%';
+							}
+						}
+					}
 					
 					footer.modules-analytics-chart {
 						position: absolute;
@@ -381,9 +697,12 @@
 						width: 100%;
 						padding: 0.75rem;
 						text-align: center;
-						color: var(--main-primary-color);
+						color: var(--blue-grey-500);
+						font-size: 12px;
+						font-weight: 500;
 						
 						span.modules-analytics-chart-legend {
+							color: var(--main-primary-color);
 							display: inline-block;
 							font-weight: 500;
 							padding: 0.5rem 1rem;
@@ -399,8 +718,8 @@
 					padding: 1rem;
 					
 					h3 {
-						font-size: 2rem;
-						margin: 0.5rem auto;
+						font-size: 1.5rem;
+						margin: 0 auto 0.3rem auto;
 					}
 					
 					.lead {
@@ -450,5 +769,15 @@
 			    vertical-align: middle;
 			}
 		}	
+	}
+	.modules-analytics-loading {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: calc(100vh - 350px);
+		
+		.w-100 {
+			flex-grow: 1;
+		}
 	}
 </style>

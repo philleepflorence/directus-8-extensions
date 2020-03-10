@@ -1,0 +1,9 @@
+{
+	"name": "help",
+	"version": "1.0.0",
+	"icon": "question_answer",
+	"types": [
+		"string"
+	],
+	"options": {}
+}

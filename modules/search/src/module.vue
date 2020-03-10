@@ -2,33 +2,13 @@
 	<div class="modules-search">
 		
 		<v-header 
-			:title="content('subtitle')" 
+			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
 			icon="view_quilt" 
 			settings>
 		</v-header>
 		
 		<div class="modules-search-content animated fadeIn">
-			
-			<div class="modules-search-search">
-				<v-input
-					id="modules-search-search-input"
-					type="url"
-					class="modules-search-search-input"
-					:placeholder="content('input.placeholder')"
-					:value="query"
-					:model="query"
-					@input="onInput">
-				</v-input>
-				<v-button
-					id="modules-search-search-button"
-					v-if="results"
-					@click="onClickClear"
-					rounded
-					icon>
-					<v-icon name="close"></v-icon>
-				</v-button>
-			</div>
 			
 			<div class="modules-search-contents" v-if="!results">
 				<v-spinner
@@ -50,7 +30,7 @@
 				</header>
 				<div class="modules-search-results">
 					<section class="modules-search-result" v-for="row in results.data" @click="onClickNavigate(row.path)">
-						<h4 class="modules-search-title font-accent">{{ row.title }}</h4>
+						<h3 class="modules-search-title font-accent">{{ row.title }}</h3>
 						<p class="modules-search-description">{{ row.description }}</p>
 						<small class="modules-search-headline">{{ row.headline }}</small>
 						<small class="modules-search-path">{{ url }}{{ row.path }}</small>
@@ -60,16 +40,45 @@
 			
 		</div>	
 
-		<v-info-sidebar wide>
-			<h2 class="type-note">{{ this.content('title') }}</h2>
-			<span class="type-note">{{ this.content('description') }}</span>
+		<v-info-sidebar wide itemDetail>
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ content('title') }}</h2>
+				<p class="p">{{ content('description') }}</p>
+				<p class="lead info-sidebar-count" v-if="count">{{ count }}</p>
+			</section>
+			<section class="info-sidebar-section">
+				<div class="modules-search-search">
+					<v-input
+						id="modules-search-search-input"
+						type="search"
+						class="modules-search-search-input"
+						:placeholder="content('input.placeholder')"
+						:value="query"
+						:model="query"
+						@input="onInput">
+					</v-input>
+					<v-button
+						id="modules-search-search-button"
+						v-if="results"
+						@click="onClickClear"
+						rounded
+						icon>
+						<v-icon name="close"></v-icon>
+					</v-button>
+				</div>
+			</section>
+			<section class="info-sidebar-section">
+				<header class="info-sidebar-section">
+					<p class="info-sidebar-row" v-for="row in content('disclaimer')">{{ row }}</p>
+				</header>
+			</section>
 		</v-info-sidebar>
 		
 	</div>
 </template>
 
 <script>
-	import { get, set } from 'lodash';
+	import { get, set, size } from 'lodash';
 	
 	export default {
 		name: 'ModulesSearch',
@@ -152,6 +161,8 @@
 					
 					this.results = response;
 					
+					this.count = size(results.data);
+					
 				}).catch((error) => {
 					
 					this.error = error;
@@ -189,6 +200,7 @@
 						}
 					}						
 				},
+				count: 0,
 				keys: {
 					element: 0
 				},
@@ -214,31 +226,23 @@
 
 <style lang="scss" scoped>
 	.modules-search {
-		background: rgba(white, 0.05);
-		margin: var(--page-padding);
 		padding: var(--page-padding);
-		
-		max-width: 1024px;
-		
-		.modules-search-content {			
-			.modules-search-search {
-				position: relative;
-				margin-bottom: 1rem;
-				
-				button {
-					background: var(--blue-grey-900);
-					border: none !important;
-					width: 40px;
-					height: 40px;
-					position: absolute;
-					right: 6px;
-					top: 6px;
 					
-					&:hover, &:active {
-						background: var(--blue-grey-800);
-					}
-				}
+		.modules-search-search {
+			position: relative;
+			
+			button {
+				background: var(--blue-grey-900);
+				border: none !important;
+				width: 40px;
+				height: 40px;
+				position: absolute;
+				right: 2px;
+				top: 2px;
 			}
+		}
+		
+		.modules-search-content {
 			
 			.modules-search-contents {
 				display: flex;
@@ -271,6 +275,8 @@
 					margin-bottom: 3rem;
 					
 					.modules-search-title {
+						color: var(--main-primary-color) !important;
+						font-size: 1.5rem;
 						text-transform: capitalize;
 					}
 					

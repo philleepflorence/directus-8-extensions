@@ -1,7 +1,7 @@
 <template>
 	<div class="modules-icons">
 		<v-header 
-			:title="contents.subtitle" 
+			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
 			icon="insert_emoticon" 
 			settings>
@@ -19,15 +19,6 @@
 		</div>
 		
 		<div class="modules-icons-contents animated fadeIn" v-if="!loading">
-			<div class="modules-icons-search">
-				<v-input
-					id="modules-icons-search-input"
-					type="url"
-					class="modules-icons-search-input"
-					:placeholder="contents.input.placeholder"
-					@input="onInput">
-				</v-input>
-			</div>
 			<div class="modules-icons-content">
 				<button class="modules-icons-grid" v-for="row in icons" @click="onDetails(row.id)">
 					<span v-html="row.icon"></span>
@@ -45,15 +36,32 @@
 			</aside>
 		</div>	
 
-		<v-info-sidebar wide>
-			<h2 class="type-note">{{ this.contents.title}}</h2>
-			<span class="type-note">{{ this.contents.description }}</span>
+		<v-info-sidebar wide itemDetail>
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ content('title') }}</h2>
+				<p class="p">{{ content('description') }}</p>
+				<p class="lead info-sidebar-count" v-if="!loading">{{ count }}</p>
+			</section>
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ content('form.headline') }}</h2>
+				<div class="modules-icons-search">
+					<div class="info-sidebar-row">
+						<v-input
+							id="modules-icons-search-input"
+							type="search"
+							:placeholder="content('form.placeholder')"
+							:model="query"
+							@input="onInput">
+						</v-input>
+					</div>
+				</div>
+			</section>
 		</v-info-sidebar>
 	</div>
 </template>
 
 <script>
-	import { get, filter, forEach, set, startCase } from 'lodash';
+	import { get, filter, forEach, set, size, startCase } from 'lodash';
 	
 	export default {
 		name: 'Modules',
@@ -85,10 +93,21 @@
 					if (string.indexOf(query) > -1) icons.push(row);
 				});
 				
+				this.count = icons.length;
+				
 				return icons;
+			},
+			locale () {
+				return get(this.$store.state, 'settings.values.default_locale');
 			}
 		},
 		methods: {
+			content (input) {
+				let translation = get(this.contents, this.locale);
+					translation = translation || get(this.contents, 'en-US');
+
+				return get(translation, input);
+			},
 			formatField (input) {
 				return startCase(input);
 			},
@@ -107,7 +126,8 @@
 					})
 					.then((response) => {
 						this.data.icons = response.data;
-						
+						this.count = size(response.data);
+												
 						this.loading = false;						
 					})
 					.catch(error => {
@@ -133,6 +153,7 @@
 				
 				this.timers.input = setTimeout(() => {
 					this.query = input;
+					console.log("debug - development", input);
 				}, 
 				300);
 			}
@@ -140,13 +161,19 @@
 		data () {
 			return {
 				contents: {
-					title: "Icons",
-					subtitle: 'Icons - View all the Application Icons Available',
-					description: 'View all the Application Icons Available',
-					input: {
-						placeholder: 'Search Icons by Name and Keywords'
+					"en-US": {
+						"title": "Icons",
+						"subtitle": 'Icons - View all the Application Icons Available',
+						"description": 'View all the Application Icons Available',
+						"form": {
+							"headline": 'Search Icons',
+							"submit": 'Search Icons',
+							"filter": 'Search Icons',
+							"placeholder": 'Search Icons by Name and Keywords'
+						}
 					}										
 				},
+				count: 0,
 				details: null,
 				data: {
 					icons: [],
@@ -160,7 +187,7 @@
 		},
 		metaInfo() {
 			return {
-				title: this.contents.subtitle
+				title: this.content('subtitle')
 			};
 		},
 		mounted () {

@@ -1,17 +1,15 @@
 {
-	"name": "CDN",
+	"name": "Help",
 	"version": "1.0.0",
-	"description": "Collection of items in the public project directory",
+	"description": "Collection of all Help and FAQs Items",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/cdn",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/cdn",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/help",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/help",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [
 		"custom",
-		"cdn",
-		"files",
 		"modules"
 	],
 	"author": "Philleep Florence",
@@ -21,7 +19,7 @@
 		"lodash": "^4.17.15",
 		"vue": "^2.6.11",
 		"vue-hot-reload-api": "^2.3.4",
-		"vue-tree-navigation": "^4.0.1"
+		"vuex": "^3.1.2"
 	},
 	"devDependencies": {
 		"@vue/component-compiler-utils": "^2.6.0",

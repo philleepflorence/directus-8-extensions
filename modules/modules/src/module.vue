@@ -2,7 +2,7 @@
 	<div class="modules-modules">
 		
 		<v-header 
-			:title="content('subtitle')" 
+			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
 			icon="view_quilt" 
 			settings>
@@ -24,7 +24,7 @@
 							line-bg-color="var(--blue-grey-200)"
 							class="spinner">
 						</v-spinner>
-						<p class="lead animated fadeIn font-accent" v-if="analytics[index]">{{ analytics[index].total }}<span>{{ row.analytics }}</span></p>
+						<p class="lead animated fadeIn font-accent" v-if="analytics[index]"><span>{{ analytics[index].total }}</span><span>{{ row.analytics }}</span></p>
 					</div>
 				</div>
 			</div>
@@ -32,15 +32,18 @@
 		</div>	
 
 		<v-info-sidebar wide>
-			<h2 class="type-note">{{ this.content('title') }}</h2>
-			<span class="type-note">{{ this.content('description') }}</span>
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ content('title') }}</h2>
+				<p class="p">{{ content('description') }}</p>
+				<p class="lead info-sidebar-count" v-if="count">{{ count }}</p>
+			</section>
 		</v-info-sidebar>
 		
 	</div>
 </template>
 
 <script>
-	import { forEach, get, set } from 'lodash';
+	import { forEach, get, set, size } from 'lodash';
 	
 	export default {
 		name: 'Modules',
@@ -123,6 +126,13 @@
 								"icon": "cloud",
 								"analytics": "Items"
 							},
+							"faqs": {
+								"title": "Help and FAQs",
+								"description": "Get help with common tasks and more",
+								"path": "/app/ext/help",
+								"icon": "question_answer",
+								"analytics": "Items"
+							},
 							"icons": {
 								"title": "Icons",
 								"description": "View all Icons available to your applications",
@@ -152,6 +162,8 @@
 			this.$content = this.$el.querySelector('.modules-modules-content');
 			
 			if (this.$content) this.render();
+			
+			this.count = size(this.content('modules'));
 		}
 	}
 </script>
@@ -176,12 +188,7 @@
 				animation-duration: 600ms;
 				
 				&.modules-modules-analytics {
-					grid-column: 1/3 !important;
-					grid-row: 1/2 !important;
-				}
-				
-				&.modules-modules-search {
-					grid-column: 2/4 !important;
+					grid-row: 1/3 !important;
 				}
 				
 				.flex-item {
@@ -190,22 +197,22 @@
 					color: var(--main-primary-color);
 					
 					h3 {
-						font-size: 2rem;
-						margin: 0.5rem auto;
+						font-size: 1.5rem;
+						margin: 0 auto;
 					}
 					
 					.lead {
-						font-size: 1.25rem;
+						font-size: 1rem;
 					}
 					
 					.icon {
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						width: 60px;
-						height: 60px;
+						width: 50px;
+						height: 50px;
 						background: rgba(white, 0.1);
-						margin: 0 auto 2rem auto;
+						margin: 0 auto 1rem auto;
 						border-radius: 50%;						
 					}
 					
@@ -214,18 +221,19 @@
 						padding: 1rem;
 						
 						p.lead {
+							display: flex;
+							align-items: center;
+							justify-content: center;
 							color: rgba(white, 0.3);
-							font-size: 2.5rem !important;
+							font-size: 2rem !important;
 							font-weight: 300 !important;
-							line-height: 1.75rem;
-							padding-top: 0.5rem;
 						
-							span {
-								display: block;
+							span + span {
 								color: rgba(white, 0.2);
 								font-size: 1rem;
 								font-weight: 400 !important;
 								text-transform: lowercase;
+								padding-left: 0.3rem;
 							}
 						}
 					}

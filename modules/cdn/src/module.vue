@@ -1,7 +1,7 @@
 <template>
 	<div class="modules-cdn">
 		<v-header 
-			:title="contents.subtitle" 
+			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
 			icon="view_module" 
 			settings>
@@ -19,63 +19,118 @@
 		</div>
 		
 		<div class="modules-cdn-contents animated fadeIn" v-if="!loading">
-			<v-details :title="contents.headlines.analytics" type="break" open>
-				<div class="modules-cdn-content">
-					<div class="modules-cdn-grid animated fadeIn a-delay" 
-						v-for="(value, key) in analytics"
-						:data-value="key">
-						<div class="flex-item">
-							<span class="v-icon icon"><i>{{ icons[key] }}</i></span>
-							<p class="lead">{{ value }}</p>
-							<p class="font-accent">{{ key }}</p>
-						</div>
-					</div>
-				</div>
-			</v-details>	
 			
-			<v-details :title="contents.headlines.assets" type="break" open>
-				<section class="modules-cdn-section animated fadeInRightSmall a-delay" v-for="(file, index) in files" :data-directory="file.name">
-					<h3 class="font-accent" @click="onToggle(file.name)">
-						<span class="icon expand"><i>unfold_more</i></span>
-						<span class="icon collapse"><i>unfold_less</i></span>
-						<span>{{ file.name }}</span>
-						<span class="flex-fill">{{ count(file.files) }}</span>
-					</h3>
-					<div class="modules-cdn-files" v-if="file.files">
-						<header class="modules-cdn-files-header">
-							<p class="font-accent">{{ contents.headlines.name }}</p>
-							<p class="font-accent">{{ contents.headlines.type }}</p>
-							<p class="font-accent">{{ contents.headlines.modified }}</p>
-							<p class="font-accent">{{ contents.headlines.size }}</p>
-						</header>
-						<div class="modules-cdn-files-section" v-for="(row, key) in file.files" :data-type="row.type">
-							<p class="font-main">{{ row.name }}</p>
-							<p class="font-main">{{ row.type }}</p>
-							<p class="font-main">{{ parseDate(row.modified) }}</p>
-							<p class="font-main">{{ row.size.value }} {{ row.size.unit }}</p>
-							<nav v-if="row.type == 'file'">
-								<a :href="row.cdn">
-									<button class="icon"><i>more_horiz</i></button>
-								</a>
-							</nav>
+			<!-- Analytics -->
+			
+			<div class="modules-cdn-row" :data-section="kebabCase(content('headlines.analytics'))">
+			
+				<v-details :title="content('headlines.analytics')" type="break" open>
+					<div class="modules-cdn-content">
+						<div class="modules-cdn-grid animated fadeIn a-delay" 
+							v-for="(value, key) in analytics"
+							:data-value="key">
+							<div class="flex-item">
+								<span class="v-icon icon"><i>{{ icons[key] }}</i></span>
+								<p class="lead">{{ value }}</p>
+								<p class="font-accent">{{ key }}</p>
+							</div>
 						</div>
 					</div>
-				</section>
-			</v-details>
+				</v-details>
+			
+			</div>
+			
+			<!-- Assets - File Tree View -->
+			
+			<div class="modules-cdn-row" :data-section="kebabCase(content('headlines.assets'))">
+				
+				<v-details :title="content('headlines.assets')" type="break" open>
+					
+					<div class="modules-cdn-tree" v-if="tree">
+						<v-tree :tree="tree"></v-tree>
+					</div>
+					
+					<section 
+						class="modules-cdn-section animated fadeInRightSmall a-delay" 
+						v-for="(file, index) in files" 
+						:data-directory="file.name" 
+						v-else-if="files">
+						<h3 class="font-accent" @click="onToggle(file.name)">
+							<span class="icon expand"><i>unfold_more</i></span>
+							<span class="icon collapse"><i>unfold_less</i></span>
+							<span>{{ file.name }}</span>
+							<span class="flex-fill">{{ count(file.files) }}</span>
+						</h3>
+						<div class="modules-cdn-files" v-if="file.files">
+							<header class="modules-cdn-files-header">
+								<p class="font-accent">{{ content('headlines.name') }}</p>
+								<p class="font-accent">{{ content('headlines.type') }}</p>
+								<p class="font-accent">{{ content('headlines.modified') }}</p>
+								<p class="font-accent">{{ content('headlines.size') }}</p>
+							</header>
+							<div class="modules-cdn-files-section" v-for="(row, key) in file.files" :data-type="row.type">
+								<p class="font-main">{{ row.name }}</p>
+								<p class="font-main">{{ row.type }}</p>
+								<p class="font-main">{{ parseDate(row.modified) }}</p>
+								<p class="font-main">{{ row.size.value }} {{ row.size.unit }}</p>
+								<nav v-if="row.type == 'file'">
+									<a :href="row.cdn">
+										<button class="icon"><i>more_horiz</i></button>
+									</a>
+								</nav>
+							</div>
+						</div>
+					</section>
+				</v-details>
+			
+			</div>
 		</div>	
 
-		<v-info-sidebar wide>
-			<h2 class="type-note">{{ this.contents.title}}</h2>
-			<span class="type-note">{{ this.contents.description }}</span>
+		<v-info-sidebar wide itemDetail>
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ content('title') }}</h2>
+				<p class="p">{{ content('description') }}</p>
+			</section>
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ this.content('form.search.headline') }}</h2>
+				<div class="info-sidebar-row">
+					<v-input
+						id="modules-help-info-sidebar-input"
+						type="search"
+						:placeholder="content('form.search.placeholder')"
+						:model="query"
+						@input="onInputSearch"
+						@keyup.enter="onSubmitSearch">
+					</v-input>
+				</div>
+				<div class="info-sidebar-row">
+					<v-button
+						id="modules-help-info-sidebar-button"
+						type="button" 
+						@click="onSubmitSearch"
+						block>
+						{{ content('form.search.submit') }}
+					</v-button>
+				</div>
+			</section>
+			<nav class="info-sidebar-section info-sidebar-nav" v-if="!loading">
+				<a class="info-sidebar-nav" href="#" @click.stop.prevent="onClickScroll(kebabCase(content('headlines.analytics')))">{{ content('headlines.analytics') }}</a>
+				<a class="info-sidebar-nav" href="#" @click.stop.prevent="onClickScroll(kebabCase(content('headlines.assets')))">{{ content('headlines.assets') }}</a>
+			</nav>		
 		</v-info-sidebar>
 	</div>
 </template>
 
 <script>
-	import { get, forEach, map, set } from 'lodash';
-	
+	import { cloneDeep, get, forEach, kebabCase, map, set, size } from 'lodash';
+	import TreeComponent from './components/tree.vue';
+	import VueTreeNavigation  from 'vue-tree-navigation';
+		
 	export default {
 		name: 'CDN',
+		components: {
+			'v-tree': TreeComponent
+		},
 		computed: {
 			breadcrumb () {
 				return [
@@ -91,13 +146,77 @@
 			},
 			currentProjectKey () {
 				return this.$store.state.currentProjectKey;
+			},
+			locale () {
+				return get(this.$store.state, 'settings.values.default_locale');
 			}
 		},
 		methods: {
+			content (input) {
+				let translation = get(this.contents, this.locale);
+					translation = translation || get(this.contents, 'en-US');
+
+				return get(translation, input);
+			},
 			count (input) {
 				if (Array.isArray(input)) return input.length;
 				
 				return 0;
+			},
+			kebabCase (input) {
+				return kebabCase(input);
+			},
+			items () {	
+				this.tree = null;
+				
+				if (this.query) {
+					this.files = [];
+					
+					forEach(this.response.data, (row) => {
+						let string = [row.name, row.path].join(' ').toLowerCase();
+						let currow = cloneDeep(row);				
+						let valid = string.indexOf(this.query) >= 0;
+						let files = [];		
+						
+						if (Array.isArray(currow.files)) {
+							forEach(currow.files, (file) => {
+								string = [file.name, file.path, file.type].join(' ').toLowerCase();
+								
+								if (string.indexOf(this.query) >= 0) files.push(file);	
+							});
+							
+							currow.files = files;
+						}
+						
+						if (valid || files.length) this.files.push(currow);	
+											
+					});
+				}
+				else this.files = cloneDeep(this.response.data);	
+				
+				this.tree = {};
+					
+				forEach(this.files, (row) => {
+					let currkey = row.folder.replace(/\./g, '-').split('/').join('.children.');
+					let files = [...row.files];
+					
+					row.files = null;
+					
+					set(this.tree, currkey, row);		
+					
+					if (Array.isArray(files)) {
+						forEach(files, (file) => {							
+							let currindex = file.folder.replace(/\./g, '-').split('/').join('.children.');
+
+							set(this.tree, currindex, file);	
+						});
+					}	
+										
+				});
+				
+				this.loading = false;			
+				
+				return this.files;
 			},
 			load () {
 				this.loading = true;
@@ -125,8 +244,8 @@
 						else set(this.analytics, type, (value + currvalue));
 					});
 					
-					this.files = response.data;			
-					
+					this.response = response;	
+					this.items();				
 				})
 				.catch((error) => {
 					this.error = error;
@@ -136,6 +255,31 @@
 			},
 			number (input) {
 				return typeof input === 'number';
+			},
+			onClickScroll (input) {
+				let $row = this.$el.querySelector(`.modules-cdn-row[data-section="${ input }"]`);
+				
+				if (!$row) return false;
+				
+				let props = $row.getBoundingClientRect();
+				let top = window.scrollY + (props.y - 100);
+				
+				if (top < 0) top = 0;
+				
+				window.scrollTo({
+					top: top,
+					behavior: 'smooth'
+				});
+			},
+			onInputSearch (input) {
+				this.query = input;
+				
+				if (input === '') this.items();
+			},
+			onSubmitSearch (e) {
+				this.loading = true;
+				
+				this.items();
 			},
 			onToggle (dir) {
 				let $parent = this.$el.querySelector(`[data-directory="${ dir }"]`);
@@ -166,16 +310,25 @@
 			return {
 				analytics: {},
 				contents: {
-					title: "CDN",
-					subtitle: 'CDN - Publicly accessible assets and files',
-					description: 'Publicly accessible assets and files',
-					headlines: {
-						analytics: "Analytics",						
-						assets: "Assets",
-						name: "Name",
-						type: "Type",
-						modified: "Modified",
-						size: "Size"
+					"en-US": {
+						"title": "CDN",
+						"subtitle": 'CDN - Publicly accessible assets and files',
+						"description": 'Publicly accessible assets and files',
+						"headlines": {
+							"analytics": "CDN Analytics and Snapshot",						
+							"assets": "Assets and Files",
+							"name": "Name",
+							"type": "Type",
+							"modified": "Modified",
+							"size": "Size"
+						},
+						"form": {
+							"search": {
+								"headline": "Search",
+								"placeholder": "Search Assets and Files",
+								"submit": "Search"
+							}
+						}
 					}						
 				},
 				icons: {
@@ -219,12 +372,14 @@
 						"md"
 					]
 				},
-				loading: false
+				loading: false,
+				query: null,
+				tree: null
 			};
 		},
 		metaInfo() {
 			return {
-				title: this.contents.subtitle
+				title: this.content('subtitle')
 			};
 		},
 		mounted () {
@@ -240,6 +395,11 @@
 <style lang="scss" scoped>
 	.modules-cdn {
 		padding: var(--page-padding-top) var(--page-padding) var(--page-padding-bottom);
+		position: relative;
+		
+		.modules-cdn-row {
+			position: relative;
+		}
 		
 		.modules-cdn-loading {
 			display: flex;
@@ -338,7 +498,9 @@
 				
 				&[data-type="dir"] {
 					p:first-child {
+						color: var(--main-primary-color) !important;
 						font-weight: 500 !important;
+						text-transform: lowercase !important;
 					}
 				}
 			}
@@ -382,8 +544,8 @@
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						width: 60px;
-						height: 60px;
+						width: 50px;
+						height: 50px;
 						background: rgba(white, 0.1);
 						margin: 0 auto 0.5rem auto;
 						border-radius: 50%;

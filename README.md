@@ -161,7 +161,37 @@
 │           └── meta.json
 ├── layouts
 ├── modules
+│   ├── analytics-app
+│   │   ├── dist
+│   │   │   ├── meta.json
+│   │   │   ├── module.css
+│   │   │   ├── module.js
+│   │   │   └── module.js.map
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── charts
+│   │       │   ├── bar.vue
+│   │       │   ├── doughnut.vue
+│   │       │   └── pie.vue
+│   │       ├── meta.json
+│   │       └── module.vue
 │   ├── cdn
+│   │   ├── dist
+│   │   │   ├── meta.json
+│   │   │   ├── module.css
+│   │   │   ├── module.js
+│   │   │   └── module.js.map
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── components
+│   │       │   └── tree.vue
+│   │       ├── meta.json
+│   │       └── module.vue
+│   ├── dashboard
 │   │   ├── dist
 │   │   │   ├── meta.json
 │   │   │   ├── module.css
@@ -173,7 +203,7 @@
 │   │   └── src
 │   │       ├── meta.json
 │   │       └── module.vue
-│   ├── dashboard
+│   ├── help
 │   │   ├── dist
 │   │   │   ├── meta.json
 │   │   │   ├── module.css
@@ -197,7 +227,24 @@
 │   │   └── src
 │   │       ├── meta.json
 │   │       └── module.vue
-│   └── modules
+│   ├── modules
+│   │   ├── dist
+│   │   │   ├── meta.json
+│   │   │   ├── module.css
+│   │   │   ├── module.js
+│   │   │   └── module.js.map
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── meta.json
+│   │       └── module.vue
+│   └── search
+│       ├── dist
+│       │   ├── meta.json
+│       │   ├── module.css
+│       │   ├── module.js
+│       │   └── module.js.map
 │       ├── package-lock.json
 │       ├── package.json
 │       ├── readme.md
