@@ -22,7 +22,7 @@ class Auth
 	{
 		$form = ArrayUtils::get($input, 'form', []);	
 		$formname = ArrayUtils::get($form, 'form') ?: 'credentials';
-		$template = ArrayUtils::get($form, 'template') ?: 'user.confirm';
+		$template = ArrayUtils::get($form, 'template') ?: 'user-confirm';
 		$token = ArrayUtils::get($form, 'token');
 					
 		# Check if user exists
@@ -48,7 +48,7 @@ class Auth
 		{
 			return [
 			    "error" => true,
-			    "message" => "Missing or Expired Token! No User Found!"
+			    "message" => Api::Responses('auth.confirm.user-id')
 		    ];
 		}
 	    
@@ -136,7 +136,7 @@ class Auth
 	{
 		$form = ArrayUtils::get($input, 'form', []);	
 		$formname = ArrayUtils::get($form, 'form') ?: 'credentials';
-		$template = ArrayUtils::get($form, 'template') ?: 'user.credentials';
+		$template = ArrayUtils::get($form, 'template') ?: 'user-credentials';
 		
 		$email = ArrayUtils::get($form, 'email');
 		$salt = Utils::Hash(true, $email, time());
@@ -170,14 +170,14 @@ class Auth
 	    
 	    $user = ArrayUtils::get($entries, 'data.0', []);
 	    $user_id = ArrayUtils::get($user, 'id');
-	    
+	    	    
 	    # Cancel if no user found
 	    
 	    if (!$user_id) 
 		{
 			return [
 			    "error" => true,
-			    "message" => "Missing or Unauthorized User! No User Found!"
+			    "message" => Api::Responses('auth.credentials.user-id')
 		    ];
 		}
 	    
@@ -277,7 +277,7 @@ class Auth
 		$form = ArrayUtils::get($input, 'form', []);
 		
 		$formname = ArrayUtils::get($form, 'form') ?: 'login';
-		$template = ArrayUtils::get($form, 'template') ?: 'user.login';
+		$template = ArrayUtils::get($form, 'template') ?: 'user-login';
 		
 		$username = ArrayUtils::get($form, 'username');
 		$password = ArrayUtils::get($form, 'password');
@@ -286,7 +286,7 @@ class Auth
 		{
 			return [
 			    "error" => true,
-			    "message" => "Invalid or missing Username!"
+			    "message" => Api::Responses('auth.login.username')
 		    ];
 		}
 		
@@ -294,7 +294,7 @@ class Auth
 	    $entries = $tableGateway->getItems([
 		    "status" => "published",
 		    "limit" => 1,
-		    "fields" => User::Fields(),
+		    "fields" => User::Fields('private'),
 		    "filter" => [
 			    "email" => [
 				    "eq" => $username,
@@ -319,7 +319,8 @@ class Auth
 	    if (!$user_id) 
 	    {
 		    return [
-			    "error" => "Invalid or Unauthorized User - No User Found!"
+			    "error" => true,
+			    "message" => Api::Responses('auth.login.user-id')
 		    ];
 	    }
 	    
@@ -335,7 +336,7 @@ class Auth
 				return [
 				    "error" => true,
 				    "attempts" => $login_attempts,
-				    "message" => "Too many login attempts!"
+				    "message" => Api::Responses('auth.login.login-attempts')
 			    ];
 			}
 			
@@ -345,8 +346,9 @@ class Auth
 			]);
 			
 			return [
-			    "error" => "Invalid password!",
-			    "attempts" => $login_attempts
+			    "error" => true,
+			    "attempts" => $login_attempts,
+			    "message" => Api::Responses('auth.login.login-attempts')
 		    ];		
 		}
 		
@@ -439,7 +441,7 @@ class Auth
 		{
 			return [
 			    "error" => true,
-			    "message" => "Invalid or missing User ID!"
+			    "message" => Api::Responses('auth.logout.user-id')
 		    ];
 		}
 		
@@ -465,7 +467,7 @@ class Auth
 		{
 			return [
 			    "error" => true,
-			    "message" => "Invalid or Unauthorized User - No User Found!"
+			    "message" => Api::Responses('auth.logout.user')
 		    ];
 		}
 		
@@ -510,7 +512,7 @@ class Auth
 		{
 			return [
 				"error" => true,
-				"message" => "Missing Email Address and Reset Token!"
+				"message" => Api::Responses('auth.reset.token-email')
 			];			
 		}
 		
@@ -524,7 +526,7 @@ class Auth
 		    return [
 			    "password" => false,
 			    "error" => true,
-			    "message" => "Passwords do not match!"
+			    "message" => Api::Responses('auth.reset.passwords')
 		    ];
 	    }
 	    
@@ -556,7 +558,7 @@ class Auth
 	    {
 		    return [
 			    "error" => true,
-			    "message" => "Invalid or missing User ID or Email Address!"
+			    "message" => Api::Responses('auth.reset.user-id')
 		    ];
 	    }
 	    
@@ -579,7 +581,7 @@ class Auth
 	    {
 		    return [
 			    "error" => true,
-			    "message" => "Invalid Secret Question and Answer! No match!"
+			    "message" => Api::Responses('auth.reset.secret-question')
 		    ];
 	    }
 	    
@@ -611,7 +613,7 @@ class Auth
 	    # Send information to CRM - if applicable
 		
 		$formname = ArrayUtils::get($form, 'form') ?: 'reset';
-		$template = ArrayUtils::get($form, 'template') ?: 'user.reset';
+		$template = ArrayUtils::get($form, 'template') ?: 'user-reset';
 		
 		$crm = Form::CRM($formname, $form);
 		
@@ -669,8 +671,8 @@ class Auth
 		$params = ArrayUtils::get($input, 'params') ?: $form;
 		
 		$formname = ArrayUtils::get($params, 'form') ?: 'register';
-		$template = ArrayUtils::get($params, 'template') ?: 'user.register';
-		$link = ArrayUtils::get($params, 'link') ?: 'user.register';
+		$template = ArrayUtils::get($params, 'template') ?: 'user-register';
+		$link = ArrayUtils::get($params, 'link') ?: 'user-register';
 	
 		$email = ArrayUtils::get($form, 'email');
 		$username = ArrayUtils::get($form, 'username');
@@ -696,7 +698,7 @@ class Auth
 		{
 			return [
 			    "error" => true,
-			    "message" => "Invalid Email Address! Unable to validate your email!"
+			    "message" => Api::Responses('auth.register.email')
 		    ];
 		}
     
@@ -726,7 +728,7 @@ class Auth
 		{
 			return [
 			    "error" => true,
-			    "message" => "There is an existing user with that '{$match}'!"
+			    "message" => str_replace('{{match}}', $match, Api::Responses('auth.register.existing-user'))
 		    ];
 		}
 		
@@ -741,7 +743,7 @@ class Auth
 	    {
 		    return [
 			    "error" => true,
-			    "message" => "Passwords do not match! You must enter the same password twice!"
+			    "message" => Api::Responses('auth.register.passwords')
 		    ];
 	    }
 	    
@@ -776,9 +778,24 @@ class Auth
 		    ];
 	    }
 	    
-	    # Add user to the DB
+	    # Add user to the DB - get fields in the collection
+	    
+	    $tableSchema = $tableGateway->getTableSchema();	    
+	    $fields = $tableSchema->getFieldsName();
+	    $insert = [];
+	    
+	    # Save form to App Forms Data - INBOX
+    
+	    foreach ($fields as $field)
+	    {
+		    $value = ArrayUtils::get($form, $field);
+		    
+		    if (is_array($value)) $value = implode(", ", $value);
+		    
+		    if ($value) ArrayUtils::set($insert, $field, $value);
+	    }
 	    	    
-	    $created = $tableGateway->createRecord($form);
+	    $created = $tableGateway->createRecord($insert);
 	    
 	    # Set reset link - if applicable
 	    	    

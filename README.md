@@ -1,13 +1,24 @@
 ## Directus Extensions - Philleep Florence
 > The Philleep Florence extended version of Directus 8+ is still under development, more information to come in the near future.
 
+### Getting Started
+You will first need to include the file that auto-loads the helpers.
+```
+helpers/functions.php
+```
+
 ### Folder Structure and Extensions
 
 ```
+.
 ├── endpoints
 │   ├── analytics
 │   │   ├── controllers
-│   │   │   └── Analytics.php
+│   │   │   ├── Analytics.php
+│   │   │   ├── Application.php
+│   │   │   ├── Dashboard.php
+│   │   │   ├── Modules.php
+│   │   │   └── Set.php
 │   │   └── endpoints.php
 │   ├── auth
 │   │   ├── controllers
@@ -73,6 +84,7 @@
 │   ├── analytics.php
 │   ├── api.php
 │   ├── auth.php
+│   ├── cache.php
 │   ├── cdn.php
 │   ├── collections.php
 │   ├── csv.php
@@ -84,6 +96,7 @@
 │   ├── format.php
 │   ├── functions.php
 │   ├── mail.php
+│   ├── request.php
 │   ├── response.php
 │   ├── search.php
 │   ├── server.php

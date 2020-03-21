@@ -165,7 +165,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "Super Admin Token and Administrative Permissions are required!"
+				"message" => Api::Responses('database.backup.super-admin-token')
 			];
 		}
 		
@@ -317,7 +317,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "You must provide an old name and new name for the collection!"
+				"message" => Api::Responses('database.collection.missing-name')
 			];
 		}
 		
@@ -327,7 +327,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "Super Admin Token and Administrative Permissions are required!"
+				"message" => Api::Responses('database.collection.super-admin-token')
 			];
 		}
 		
@@ -341,7 +341,7 @@ class Database
 			{
 				return [
 					"error" => true,
-					"message" => "Update permission denied for: {$collection}"
+					"message" => str_replace('{{collection}}', $collection, Api::Responses('database.collection.update-permission'))
 				];
 			}
 		}
@@ -421,7 +421,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "You must provide a collection, an old name, and a new name for the field to update!"
+				"message" => Api::Responses('database.field.validation')
 			];
 		}
 		
@@ -431,7 +431,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "Super Admin Token and Administrative Permissions are required!"
+				"message" => Api::Responses('database.field.super-admin-token')
 			];
 		}
 		
@@ -443,7 +443,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "Update permission denied for: {$collection}"
+				"message" => str_replace('{{collection}}', $collection, Api::Responses('database.field.update-permission'))
 			];
 		}
 		
@@ -457,7 +457,7 @@ class Database
 			{
 				return [
 					"error" => true,
-					"message" => "Update permission denied for: {$currcollection}"
+					"message" => str_replace('{{collection}}', $currcollection, Api::Responses('database.field.update-permission'))
 				];
 			}
 		}
@@ -545,7 +545,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "You must provide a collection, a field, Name of the Index, and the Type of Index!"
+				"message" => Api::Responses('database.index.validation')
 			];
 		}
 		
@@ -555,7 +555,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "Super Admin Token and Administrative Permissions are required!"
+				"message" => Api::Responses('database.index.super-admin-token')
 			];
 		}
 		
@@ -567,7 +567,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "Update permission denied for: {$collection}"
+				"message" => str_replace('{{collection}}', $collection, Api::Responses('database.index.update-permission'))
 			];
 		}
 		
@@ -644,7 +644,7 @@ class Database
 		{
 			return [
 				"error" => true,
-				"message" => "Super Admin Token is required to export migrations!"
+				"message" => Api::Responses('database.index.super-admin-token')
 			];
 		}		
 		
@@ -760,6 +760,7 @@ class Database
 		ARGUMENTS:
 			params - @Array
 				collections - only export the provided CSV list of collections
+				print - display schema instead of saving
 				super_admin_token - super admin token (prevents non admins from changing DB Schema)
 			
 		@return array
@@ -768,7 +769,7 @@ class Database
 	public static function Schema ($params = [], $debug)
 	{
 		$collections = ArrayUtils::get($params, 'collections');
-		$super_admin_token = ArrayUtils::get($params, 'super_admin_token');		
+		$super_admin_token = ArrayUtils::get($params, 'super_admin_token');	
 		
 		$app = Application::getInstance();
 		$database = $app->getConfig()->get('database');
@@ -856,7 +857,7 @@ class Database
 				
 				array_walk_recursive($result, function (&$value, $key)
 				{
-					if ($key === 'id') $value = '';
+					if ($key === 'id') $value = 'NULL';
 				});
 			
 				$fields = reset($result);
@@ -902,14 +903,17 @@ class Database
 		
 		$url = $cdn . self::$schema_path;
 		$url = str_replace(':project', $project, $url);
-
-		if ($debug) return [
-			"meta" => [
-				"directory" => $directory,
-				"url" => $url
-			],
-			"data" => $contents
-		];
+		
+		if ($debug) 
+		{
+			return [
+				"meta" => [
+					"directory" => $directory,
+					"url" => $url
+				],
+				"data" => $contents
+			];			
+		}
 		
 		$result = [
 			"meta" => [

@@ -60,7 +60,7 @@ class User
 		@return array
 	*/
 	
-	public static function Fields ($mode = "public")
+	public static function Fields ($mode = "query")
 	{
 		$fields = [];
 		
@@ -91,7 +91,7 @@ class User
 			break;
 			
 			case "private":
-				$fields = ["*.*"];
+				$fields = ["*.*.*"];
 			break;
 			
 			case "public":
@@ -143,7 +143,7 @@ class User
 		{
 			return [
 				"error" => true,
-				"message" => "You must be authenticated as the current user to make updates - User ID Mismatch!"
+				"message" => Api::Responses('user.metadata.validation')
 			];
 		}
 		
@@ -165,7 +165,7 @@ class User
 		{
 			return [
 				"error" => true,
-				"message" => "Only authorized users may make updates - No authorized user found!"
+				"message" => Api::Responses('user.metadata.authorized')
 			];
 		}
 		
@@ -247,7 +247,7 @@ class User
 		{
 			return [
 				"error" => true,
-				"message" => "A filter object is required to retrieve users - Missing Form Filter Parameter!"
+				"message" => Api::Responses('user.notifications.filter')
 			];
 		}
 		
@@ -357,7 +357,7 @@ class User
 		{
 			return [
 				"error" => true,
-				"message" => "You must be authenticated as the current user to make updates - User ID Mismatch!"
+				"message" => Api::Responses('user.settings.validation')
 			];
 		}
 		
@@ -372,7 +372,7 @@ class User
 		{
 			return [
 				"error" => true,
-				"message" => "Invalid Email Address! Unable to validate email!"
+				"message" => Api::Responses('user.settings.email')
 			];
 		}
     
@@ -386,7 +386,7 @@ class User
 	    {
 		    return [
 			    "error" => true,
-			    "message" => "Passwords do not match!"
+			    "message" => Api::Responses('user.settings.passwords')
 		    ];
 	    }
     
@@ -409,7 +409,7 @@ class User
 	    {
 		    return [
 			    "error" => true,
-			    "message" => "Unable to locate authorized and authenticated user - Invalid User ID!"
+			    "message" => Api::Responses('user.settings.authorized')
 		    ];
 	    }
 	    
@@ -447,7 +447,7 @@ class User
 			    
 			    return [
 				    "error" => true,
-				    "message" => "There is an existing user with that '{$match}'!"
+				    "message" => str_replace('{{match}}', $match, Api::Responses('user.settings.existing-user'))
 			    ];
 		    }
 	    }

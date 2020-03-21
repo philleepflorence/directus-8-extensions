@@ -76,7 +76,7 @@ class CSV
 		
 		if (!$collection) return [
 			"error" => true,
-			"message" => "A Collection is required for CSV Export!"
+			"message" => Api::Responses('csv.export.collection')
 		];
 		
 		$realpath = $path ? FileSystem::CDN($path) : NULL;
@@ -187,7 +187,7 @@ class CSV
 		{
 			return [
 				"error" => true,
-				"message" => "A Collection is required to perform Import!"
+				"message" => Api::Responses('csv.import.collection')
 			];
 		}
 		
@@ -201,7 +201,7 @@ class CSV
 		{
 			return [
 				"error" => true,
-				"message" => "A valid CSV File is required to Import!"
+				"message" => Api::Responses('csv.import.csv')
 			];
 		}
 		

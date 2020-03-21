@@ -29,7 +29,7 @@ class Form
 		{
 			return [
 				"error" => true,
-				"message" => "No Form Name received!"
+				"message" => Api::Responses('form.crm.form-name')
 			];
 		}
 		
@@ -40,7 +40,7 @@ class Form
 		{
 			return [
 				"error" => true,
-				"message" => "Data submission to CRM or External API is disabled!"
+				"message" => Api::Responses('form.crm.api-inactive')
 			];
 		}		
 		
@@ -82,7 +82,7 @@ class Form
 	    {
 		    return [
 				"error" => true,
-				"message" => "No CRM or External API is configured for {$formname}!"
+				"message" => str_replace('{{formname}}', $formname, Api::Responses('form.crm.configuration'))
 			];
 	    }
 		
@@ -216,9 +216,10 @@ class Form
 			template - @String: The name of the template to use
 			user - @Array: The athenticated user object if applicable (defaults to form data)
 			response - @Array: The response object to update with results
+			previews - @Array: The submitted form data previews to show in notification
 	*/
 	
-	public static function Notify ($formname = '', $form = [], $template = '', $user = NULL, $response = [])
+	public static function Notify ($formname = '', $form = [], $template = '', $user = NULL, $response = [], $previews = [])
 	{		
 	    $user = $user ?: $form;
 	    
@@ -249,7 +250,8 @@ class Form
 			$data = [
 			    "configuration" => $configuration,
 			    "form" => $form,
-			    "user" => $user
+			    "user" => $user,
+			    "preview" => $previews
 		    ];
 		    
 		    $compiled = Mail::Mailbox($user, $data, $template);
@@ -289,27 +291,36 @@ class Form
 	
 	public static function Submit ($params = [], $debug)
 	{
+	    $headers = getallheaders();
+	    $appuserdata = ArrayUtils::get($headers, 'App-User-Data');
+	    
+	    if (is_string($appuserdata)) $appuserdata = (array) json_decode($appuserdata);
+	    
 		$form = ArrayUtils::get($params, 'form', []);
+		$previews = ArrayUtils::get($params, 'previews');
 	    $user = ArrayUtils::get($params, 'user');
-	    $outbox = ArrayUtils::get($params, 'outbox') ?: false;
-	    $toEmail = ArrayUtils::get($form, 'email');
-	    $toName = ArrayUtils::get($form, 'name');
-	    $subject = ArrayUtils::get($form, 'subject') ?: ArrayUtils::get($form, 'notification.subject');
-	    $body = ArrayUtils::get($form, 'body') ?: ArrayUtils::get($form, 'message') ?: ArrayUtils::get($form, 'content');
-	    $from = ArrayUtils::get($form, 'from', []);
+		
 	    $formname = ArrayUtils::get($form, 'form');
+	    $inbox = ArrayUtils::get($params, 'inbox');
+	    $toEmail = ArrayUtils::get($form, 'email') ?: ArrayUtils::get($appuserdata, 'email');
+	    $toName = ArrayUtils::get($form, 'name') ?: ArrayUtils::get($appuserdata, 'name');
+	    $subject = ArrayUtils::get($form, 'subject') ?: ArrayUtils::get($form, 'notification.subject') ?: $formname;
+	    $body = ArrayUtils::get($form, 'body') ?: ArrayUtils::get($form, 'message') ?: ArrayUtils::get($form, 'content') ?: $formname;
+	    $from = ArrayUtils::get($form, 'from', []);
 	    $template = ArrayUtils::get($params, 'template') ?: ArrayUtils::get($form, 'template') ?: $formname;
 	    
-	    if (!$template || !$toEmail || !$subject | !$body) return [
+	    $appuser = $user ?: ArrayUtils::get($headers, 'App-User');
+	    
+	    if (!$template || !$toEmail || !$subject || !$body) return [
 		    "error" => true,
-		    "message" => "Email Address, Message Subject, Message Body, and Email template are all required!"
+		    "message" => Api::Responses('form.submit.validation')
 	    ];
         
 	    # Normalize Form Body
 	    
 	    ArrayUtils::set($form, 'body', $body);
 	    
-	    # Parse First nad Last Names if applicable
+	    # Parse First and Last Names if applicable
 	    
 	    if ($toName && !ArrayUtils::get($form, 'first_name'))
 	    {
@@ -338,7 +349,54 @@ class Form
 	    ];
 	    $insert = [];
 	    
-	    # Initialize zendb database connectors
+	    # Initialize zendb database connectors - Save Forms Object
+	    
+	    $tableGateway = Api::TableGateway('app_forms');
+	    $formObject = $tableGateway->getItems([
+		    "fields" => "id,name,slug,inputs.*",
+		    "filter" => [
+			    "slug" => $formname
+		    ],
+		    "limit" => 1
+	    ]);
+	    $formObject = ArrayUtils::get($formObject, 'data.0') ?: [];
+	    $formInputs = ArrayUtils::get($formObject, 'inputs');
+	    $formRows = [];
+	    
+	    if (is_array($formInputs))
+	    {
+		    foreach ($formInputs as $input)
+		    {
+			    $type = ArrayUtils::get($input, 'input_type');
+			    
+			    if (!ArrayUtils::get($input, 'form_type') || $type === "password") continue;
+			    
+			    $slug = ArrayUtils::get($input, 'property') ?: ArrayUtils::get($input, 'slug');
+			    $value = ArrayUtils::get($form, $slug);
+			    
+			    if (!is_null($value)) array_push($formRows, [
+				    "form" => ArrayUtils::get($formObject, 'id'),
+				    "user" => $appuser,
+				    "key" => ArrayUtils::get($input, 'name'),
+				    "value" => $value,
+				    "created" => date('Y-m-d H:m:s')
+			    ]);
+		    }
+	    }
+	    
+	    # Insert Form Rows in Form Data Collection - Do not add sensitive data here!
+	    
+	    if (count($formRows))
+	    {
+		    $tableGateway = Api::TableGateway('app_forms_data', true);
+		    
+		    foreach ($formRows as $row)
+		    {
+			    $tableGateway->createRecord($row);
+		    }
+	    }
+	    
+	    # Initialize zendb database connectors - Save Form to Mailbox
 	    
 	    $tableGateway = Api::TableGateway('app_mailbox', true);
 	    $tableSchema = $tableGateway->getTableSchema();
@@ -356,7 +414,7 @@ class Form
 		    if ($value) ArrayUtils::set($insert, $field, $value);
 	    }
         
-		if (!$outbox) $tableGateway->createRecord($insert);
+		if ($inbox) $tableGateway->createRecord($insert);
 		
 		# Save form data email address to app users if not exist!
 		
@@ -395,7 +453,7 @@ class Form
 	    if (is_numeric($user)) $user = User::user($user);
 	    elseif (is_array($entries)) $user = User::Parse($entries);
 	    
-	    $response = Form::Notify($formname, $form, $template, $user, $response);
+	    $response = Form::Notify($formname, $form, $template, $user, $response, $previews);
 	    
 	    return $response;
 	}

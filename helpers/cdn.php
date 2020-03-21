@@ -26,12 +26,24 @@ class CDN
 		$project = get_api_project_from_request();       
 	    $basepath = base_path();
 	    $directory = ArrayUtils::get($params, 'directory');
+	    $count = ArrayUtils::get($params, 'count');
+	    $cdn = Api::Settings('application.cdn.url');
 	    
 	    $folder = rtrim("{$basepath}/public/uploads/{$project}/{$directory}", '/');
+	    $cdn = rtrim("{$cdn}/{$project}/{$directory}", '/');
+	    
+	    if ($count === true)
+	    {
+		    $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder, \FilesystemIterator::SKIP_DOTS));
+		    $files = iterator_to_array($files);
+		    
+		    return count($files);
+	    }
 	    
 	    $directories = scandir($folder);
 	    $folders = [];
 	    $meta = [
+		    "folder" => $folder,
 		    "files" => 0,
 		    "directories" => 0,
 		    "types" => []
@@ -42,7 +54,7 @@ class CDN
 		    if (strpos($directory, ".") !== 0) 
 		    {
 			    $directory_path = rtrim("{$folder}/{$directory}", '/');
-			    $files = CDN::Scan($directory_path);
+			    $files = CDN::Scan($directory_path, $cdn, $folder);
 			    
 			    $meta["directories"]++;
 			    
@@ -58,7 +70,7 @@ class CDN
 				    
 				    if ($extension)
 				    {
-					    $meta["types"][$extension] = $meta["types"][$extension] ?: 0;
+					    $meta["types"][$extension] = $meta["types"][$extension] ?? 0;
 					    
 					    $meta["types"][$extension]++;
 				    } 
@@ -69,6 +81,7 @@ class CDN
 			    array_push($folders, [
 				    "name" => $directory,
 				    "path" => $directory_path,
+				    "folder" => ltrim(str_replace($folder, '', $directory_path), '/'),
 				    "files" => $files
 			    ]);
 		    }
@@ -121,7 +134,7 @@ class CDN
 		return ucwords( str_replace( ["-", "_"], " ", $title) );
 	}
 	
-	private static function Scan ($path, $response = [])
+	private static function Scan ($path, $cdn = '', $folder = '', $response = [])
 	{
 		$files = dir($path);
 		
@@ -130,12 +143,15 @@ class CDN
 			if($entry{0} == ".") continue;
 			
 			$real_path = "{$path}/{$entry}";
+			$url = str_replace($folder, $cdn, $real_path);
 			
 			if(is_dir($real_path))
 			{
 				array_push($response, [
 					"name" => CDN::Title($entry),
 					"path" => $real_path,
+					"folder" => ltrim(str_replace($folder, '', $real_path), '/'),
+					"cdn" => $url,
 					"type" => filetype($real_path),
 					"modified" => filemtime($real_path),
 					"size" => [
@@ -144,13 +160,15 @@ class CDN
 					]
 				]);
 				
-				$response = array_merge($response, CDN::Scan($real_path));
+				$response = array_merge($response, CDN::Scan($real_path, $cdn, $folder));
 			}
 			elseif (is_file($real_path))
 			{
 				array_push($response, [
 					"name" => $entry,
 					"path" => $real_path,
+					"folder" => ltrim(str_replace($folder, '', $real_path), '/'),
+					"cdn" => $url,
 					"type" => filetype($real_path),
 					"modified" => filemtime($real_path),
 					"size" => CDN::Size(filesize($real_path)),

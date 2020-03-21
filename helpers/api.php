@@ -24,6 +24,7 @@ class Api
 	protected static $acl;
 	
 	protected static $configuration;
+	protected static $responses;
 	
 	private static function App ()
 	{
@@ -58,7 +59,7 @@ class Api
 	{
 		if (self::$configuration) return self::$configuration;
 		
-		$tableGateway = Api::TableGateway('app_configuration', false);	
+		$tableGateway = Api::TableGateway('app_configuration');	
 		
 		$configuration = [];
 			
@@ -74,25 +75,7 @@ class Api
 		    $value = ArrayUtils::get($entry, 'value');
 		    $format = ArrayUtils::get($entry, 'format');
 		    
-		    if (is_string($value))
-		    {
-			    switch ($format)
-			    {
-				    case 'boolean':
-				    	$value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-				    break;
-				    case 'integer':
-				    	$value = strip_tags($value);
-				    	$value = intval($value);
-				    break;
-				    case 'json':
-				    	$value = json_decode($value, true);
-				    break;
-				    case 'plaintext':
-				    	$value = strip_tags($value);
-				    break;
-			    }
-		    }		    	    
+		    if (is_string($value)) $value = Api::Format($value, $format);		    	    
 		    
 		    ArrayUtils::set($configuration, "{$section}.{$key}", $value);
 	    }
@@ -100,6 +83,75 @@ class Api
 	    self::$configuration = $configuration;
 	    	    
 	    return $configuration;
+	}
+	
+	private static function Format ($value = '', $format = NULL)
+	{
+		switch ($format)
+	    {
+		    case 'boolean':
+		    	$value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+		    break;
+		    case 'integer':
+		    	$value = strip_tags($value);
+		    	$value = intval($value);
+		    break;
+		    case 'json':
+		    	$value = json_decode($value, true);
+		    break;
+		    case 'plaintext':
+		    	$value = str_replace("><", "> <", $value);
+		    	$value = strip_tags($value);
+		    break;
+	    }
+	    
+	    return $value;
+	}
+	
+	/*
+		Load Data from App Responses Collection
+		
+		@return array
+	*/
+	
+	public static function Responses ($find = NULL)
+	{
+		if (self::$responses && !$find) return self::$responses;
+		elseif (self::$responses && $find) return ArrayUtils::get(self::$responses, $find);
+		
+		$tableGateway = Api::TableGateway('app_responses');	
+		
+		$responses = [];
+			
+		$entries = $tableGateway->getItems([
+			"fields" => "*",
+			"filter" => [
+				"application" => "directus"
+			],
+			"status" => "published"
+		]);
+	    $entries = ArrayUtils::get($entries, 'data');
+	    
+	    # Build responses object into Multi Dimensional Array
+	    
+	    foreach ($entries as $entry) 
+	    {
+		    $category = ArrayUtils::get($entry, 'category');
+		    $section = ArrayUtils::get($entry, 'section');
+		    $slug = ArrayUtils::get($entry, 'slug');
+		    
+		    $value = ArrayUtils::get($entry, 'value');
+		    $format = ArrayUtils::get($entry, 'format');
+		    
+		    if (is_string($value)) $value = Api::Format($value, $format);
+		    
+		    ArrayUtils::set($responses, "{$section}.{$category}.{$slug}", $value);
+	    }
+	    
+	    self::$responses = $responses;
+	    	    
+	    if (!$find) return $responses;
+	    else return ArrayUtils::get($responses, $find);
 	}
 	
 	/*

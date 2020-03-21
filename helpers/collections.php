@@ -33,6 +33,8 @@ class Collections
 			name - the unique name of the configuration item
 			slug - the URL safe representation of the name
 			collection - the collection name in Directus
+			filters - additional filters to merge with each collection
+				collection: filter
 			options - JSON Configuration Object
 				params - the query parameters to send to the TableGateway
 				compile - the compilation configuration
@@ -48,7 +50,7 @@ class Collections
 						value - template string
 					formats - array of formats to use for formatting (processing)
 						format - the format to use to process the value
-						fields - the field that has the fprmat to use to process the value
+						field - the field that has the format to use to process the value
 						value - the name of the field that has the value for processing
 					pluck - pluck or reduce multi-dimension array into linear - set pluck after loading values
 					[{
@@ -66,9 +68,12 @@ class Collections
 	public static function Compile ($params = [], $debug)
 	{
 		$collections = ArrayUtils::get($params, 'collections') ?: "*";
+		$mode = ArrayUtils::get($params, 'mode') ?: "compile";
 		$editable = filter_var(( ArrayUtils::get($_REQUEST, 'editable') ), FILTER_VALIDATE_BOOLEAN);
 		$filter = filter_var(( ArrayUtils::get($_REQUEST, 'filter') ), FILTER_VALIDATE_BOOLEAN);
 		$process = filter_var(( ArrayUtils::get($_REQUEST, 'process') ), FILTER_VALIDATE_BOOLEAN);
+		$filters = ArrayUtils::get($_REQUEST, 'filters');
+		$now = date('Y-m-d H:m:s');
 				
 		# Load the configurations for the collections
 		
@@ -78,13 +83,13 @@ class Collections
 			"fields" => "slug,collection,options,server",
 			"filter" => [
 				"type" => [
-					"eq" => "compile"
+					"eq" => $mode
 				]
 			]
 		];
 		
 		if ($collections !== "*") ArrayUtils::set($query, "filter.name", ["in" => $collections]);
-
+		
 		$collections = $tableGateway->getItems($query);
 		$collections = ArrayUtils::get($collections, 'data');
 		$collections = Utils::ToArray($collections);
@@ -102,6 +107,7 @@ class Collections
 		foreach ($collections as $row)
 		{
 			$collection = ArrayUtils::get($row, "collection");
+			$collection_name = ArrayUtils::get($row, "slug");
 			$server = ArrayUtils::get($row, "server");
 			$slug = ArrayUtils::get($row, "slug");
 			$tableGateway = Api::TableGateway($collection, true);
@@ -111,12 +117,25 @@ class Collections
 			if ($debug) ArrayUtils::set($parameter, "status", "draft,published");
 			
 			if ($fields) ArrayUtils::set($parameter, "fields", implode(',', $fields));
-
+			
+			# Add filter for dynamic content filtering
+			
+			if ($collection_name && $filters && ArrayUtils::get($filters, $collection_name)) {				
+				$parameter['filter'] = $parameter['filter'] ?? [];
+				$parameter['filter'] = array_merge_recursive($parameter['filter'], ArrayUtils::get($filters, $collection_name));
+			}
+			
+			# Format dynamic dates
+			
+			array_walk_recursive($parameter, function (&$param) use ($now) {
+				if ($param === "NOW()") $param = $now;
+			});
+			
 			$content = [
 				"meta" => [],
 				"data" => []
 			];
-			
+
 			$entries = $tableGateway->getItems($parameter);
 			
 			# Add editable links - URLs of the items in Directus
@@ -192,11 +211,11 @@ class Collections
 				
 				$currow = Collections::Format($row, $formats);
 				
-				# Process value (keep row and update) or value (override row with currow)
+				# Process value (keep row and update) or values (override row with currow)
 				
 				$currow = Collections::Reduce($currow, ArrayUtils::get($compile, "reduce"));
 				
-				$currow = Collections::Value($currow, ArrayUtils::get($compile, "value"), $row);
+				$currow = Collections::Value($currow, ArrayUtils::get($compile, "value"), $currow);
 				
 				$currow = Collections::Value($currow, ArrayUtils::get($compile, "values"), []);
 				
@@ -235,7 +254,7 @@ class Collections
 							
 							$rel_currow = Collections::Format($rel_row, $formats);
 							
-							# Process value (keep row and update) or value (override row with rel_currow)
+							# Process value (keep row and update) or values (override row with rel_currow)
 							
 							$rel_currow = Collections::Value($rel_currow, ArrayUtils::get($related, "value"), $rel_currow);
 							
@@ -365,7 +384,6 @@ class Collections
 				$formatted = Collections::$Format->{$format}($input_value);
 				
 				ArrayUtils::set($input, $value, $formatted);
-				if ($format === 'json') Debug::log($input_value, $formatted);
 			}
 		}
 		
@@ -499,7 +517,7 @@ class Collections
 		{
 			return [
 				"error" => true,
-				"message" => "A Collection, Input JSON data, and Fields are required to complete this task!"
+				"message" => Api::Responses('collections.migrate.validation')
 			];
 		}
 		
@@ -708,10 +726,10 @@ class Collections
 	
 	private static function Value ($row = [], $value = NULL, $currow = [])
 	{
-		$index = count($currow) === 0;
-		
-		if (is_array($value))
+		if (is_array($value) && is_array($currow))
 		{
+			$index = count($currow) === 0;
+			
 			foreach ($value as $a => $b) 
 			{
 				$property = $index ? $b : $a;
@@ -720,6 +738,14 @@ class Collections
 			}
 			
 			return $currow;
+		}
+		elseif (is_string($value) && count($currow))
+		{
+			$currvalue = ArrayUtils::get($currow, $value);
+			
+			$currvalue = is_null($currvalue) ? "" : $currvalue;
+			
+			return $currvalue;
 		}
 		
 		return $row;

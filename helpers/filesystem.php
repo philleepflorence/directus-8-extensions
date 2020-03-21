@@ -88,6 +88,7 @@ class FileSystem
 	}
 	
 	/*
+		Set File Contents and create file if applicable
 		
 		@return boolean
 	*/
@@ -117,11 +118,11 @@ class FileSystem
 		Process all the applicable sizes in the virtual CDN.
 		ARGUMENTS:
 			$params - @Array: Paramters
-				extensions - @Array: Array of allowed extensions (SVG or GIF no resizable currently)!
+				extensions - @Array: Array of allowed extensions (SVG or GIF are not resizable currently)!
 				qualities - @Array: Arrays of qualities to process
 				files - @String CSV or @Array: List of file names to process (defaults to origninals)
 			$debug - @Boolean: Return result without processing Thumbnails
-			$currfile - @String: TODO - Process single file via API or Hooks
+			$currfile - @String - CSV: Process only the file(s) sent
 		Thumbnailer Parameters:
 			Originals - Path to original images
 			Thumbnails - Path to Thumbnail directory
@@ -135,6 +136,8 @@ class FileSystem
 	
 	public static function Thumbnailer ($params = [], $debug = false, $currfile = null) 
 	{
+		$params = $params ?: [];
+		
 		$app = Application::getInstance();
 	    $container = $app->getContainer();
 	    $project = get_api_project_from_request();
@@ -147,8 +150,10 @@ class FileSystem
         
         if (!$file_naming || !$whitelists) return [
 			"error" => true,
-			"message" => "A Valid Access Token and Directus Asset Whitelist Settings is required to perform this task!"   
+			"message" => Api::Responses('filesystem.thumbnailer.validation')   
 	    ];
+	    
+	    if (is_string($currfile)) $currfile = explode(',', $currfile);
 	    
 	    $storage = $app->getConfig()->get('storage');
 	    $basepath = base_path();
@@ -184,7 +189,7 @@ class FileSystem
 				    $extension = end($extension);
 				    $extension = strtolower($extension);
 				    
-				    if (!in_array($extension, $extensions) || ($pattern && !preg_match($pattern, $filename))) 
+				    if (!in_array($extension, $extensions) || ($pattern && !preg_match($pattern, $filename)) || (is_array($currfile) && !in_array($file, $currfile))) 
 				    {
 					    unset($files[$index]);
 					    
@@ -232,23 +237,45 @@ class FileSystem
 		    $fileslen = count($files);
 		    
 		    return [
-			    "sizes" => $whitelists,
-			    "count" => [
+			    "meta" => [
+				    "mode" => "thumbnailer",
+				    "sizes" => $whitelists,
 				    "images" => $imageslen,
 				    "files" => $fileslen
 			    ],
-			    "images" => $images,
-			    "message" => $imageslen ? "{$imageslen} sizes were created out of {$fileslen} files!" : "No resizing needed at this time!",
-			    "alert" => "success"
+			    "data" => $images
 		    ];
 	    }
 	    catch (Exception $e)
 	    {
 		    return [
 			    "error" => true,
-				"message" => "Ooops! Something went wrong: " . $e->getMessage()
+				"message" => str_replace('{{message}}', $e->getMessage(), Api::Responses('filesystem.thumbnailer.exception'))
 			    
 		    ];
 	    }
+	}
+	
+	/*
+		FileSystem Helper - Unlink all files and sub folders in a directory or remove file
+		
+		@return boolean
+	*/
+	
+	public static function Unlink ($path = NULL)
+	{
+		if (is_dir($path))
+		{
+			$files = glob("{$path}/*");
+			
+			foreach ($files as $file)
+			{
+				if (is_file($file)) unlink($file);
+				elseif (is_dir($file)) FileSystem::Unlink($file);
+			}
+			
+			return @rmdir($path);
+		}
+		elseif (is_file($path)) return unlink($path);
 	}
 }

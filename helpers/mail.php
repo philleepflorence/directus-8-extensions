@@ -95,7 +95,7 @@ class Mail
 	    # Build Mailbox browser link
 		
 		$salt = Utils::Hash(true, $email, time());
-	    $browser = "{$project_url}/app/mailbox/{$salt}";
+	    $browser = "{$project_url}/api/app/mailbox/{$salt}";
 	    
 	    ArrayUtils::set($data, 'browser', $browser); 
 	    	    
@@ -143,7 +143,7 @@ class Mail
 	    
 	    $tableGateway = Api::TableGateway('app_mailbox');	
 	    
-	    $tableGateway->updateRecord($insert);
+	    $tableGateway->createRecord($insert);
 	    
 	    return $insert;
 	}
@@ -177,7 +177,7 @@ class Mail
 		{
 			return [
 			    "error" => true,
-			    "message" => "A recipient email address is required!"
+			    "message" => Api::Responses('mail.send.email')
 		    ];			
 		}
 		
@@ -185,7 +185,7 @@ class Mail
 		
 		if (!$subject) return [
 		    "error" => true,
-		    "message" => "A subject for the email is required!"
+		    "message" => Api::Responses('mail.send.subject')
 	    ];
 		
 		$plaintext = ArrayUtils::get($compiled, 'text');
@@ -198,7 +198,7 @@ class Mail
 		{
 			return [
 			    "error" => true,
-			    "message" => "A from email address and name is required to send out email notifications!"
+			    "message" => Api::Responses('mail.send.from')
 		    ];			
 		}
 	    
@@ -240,7 +240,7 @@ class Mail
 		    {
 			    return [
 				    "error" => true,
-				    "message" => "Unable to send mail! " . $e->getMessage()
+				    "message" => str_replace('{{message}}', $e->getMessage(), Api::Responses('mail.send.exception'))
 			    ];
 		    }
 	    }
@@ -289,14 +289,14 @@ class Mail
 		    {
 			    return [
 				    "error" => true,
-				    "message" => "Unable to send mail! " . $mail->ErrorInfo
+				    "message" => str_replace('{{message}}', ($mail->ErrorInfo ?: $e->getMessage()), Api::Responses('mail.send.exception'))
 			    ];
 		    }
 	    }
 	    
 	    else return [
 		    "error" => true,
-		    "message" => "Mail API and SMTP not configured - No email to send!"
+		    "message" => Api::Responses('mail.send.configuration')
 	    ];
 	}
 	

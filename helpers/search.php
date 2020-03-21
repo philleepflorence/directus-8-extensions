@@ -46,7 +46,8 @@ class Search
 		$item = $tableGateway->getItems([
 			"single" => 1,
 			"filter" => [
-				"collection" => $collection
+				"collection" => $collection,
+				"type" => "cache"
 			]
 		]);
 		$item = ArrayUtils::get($item, "data");
@@ -113,7 +114,7 @@ class Search
 			    array_push($currcache, trim($value));
 		    }
 		    
-		    $relations = ArrayUtils::get($options, "relations");
+		    $relations = ArrayUtils::get($options, "relations", []);
 		    	    
 			foreach ($relations as $relation => $fields)
 			{
@@ -193,6 +194,7 @@ class Search
 		    
 		    $status = ArrayUtils::get($options, "status");
 		    $privilege = ArrayUtils::get($options, "privilege");
+		    $privilege = is_numeric($privilege) ? $privilege : ArrayUtils::get($row, $privilege, 0);
 		    
 		    array_push($cache, [
 			    "row_id" => ArrayUtils::get($row, 'id'),
@@ -203,7 +205,7 @@ class Search
 			    "slug" => $currslug,
 			    "cache" => $currcache,
 			    "status" => ArrayUtils::get($row, $status, "draft"),
-			    "privilege" => ArrayUtils::get($row, $privilege, 0)
+			    "privilege" => $privilege
 		    ]);
 		}
 		
@@ -443,20 +445,19 @@ class Search
 	    }
 				
 		# Process the response meta and data arrays.
+		$rows = $items;
 		
-		foreach ($items as $item)
+		if (is_array($rows)) 
 		{
-			array_push($result["data"], [
-				"title" => ArrayUtils::get($item, 'title'),
-				"description" => ArrayUtils::get($item, 'description'),
-				"category" => ArrayUtils::get($item, 'category'),
-				"collection" => ArrayUtils::get($item, 'collectio'),
-				"slug" => ArrayUtils::get($item, 'slug'),
-				"relevance" => ArrayUtils::get($item, 'relevance')
-			]);
+			foreach ($rows as &$row)
+			{
+				unset($row["cache"]);
+				
+				array_push($result["data"], $row);
+			}
+			
+			ArrayUtils::set($result, 'meta.total', $total);
 		}
-		
-		ArrayUtils::set($result, 'meta.total', $total);
 		
 		# Save the query and collections to Search Queries - if applicable
     
@@ -482,11 +483,12 @@ class Search
 	    $tableGateway = Api::TableGateway("contents_search_queries", true);
 	    $queryitems = $tableGateway->getItems([
 		    "limit" => 1,
-		    "filters" => [
+		    "filter" => [
 			    "mode" => $mode,
 			    "query" => $query
 		    ]
 	    ]);
+
 	    $query_id = ArrayUtils::get($queryitems, 'data.0.id');
 	    
 	    if (is_array($update['collections'])) $update['collections'] = implode(',', $update['collections']);
@@ -573,12 +575,32 @@ class Search
 		
 		$query = str_ireplace('+', ' ', $query);
 		
+		# Get visible collections if no collections were sent
+		
+		if (!$collections)
+		{
+			$tableGateway = Api::TableGateway("directus_collections");
+			$entries = $tableGateway->getItems([
+				"fields" => "collection",
+				"filter" => [
+					"hidden" => 0
+				]
+			]); 
+			$entries = ArrayUtils::get($entries, 'data');
+			$collections = [];
+			
+			foreach ($entries as $entry)
+			{
+				array_push($collections, $entry['collection']);
+			}
+		}
+		
 		# Get collection structures from Directus Fields 
     
-	    $tableGateway = Api::TableGateway("directus_fields", false);
+	    $tableGateway = Api::TableGateway("directus_fields");
 	    $entries = $tableGateway->getItems($options); 
 	    $entries = ArrayUtils::get($entries, 'data');
-	    $collections = explode(',', $collections);
+	    $collections = is_string($collections) ? explode(',', $collections) : $collections;
 	    $fields = [];
 	    
 	    foreach ($entries as $entry)

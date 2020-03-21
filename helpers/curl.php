@@ -150,7 +150,7 @@ class Curl
 			$encode - @Boolean: Encode the images as Data URL
 	*/
 	
-	public static function Metadata ($url = NULL, $options = NULL, $encode = false, $params = [])
+	public static function Metadata ($url = NULL, $options = NULL, $encode = false, $params = null)
 	{
 		$options = $options ?: self::$metadata['options'];
 		
@@ -160,7 +160,7 @@ class Curl
 		
 		if (!filter_var($url, FILTER_VALIDATE_URL)) return [ 
 			"error" => true,
-			"message" => "Invalid URL!"
+			"message" => Api::Responses('curl.metadata.url')
 		 ];
 
 		$return = [
@@ -198,12 +198,17 @@ class Curl
 		# Encode image if applicable
 		
 		if ($encode && ArrayUtils::get($return, 'image')) ArrayUtils::set($return, 'image', Utils::Base64(ArrayUtils::get($return, 'image')));
+		elseif (ArrayUtils::get($return, 'image')) ArrayUtils::set($return, 'imageinfo', pathinfo(ArrayUtils::get($return, 'image')));
 		
 		# Parse Background Images - If applicable
 		
 		$domain = ArrayUtils::get($parsed, 'scheme') ? ArrayUtils::get($parsed, 'scheme') . '://' . ArrayUtils::get($parsed, 'host') : NULL;
+		
+		if (!is_array($params)) return $return;
+		
 		$return['images'] = [];
 		$added = [];
+		
 		$backgrounds = ArrayUtils::get($params, 'backgrounds');
 		$backgrounds = $backgrounds ? intval($backgrounds) : $backgrounds;		
 		

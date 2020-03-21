@@ -9,7 +9,7 @@ namespace Directus\Custom\Helpers;
 	
 use Directus\Util\ArrayUtils;
 
-class Debug 
+class Debugger 
 {	
 	/*
 		Development Tool - Returns the caller of a method
@@ -46,7 +46,7 @@ class Debug
 	{
 		$args = func_get_args();
 		$log = [];
-		$caller = SELF::caller();
+		$caller = Self::caller();
 
 		foreach ($args as $arg)
 			$log[] = stripcslashes(( json_encode($arg) ));
