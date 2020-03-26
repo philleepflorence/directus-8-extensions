@@ -1,0 +1,9 @@
+{
+	"name": "reports",
+	"version": "1.0.0",
+	"icon": "bar_chart",
+	"types": [
+		"string"
+	],
+	"options": {}
+}

@@ -4,7 +4,7 @@
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
-			icon="view_quilt" 
+			icon="view_module" 
 			settings>
 		</v-header>
 		
@@ -119,6 +119,13 @@
 								"icon": "pie_chart",
 								"analytics": "sessions"
 							},
+							"reports": {
+								"title": "Application Reports",
+								"description": "Reports of the Application Data",
+								"path": "/app/ext/reports",
+								"icon": "bar_chart",
+								"analytics": "Reports"
+							},
 							"cdn": {
 								"title": "CDN",
 								"description": "View Static Assets in your CDN",
@@ -187,9 +194,11 @@
 				overflow: hidden;
 				animation-duration: 600ms;
 				
+/*
 				&.modules-modules-analytics {
 					grid-row: 1/3 !important;
 				}
+*/
 				
 				.flex-item {
 					flex-grow: 1;
