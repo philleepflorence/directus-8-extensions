@@ -40,9 +40,51 @@
 					<h4 class="modules-divider">{{ content('sections.reports.headline') }}</h4>
 					<hr />
 					<div class="modules-divider">
-						<p class="lead modules-divider" v-if="!report.reports">{{ content('sections.reports.empty') }}</p>
+						<p class="lead modules-divider" v-if="!reports">{{ content('sections.reports.empty') }}</p>
 					</div>
 				</header>
+				<div class="modules-reports-content animated fadeIn" v-if="reports">					
+					
+					<div v-for="(row, index) in reports"  class="modules-reports-grid animated fadeIn a-delay" :style="`grid-column: ${ row.grid } !important;`" :data-chart="row.type">
+						
+						<!-- Reports: Totals and Snapshots -->
+						
+						<div class="flex-item" v-if="row.chart == 'overview'">
+							<h3 class="font-accent text-capitalize">{{ row.title }}</h3>
+							<p class="lead">{{ row.description }}</p>
+							<div class="modules-reports-analytics">
+								<p class="lead animated fadeIn font-accent">{{ row.total }}</p>
+							</div>
+						</div>
+						
+						<!-- Charts -->
+						
+						<div class="modules-reports-chart" :data-chart-type="row.chart.type" v-else-if="row.type == 'chart'">
+						
+							<!-- Doughnut Chart -->
+							
+							<app-doughnut-chart :chartdata="row.chart.data" :options="charts.options" v-if="row.chart.type == 'doughnut'"></app-doughnut-chart>
+							
+							<!-- Bar Chart -->
+							
+							<app-bar-chart :chartdata="row.chart.data" :options="charts.options" v-if="row.chart.type == 'bar'"></app-bar-chart>
+							
+							<!-- Pie Chart -->
+							
+							<app-pie-chart :chartdata="row.chart.data" :options="charts.options" v-if="row.chart.type == 'pie'"></app-pie-chart>
+							
+							<aside class="modules-reports-overlay"><span></span></aside>
+							<footer class="modules-reports-chart" v-if="row.legend">
+								<p class="modules-reports-chart">
+									<span class="modules-reports-chart-legend font-accent" v-for="legend in row.legend" :data-label="legend.label" :data-legend-key="legend.key" :data-tooltip="`${ legend.legend }: ${ legend.total }`" :style="`color: ${ legend.color };`">{{ legend.legend }}</span>
+								</p>
+								<p class="modules-analytics-chart">{{ row.description }}</p>
+							</footer>
+						
+						</div>
+					</div>
+					
+				</div>
 			</section>
 			
 			<!-- Rows - Table Display -->
@@ -57,28 +99,7 @@
 					</div>
 				</header>
 				<div class="modules-section-content">
-					<div class="table">
-						<div class="header">
-							<div class="row">
-								<div class="field" :data-type="field.type" :style="`width: ${ flexBasis }%;`" v-for="field in headers">{{ field.text }}</div>
-							</div>
-						</div>
-						<div class="body">
-							<div class="group" v-for="row in report.rows" @click.stop.prevent="onClickDetails">
-								<div class="row">
-									<div class="field" :data-type="field.type" :style="`width: ${ flexBasis }%;`" v-for="field in headers">
-										<div class="value">{{ value(row, field.value) }}</div>
-									</div>
-								</div>
-								<div class="details animated fadeIn">
-									<section class="details-section" v-for="detail in row">
-										<h5 class="details-title">{{ detail.key }}</h5>
-										<div class="details-content" v-html="detail.value"></div>
-									</section>
-								</div>
-							</div>
-						</div>
-					</div>
+					<app-table :headers="headers" :rows="report.rows"></app-table>					
 				</div>
 			</section>
 			
@@ -130,16 +151,18 @@
 
 <script>
 	import { filter, forEach, get, kebabCase, set, shuffle, size, startCase } from 'lodash';
-	import BarChart from './charts/bar.vue';
-	import DoughnutChart from './charts/doughnut.vue';
-	import PieChart from './charts/pie.vue';
+	import AppTable from './components/table.vue';
+	import BarChart from './components/bar.vue';
+	import DoughnutChart from './components/doughnut.vue';
+	import PieChart from './components/pie.vue';
 	
 	export default {
 		name: 'ModulesAnalyticsApplication',
 		components: {
-			'bar-chart': BarChart,
-			'doughnut-chart': DoughnutChart,
-			'pie-chart': PieChart
+			'app-table': AppTable,
+			'app-bar-chart': BarChart,
+			'app-doughnut-chart': DoughnutChart,
+			'app-pie-chart': PieChart
 		},
 		data () {
 			return {
@@ -208,7 +231,8 @@
 				loaded: false,
 				loading: false,
 				menu: null,
-				report: null
+				report: null,
+				reports: null
 			};
 		},
 		computed: {
@@ -357,7 +381,7 @@
 				
 				let date = get(this.filters, 'date.field');	
 				
-				if (this.startDate && this.endDate && date) set(params, `filters.${ date }.between`, [this.startDate, this.endDate]);
+				if (this.startDate && this.endDate && date) set(params, `filters.${ this.$menu }.${ date }.between`, `${ this.startDate },${ this.endDate }`);
 				
 				let row = get(this.menu, this.$menu);
 				
@@ -375,6 +399,10 @@
 					
 					this.filters = get(row, 'options.render.filters');
 					
+					let charts = get(row, 'options.render.charts');
+					
+					if (charts) this.process(charts, row.rows);
+										
 					this.report = row;
 																				
 					this.loading = false;
@@ -385,20 +413,6 @@
 					
 					this.loading = false;
 				});	
-			},
-			onClickDetails (event) {
-				if (this.$details) this.$details.classList.remove('active');
-				
-				let details = event.currentTarget.querySelector('.details');
-				
-				if (!details) return false;
-				
-				if (this.$details !== details) {
-					details.classList.add('active');
-					
-					this.$details = details;
-				}
-				else this.$details = null;				
 			},
 			onClickFilter () {				
 				this.loadReport();		
@@ -416,14 +430,99 @@
 			onInputEndDate (input) {
 				this.endDate = input;
 			},
-			seconds (input) {
-				input = parseInt(input);
+			process (rows, items) {
+				let charts = [];
+				let colors = this.charts.colors.slice();
+				let total = size(items);
 				
-				if (!input) return '';
+				if (size(colors) < total) {
+					let len = Math.ceil(total / size(colors));
+					
+					while(len > 0) {
+						colors = colors.concat(colors);
+						
+						len--;
+					}
+				}
 								
-				input = parseFloat(input / 1000).toFixed(2);
+				const methods = {
+					chart (row, index) {
+						let counts = {};
+						
+						/* Set the total aggregate for each chart item */
+						
+						forEach(items, (item) => {
+							let count = get(item, row.field);
+							
+							if (!counts[count]) counts[count] = 1;
+							else counts[count]++;
+						});
+						
+						
+						/* Build the legend for each chart item */
+						
+						forEach(counts, (count, legend) => {							
+							set(row, `legend.${ kebabCase(legend) }`, {
+								legend: legend,
+								key: `[${ index }].legend.${ kebabCase(legend) }`,
+								color: colors[Object.keys(counts).indexOf(legend)],
+								total: count,
+								ratio: Number( ((count / total) * 100).toFixed(2) ),
+								label: row.title
+							});
+						});
+						
+						set(row, 'chart', {
+							type: row.chart,
+							data: {
+								labels: Object.keys(counts),
+								datasets: [{
+									label: row.title,
+									backgroundColor: colors.slice(0, total),
+									borderWidth: 0,
+									data: Object.values(counts)									
+								}]
+							}
+						});
+						
+						charts.push(row);
+					},
+					count (row) {
+						let counts = [];
+						
+						forEach(items, (item) => {
+							let count = get(item, row.field);
+							
+							if (!counts.includes(count)) counts.push(count);
+						});
+						
+						row.total = size(counts);
+						
+						charts.push(row);
+					},
+					total (row) {
+						row.total = total;
+						
+						charts.push(row);
+					}
+				};
 				
-				return `${ input }s`;
+				forEach(rows, (row, index) => {
+					let method = get(methods, row.type);
+										
+					if (typeof method === "function") method({
+						title: row.title,
+						description: row.description,
+						field: row.field,
+						type: row.type,
+						chart: row.chart,
+						grid: row.grid
+					}, index);
+				});	
+								
+				this.reports = charts;	
+				
+				return charts;		
 			},
 			tooltip (input) {
 				let body = get(input.body, '0.lines.0');
@@ -438,16 +537,15 @@
 				let $overlay = $parent.querySelector('.modules-reports-overlay');
 				
 				let key = $legend.getAttribute('data-legend-key');
-				let legend = get(this.legends, key);
+				let legend = get(this.reports, key);
 				
-				$overlay.innerHTML = `<span style="color: ${ legend.color };">${ legend.label }<br>${ legend.legend }: ${ legend.total } &mdash; ${ legend.ratio }</span>`;
+				if (!legend) return; 
+				
+				$overlay.innerHTML = `<span style="color: ${ legend.color };">${ legend.label.toUpperCase() }<br>${ legend.legend }: ${ legend.total } &mdash; ${ legend.ratio }</span>`;
 				
 				$overlay.classList.add('active');
 				
 				this.$overlay = $overlay;
-			},
-			value (row, value) {
-				return get(row, value);
 			}
 		},
 		metaInfo() {
@@ -462,82 +560,6 @@
 </script>
 
 <style lang="scss">
-	.table {
-		background-color: rgba(white, 0.01);
-		border: var(--input-border-width) solid var(--table-row-border-color);
-		border-radius: var(--border-radius);
-		border-spacing: 0;
-		border-bottom: none;
-		width: 100%;
-		
-		.header {
-			border-bottom: 2px solid var(--table-row-border-color);
-			height: calc(var(--input-height) - 2px);
-			
-			.row {
-				background-color: rgba(white, 0.1);
-				height: calc(var(--input-height) - 2px);
-				
-				.field {
-					color: var(--blue-grey-500);
-					font-family: var(--main-font-accent);
-					font-weight: 500;
-				}
-			}
-		}
-		.row {
-			display: flex;
-			align-items: center;
-			
-			.field {
-				padding: 5px 5px;	
-				
-				.value {
-					overflow: hidden;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-				}			
-			}
-		}				
-		.details {
-			display: none;
-			background-color: rgba(white, 0.1);
-			border-bottom: 2px solid var(--table-row-border-color);
-			padding: 1.5rem 5px 0.5rem 5px;
-			
-			&.active {
-				display: block;
-			}
-			
-			.details-section {
-				padding-bottom: 1.5rem;
-				
-				.details-title {
-					color: var(--blue-grey-400);
-					font-family: var(--main-font-accent);
-					font-size: 1rem;
-					margin-bottom: 0.3rem;
-				}
-				
-				.details-content {
-					white-space: pre-wrap;
-				}
-			}
-		}
-		.body {
-			.row {
-				cursor: pointer;
-				position: relative;
-				height: calc(var(--input-height) - 2px);
-				border-bottom: 2px solid var(--table-row-border-color);
-				
-				&:hover {
-					background-color: var(--highlight);
-				}
-			}
-		}
-	}
-	
 	.modules-reports {
 		padding: var(--page-padding);
 		position: relative;
@@ -546,35 +568,13 @@
 			position: relative;
 		}
 		
-		.modules-reports-form {
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			grid-gap: 1rem;
-			
-			.modules-reports-column {
-				button {
-					height: 52px;
-				}
-			}
-		}
-		
 		.modules-reports-content {
 			display: grid;
-			grid-template-columns: repeat(4, 1fr);
+			grid-template-columns: repeat(6, 1fr);
 			grid-gap: 1rem;
 			
 			& + .modules-reports-content {
 				padding-top: 1rem;
-			}
-			
-			&.modules-reports-browsers,
-			&.modules-reports-views {
-				grid-template-columns: repeat(2, 1fr);
-			}
-			
-			&.modules-reports-locations,
-			&.modules-reports-performance {
-				grid-template-columns: repeat(3, 1fr);
 			}
 			
 			.modules-reports-grid {
@@ -587,21 +587,8 @@
 				overflow: hidden;
 				animation-duration: 600ms;
 				padding: 1.5rem 1rem;
-				
-				&[data-chart="sessions"] {
-					grid-column: 3/5 !important;
-					grid-row: 1/3 !important;
-				}
-				
-				&[data-chart-type="bar"] {
-					max-height: 60vh;
-					
-					&:nth-child(1) {
-						grid-column: 1/3 !important;
-					}
-				}
-				
-				&.modules-reports-chart {
+								
+				div.modules-reports-chart {
 					padding-bottom: 6rem !important;
 					
 					&[data-chart-type="bar"] {
@@ -660,11 +647,12 @@
 					footer.modules-reports-chart {
 						position: absolute;
 						bottom: 0;
+						left: 0;
 						width: 100%;
 						padding: 0.75rem;
 						text-align: center;
 						color: var(--blue-grey-500);
-						font-size: 12px;
+						font-size: 0.9rem;
 						font-weight: 500;
 						
 						span.modules-reports-chart-legend {

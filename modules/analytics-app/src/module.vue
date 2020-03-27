@@ -4,7 +4,7 @@
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
-			icon="view_quilt" 
+			icon="pie_chart" 
 			settings>
 		</v-header>
 						
@@ -249,7 +249,7 @@
 			},
 			chart (input, label, type) {
 				let $input = get(this.analytics, `data.${ input }`);
-								
+							
 				if (!$input) return null;
 				
 				label = label || startCase(input);
