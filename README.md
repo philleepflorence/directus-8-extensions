@@ -11,6 +11,16 @@ helpers/functions.php
 
 ```
 .
+├── components
+│   ├── charts
+│   │   ├── bar.vue
+│   │   ├── doughnut.vue
+│   │   ├── pie.vue
+│   │   └── radar.vue
+│   ├── files
+│   │   └── tree.vue
+│   └── tables
+│       └── table.vue
 ├── endpoints
 │   ├── analytics
 │   │   ├── controllers
@@ -174,7 +184,7 @@ helpers/functions.php
 │           └── meta.json
 ├── layouts
 ├── modules
-│   ├── analytics-app
+│   ├── analytics
 │   │   ├── dist
 │   │   │   ├── meta.json
 │   │   │   ├── module.css
@@ -184,10 +194,11 @@ helpers/functions.php
 │   │   ├── package.json
 │   │   ├── readme.md
 │   │   └── src
-│   │       ├── charts
-│   │       │   ├── bar.vue
-│   │       │   ├── doughnut.vue
-│   │       │   └── pie.vue
+│   │       ├── components
+│   │       │   └── charts
+│   │       │       ├── bar.vue
+│   │       │       ├── doughnut.vue
+│   │       │       └── pie.vue
 │   │       ├── meta.json
 │   │       └── module.vue
 │   ├── cdn
@@ -201,7 +212,8 @@ helpers/functions.php
 │   │   ├── readme.md
 │   │   └── src
 │   │       ├── components
-│   │       │   └── tree.vue
+│   │       │   └── files
+│   │       │       └── tree.vue
 │   │       ├── meta.json
 │   │       └── module.vue
 │   ├── dashboard
@@ -250,6 +262,26 @@ helpers/functions.php
 │   │   ├── package.json
 │   │   ├── readme.md
 │   │   └── src
+│   │       ├── meta.json
+│   │       └── module.vue
+│   ├── reports
+│   │   ├── dist
+│   │   │   ├── meta.json
+│   │   │   ├── module.css
+│   │   │   ├── module.js
+│   │   │   └── module.js.map
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── components
+│   │       │   ├── charts
+│   │       │   │   ├── bar.vue
+│   │       │   │   ├── doughnut.vue
+│   │       │   │   ├── pie.vue
+│   │       │   │   └── radar.vue
+│   │       │   └── tables
+│   │       │       └── table.vue
 │   │       ├── meta.json
 │   │       └── module.vue
 │   └── search

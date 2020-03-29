@@ -100,21 +100,21 @@
 						"modules": {
 							"modules": {
 								"title": "Modules",
-								"description": "View assets, analytics, reports, guides, and tools",
+								"description": "Assets, analytics, reports, guides, and tools",
 								"path": "/app/ext/modules",
 								"icon": "supervised_user_circle",
 								"analytics": "Modules"
 							},
 							"files": {
 								"title": "Files",
-								"description": "View all uploaded files",
+								"description": "Uploaded files",
 								"path": "/app/files",
 								"icon": "cloud_done",
 								"analytics": "Files"
 							},
 							"collections": {
 								"title": "Collections",
-								"description": "View all collections and items",
+								"description": "Collections and Items",
 								"path": "/app/collections",
 								"icon": "view_module",
 								"analytics": "Collections"

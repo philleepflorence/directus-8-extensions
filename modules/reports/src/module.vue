@@ -25,12 +25,13 @@
 			</div>
 		</div>
 		
-		<div class="modules-reports-loaded animated fadeIn" v-else-if="report">
+		<div class="modules-reports-loaded animated fadeIn" v-else-if="loaded && report">
 			
 			<header class="modules-divider">
 				<h2 class="modules-divider">{{ report.name }}</h2>
 				<hr />
-				<p class="modules-divider">{{ report.description }}</p>
+				<p class="modules-divider" v-html="report.options.render.description"></p>
+				<p class="modules-divider" v-html="content('disclaimer')"></p>
 			</header>
 			
 			<!-- Reports - Analytics -->
@@ -45,7 +46,7 @@
 				</header>
 				<div class="modules-reports-content animated fadeIn" v-if="reports">					
 					
-					<div v-for="(row, index) in reports"  class="modules-reports-grid animated fadeIn a-delay" :style="`grid-column: ${ row.grid } !important;`" :data-chart="row.type">
+					<div v-for="(row, index) in reports"  class="modules-reports-grid animated fadeIn a-delay" :style="`grid-column: ${ row.grid.column } !important; grid-row: ${ row.grid.row } !important;`" :data-chart="row.type">
 						
 						<!-- Reports: Totals and Snapshots -->
 						
@@ -73,12 +74,16 @@
 							
 							<app-pie-chart :chartdata="row.chart.data" :options="charts.options" v-if="row.chart.type == 'pie'"></app-pie-chart>
 							
+							<!-- Radar Chart -->
+							
+							<app-radar-chart :chartdata="row.chart.data" :options="charts.options" v-if="row.chart.type == 'radar'"></app-radar-chart>
+							
 							<aside class="modules-reports-overlay"><span></span></aside>
-							<footer class="modules-reports-chart" v-if="row.legend">
-								<p class="modules-reports-chart">
+							<footer class="modules-reports-chart animated fadeInUp" v-if="row.legend">
+								<p class="modules-reports-chart modules-reports-chart-legend">
 									<span class="modules-reports-chart-legend font-accent" v-for="legend in row.legend" :data-label="legend.label" :data-legend-key="legend.key" :data-tooltip="`${ legend.legend }: ${ legend.total }`" :style="`color: ${ legend.color };`">{{ legend.legend }}</span>
 								</p>
-								<p class="modules-analytics-chart">{{ row.description }}</p>
+								<p class="modules-reports-chart">{{ row.description }}</p>
 							</footer>
 						
 						</div>
@@ -99,7 +104,7 @@
 					</div>
 				</header>
 				<div class="modules-section-content">
-					<app-table :headers="headers" :rows="report.rows"></app-table>					
+					<app-table :headers="headers" :rows="report.rows" :details="report.options.render.details"></app-table>					
 				</div>
 			</section>
 			
@@ -110,51 +115,81 @@
 				<h2 class="font-accent">{{ content('title') }}</h2>
 				<p class="p">{{ content('description') }}</p>
 			</section>
-			<section class="info-sidebar-section" v-if="filters.date">
-				<h2 class="font-accent" v-html="filters.date.headline"></h2>
-				<div class="info-sidebar-row">
-					<v-input
-						id="modules-reports-start-date-input"
-						type="date"
-						:placeholder="content('form.startDate.placeholder')"
-						:model="startDate"
-						:value="startDate"
-						@input="onInputStartDate">
-					</v-input>
-				</div>
-				<div class="info-sidebar-row">
-					<v-input
-						id="modules-reports-end-date-input"
-						type="date"
-						:placeholder="content('form.endDate.placeholder')"
-						:model="endDate"
-						:value="endDate"
-						@input="onInputEndDate">
-					</v-input>
-				</div>
-				<div class="info-sidebar-row">
-					<v-button
-						id="modules-reports-button"
-						type="button"
-						@click="onClickFilter"
-						block>{{ content('form.submit.label') }}
-					</v-button>
-				</div>
-			</section>	
 			<nav class="info-sidebar-section info-sidebar-nav" v-if="menu">
-				<a class="info-sidebar-nav" href="#" v-for="row in menu" :ref="row.slug" @click.stop.prevent="onClickReport(row.slug)">{{ row.name }}</a>
-			</nav>		
+				<h2 class="font-accent" v-html="content('navigation')"></h2>
+				<a class="info-sidebar-nav" href="#" v-for="row in menu" :ref="row.slug" @click.stop.prevent="onClickReport(row.slug)">
+					<span class="info-sidebar-nav-icon"><v-icon :name="row.options.options.icon" left></span>
+					<span class="info-sidebar-nav-text">{{ row.name }}</span>
+				</a>
+			</nav>
+			<div class="info-sidebar-section" v-if="loaded && filters">
+				<p class="info-sidebar-section-text" v-html="content('form.headline')"></p>
+				<section class="info-sidebar-section-row" v-if="filters.date">
+					<h2 class="font-accent" v-html="filters.date.start"></h2>
+					<div class="info-sidebar-row">
+						<v-input
+							id="modules-reports-start-date-input"
+							type="date"
+							iconLeft="today"
+							:placeholder="content('form.startDate.placeholder')"
+							:model="startDate"
+							:value="startDate"
+							@input="onInputStartDate">
+						</v-input>
+					</div>
+				</section>
+				<section class="info-sidebar-section-row" v-if="filters.date">
+					<h2 class="font-accent" v-html="filters.date.end"></h2>
+					<div class="info-sidebar-row">
+						<v-input
+							id="modules-reports-end-date-input"
+							type="date"
+							iconLeft="event"
+							:placeholder="content('form.endDate.placeholder')"
+							:model="endDate"
+							:value="endDate"
+							@input="onInputEndDate">
+						</v-input>
+					</div>
+				</section>
+				<section class="info-sidebar-section-row" v-for="filter in filters" v-if="filter.type == 'dropdown'">
+					<h2 class="font-accent" v-html="filter.headline"></h2>
+					<div class="info-sidebar-row">
+					<v-select
+						:id="`modules-reports-${ filter.field }-input`"
+						:name="filter.field"
+						:placeholder="filter.placeholder"
+						:model="`form.${ filter.field }`"
+						:value="form[filter.field]"
+						:options="filter.options"
+						:icon="filter.icon"
+						@input="onChangeFilter($event, filter.field, `#modules-reports-${ filter.field }-input`)">
+					</v-select>
+					</div>
+				</section>
+				<footer class="info-sidebar-section-row">
+					<div class="info-sidebar-row">
+						<v-button
+							id="modules-reports-button"
+							type="button"
+							@click="onClickFilter"
+							block>{{ content('form.submit.label') }}
+						</v-button>
+					</div>
+				</footer>
+			</nav>			
 		</v-info-sidebar>
 		
 	</div>
 </template>
 
 <script>
-	import { filter, forEach, get, kebabCase, set, shuffle, size, startCase } from 'lodash';
-	import AppTable from './components/table.vue';
-	import BarChart from './components/bar.vue';
-	import DoughnutChart from './components/doughnut.vue';
-	import PieChart from './components/pie.vue';
+	import { cloneDeep, filter, forEach, get, kebabCase, set, shuffle, size, startCase } from 'lodash';
+	import AppTable from './components/tables/table.vue';
+	import BarChart from './components/charts/bar.vue';
+	import DoughnutChart from './components/charts/doughnut.vue';
+	import PieChart from './components/charts/pie.vue';
+	import RadarChart from './components/charts/radar.vue';
 	
 	export default {
 		name: 'ModulesAnalyticsApplication',
@@ -162,7 +197,8 @@
 			'app-table': AppTable,
 			'app-bar-chart': BarChart,
 			'app-doughnut-chart': DoughnutChart,
-			'app-pie-chart': PieChart
+			'app-pie-chart': PieChart,
+			'app-radar-chart': RadarChart
 		},
 		data () {
 			return {
@@ -191,15 +227,17 @@
 				},
 				contents: {
 					"en-US": {
-						"title": "Reports",
-						"subtitle": 'Reports - Analytics Report of the Application Data',
-						"description": 'Analysis and Reports of the various Application Data and modules',
+						"title": "Reports and Insights",
+						"subtitle": 'Reports and Insights - Analytics Report of the Application Data',
+						"description": 'Analysis, Insights, and Reports of the various Application Data and Modules',
+						"disclaimer": "For performance and efficiency, where applicable, report data is only loaded for the current month. <br>Feel free to use the filter form to manipulate the data and get the report you want.",
 						"introduction": "Please select from one of the available reports listed! <br>Be sure the report has been confirgured by your webmaster.",
+						"navigation": "Choose a Report",
 						"form": {
 							"empty": {
 								"message": "Oooops! <br>No reports configuration is available. <br>Please try creating reports configuration for the collections you wish to view."
 							},
-							"headline": "Start and End Dates",
+							"headline": "Reports Filter Options - Select one or more filters to update the report.",
 							"startDate": {
 								"placeholder": "Reports Start Date"
 							},
@@ -224,13 +262,15 @@
 						}
 					}						
 				},
-				filters: {},
+				form: {},
+				filters: null,
 				endDate: null,
 				startDate: null,
 				legends: {},
 				loaded: false,
 				loading: false,
 				menu: null,
+				activemenu: null,
 				report: null,
 				reports: null
 			};
@@ -333,6 +373,17 @@
 			details (input) {
 				return get(this.analytics, input);
 			},
+			formatDate (date) {
+				let d = new Date(date),
+			        month = '' + (d.getMonth() + 1),
+			        day = '' + d.getDate(),
+			        year = d.getFullYear();
+			
+			    if (month.length < 2) month = '0' + month;
+			    if (day.length < 2) day = '0' + day;
+			
+			    return [year, month, day].join('-');
+			},
 			kebabCase (input) {
 				return kebabCase(input);
 			},
@@ -369,7 +420,8 @@
 				});
 			},
 			loadReport () {
-				this.loading = false;
+				this.loaded = false;
+				this.loading = true;
 				this.report = null;
 				
 				let params = {
@@ -379,10 +431,25 @@
 					mode: 'reports'
 				};
 				
-				let date = get(this.filters, 'date.field');	
+				let date = get(this.filters, 'date.field');
+				
+				if (!this.startDate && !this.endDate && date) {
+					let date = new Date();
+					let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+					let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+					
+					this.startDate = this.formatDate(firstDay);
+					this.endDate = this.formatDate(lastDay);
+				}	
 				
 				if (this.startDate && this.endDate && date) set(params, `filters.${ this.$menu }.${ date }.between`, `${ this.startDate },${ this.endDate }`);
 				
+				if (size(this.form)) {
+					forEach(this.form, (value, field) => {
+						set(params, `filters.${ this.$menu }.${ field }.eq`, value);
+					});
+				}
+												
 				let row = get(this.menu, this.$menu);
 				
 				if (this.$active) this.$active.classList.remove('active');
@@ -399,12 +466,25 @@
 					
 					this.filters = get(row, 'options.render.filters');
 					
+					forEach(this.filters, (filter) => {
+						if (filter.option) {
+							let options = {};
+							
+							forEach(row.rows, (item) => {
+								set(options, get(item, filter.option.key), get(item, filter.option.text));
+							});
+							
+							filter.options = options;							
+						}
+					});				
+					
 					let charts = get(row, 'options.render.charts');
 					
 					if (charts) this.process(charts, row.rows);
 										
 					this.report = row;
 																				
+					this.loaded = true;
 					this.loading = false;
 					
 				}).catch((error) => {
@@ -414,11 +494,33 @@
 					this.loading = false;
 				});	
 			},
+			onChangeFilter (input, field, id) {
+				set(this.form, field, input);
+				
+				let $options = get(this.filters, `${ field }.options`);
+				let $select = this.$el.querySelector(id);
+				
+				if (!$select || !$options) return false;
+				
+				let $placeholder = $select.parentElement.querySelector('.value .placeholder');
+				let $value = $select.parentElement.querySelector('.value .no-wrap');
+				let text = get($options, input);
+				
+				if ($placeholder) $placeholder.style.display = 'none';
+				
+				if ($value) $value.innerHTML = text;
+			},
 			onClickFilter () {				
 				this.loadReport();		
 			},
 			onClickReport (input) {
-				this.filters = {};
+				let activeMenu = get(this.menu, input);
+				
+				if (input) this.form = {};
+				
+				this.filters = get(activeMenu, 'options.render.filters');
+				
+				this.isFilter = size(this.filters);
 				
 				this.$menu = input;
 				
@@ -492,8 +594,10 @@
 						
 						forEach(items, (item) => {
 							let count = get(item, row.field);
+							let format = row.format || 'value';
 							
-							if (!counts.includes(count)) counts.push(count);
+							if (format === 'value' && !counts.includes(count)) counts.push(count);
+							else if (format === 'boolean' && count) counts.push(count);
 						});
 						
 						row.total = size(counts);
@@ -510,14 +614,7 @@
 				forEach(rows, (row, index) => {
 					let method = get(methods, row.type);
 										
-					if (typeof method === "function") method({
-						title: row.title,
-						description: row.description,
-						field: row.field,
-						type: row.type,
-						chart: row.chart,
-						grid: row.grid
-					}, index);
+					if (typeof method === "function") method({...row}, index);					
 				});	
 								
 				this.reports = charts;	
@@ -589,6 +686,8 @@
 				padding: 1.5rem 1rem;
 								
 				div.modules-reports-chart {
+					position: relative;
+					width: 100%;
 					padding-bottom: 6rem !important;
 					
 					&[data-chart-type="bar"] {
@@ -596,6 +695,7 @@
 					}
 					
 					& > div {
+						position: relative;
 						max-height: 100%;
 						max-width: 100%;
 					}
@@ -646,21 +746,35 @@
 					
 					footer.modules-reports-chart {
 						position: absolute;
-						bottom: 0;
-						left: 0;
-						width: 100%;
-						padding: 0.75rem;
+						bottom: -1rem;
+						left: -1rem;
+						width: calc(100% + 2rem);
 						text-align: center;
 						color: var(--blue-grey-500);
-						font-size: 0.9rem;
+						font-size: 0.875rem;
 						font-weight: 500;
 						
-						span.modules-reports-chart-legend {
-							color: var(--main-primary-color);
-							display: inline-block;
-							font-weight: 500;
-							padding: 0.5rem 1rem;
-							text-transform: capitalize;
+						p.modules-reports-chart {
+							background: rgba(black, 0.2);
+							border-top: 1px solid var(--blue-grey-800);
+							padding: 0.5rem;
+							
+							&.modules-reports-chart-legend {
+								overflow-x: auto !important;
+								white-space: nowrap;
+						
+								span.modules-reports-chart-legend {
+									color: var(--main-primary-color);
+									display: inline-block;
+									font-weight: 500;
+									padding: 0.25rem 1rem;
+									text-transform: capitalize;
+								}
+							}
+							
+							&:last-child {
+								background: transparent;
+							}
 						}
 					}
 				}

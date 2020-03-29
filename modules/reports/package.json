@@ -1,7 +1,7 @@
 {
 	"name": "reports",
 	"version": "1.0.0",
-	"description": "Data reporting and analytics",
+	"description": "Data insights, reporting, and analytics",
 	"main": "",
 	"scripts": {
 		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/reports",
@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@directus/extension-toolkit": "^0.0.1",
 		"chart.js": "^2.9.3",
+		"chartjs-chart-treemap": "^0.2.3",
 		"lodash": "^4.17.15",
 		"vue": "^2.6.11",
 		"vue-chartjs": "^3.5.0",

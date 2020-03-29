@@ -114,21 +114,21 @@
 						"modules": {
 							"analytics": {
 								"title": "Application Analytics",
-								"description": "Analytics of the Application Visitors",
-								"path": "/app/ext/analytics-app",
+								"description": "Application Visitors and Performance Analytics",
+								"path": "/app/ext/analytics",
 								"icon": "pie_chart",
 								"analytics": "sessions"
 							},
 							"reports": {
 								"title": "Application Reports",
-								"description": "Reports of the Application Data",
+								"description": "Application Data and Modules Reports",
 								"path": "/app/ext/reports",
 								"icon": "bar_chart",
 								"analytics": "Reports"
 							},
 							"cdn": {
 								"title": "CDN",
-								"description": "View Static Assets in your CDN",
+								"description": "CDN Static Assets and Documents",
 								"path": "/app/ext/cdn",
 								"icon": "cloud",
 								"analytics": "Items"
@@ -142,7 +142,7 @@
 							},
 							"icons": {
 								"title": "Icons",
-								"description": "View all Icons available to your applications",
+								"description": "Icons available to the applications",
 								"path": "/app/ext/icons",
 								"icon": "insert_emoticon",
 								"analytics": "Icons"

@@ -276,8 +276,7 @@
 					
 					.modules-search-title {
 						color: var(--main-primary-color) !important;
-						font-size: 1.5rem;
-						text-transform: capitalize;
+						font-size: 1.25rem;
 					}
 					
 					small {

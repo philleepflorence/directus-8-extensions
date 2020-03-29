@@ -19,21 +19,31 @@
 		</div>
 		
 		<div class="modules-icons-contents animated fadeIn" v-if="!loading">
-			<div class="modules-icons-content">
-				<button class="modules-icons-grid" v-for="row in icons" @click="onDetails(row.id)">
-					<span v-html="row.icon"></span>
-					<p>{{ row.name }}</p>
-				</button>
-			</div>
-			<aside class="modules-icons-details animated fadeIn" v-show="details">
-				<span class="bg" @click="onDetails(0)"></span>
-				<div class="modules-icons-detail animated fadeInUpSmall flex-item" v-if="details">
-					<div class="modules-icons-detail-row" v-for="(value, field) in details">
-						<small class="font-accent">{{ formatField(field) }}</small>
-						<div class="p" v-html="formatValue(value)"></div>
+			<section class="modules-section">
+				<header class="modules-divider">
+					<h4 class="modules-divider">{{ content('headline') }}</h4>
+					<hr />
+					<div class="modules-divider">
+						<p class="lead modules-divider" v-if="!reports">{{ content('information') }}</p>
 					</div>
+				</header>			
+				<div class="modules-icons-content">
+					<button class="modules-icons-grid" v-for="row in icons" @click="onDetails(row.id)">
+						<span v-html="row.icon"></span>
+						<p>{{ row.name }}</p>
+					</button>
 				</div>
-			</aside>
+				<aside class="modules-icons-details animated fadeIn" v-show="details">
+					<span class="bg" @click="onDetails(0)"></span>
+					<div class="modules-icons-detail animated zoomIn flex-item" v-if="details">
+						<div class="modules-icons-detail-row" v-for="(value, field) in details">
+							<small class="font-accent">{{ formatField(field) }}</small>
+							<div class="p" v-html="formatValue(value)"></div>
+						</div>
+					</div>
+				</aside>
+			
+			</section>
 		</div>	
 
 		<v-info-sidebar wide itemDetail>
@@ -153,7 +163,6 @@
 				
 				this.timers.input = setTimeout(() => {
 					this.query = input;
-					console.log("debug - development", input);
 				}, 
 				300);
 			}
@@ -165,6 +174,8 @@
 						"title": "Icons",
 						"subtitle": 'Icons - View all the Application Icons Available',
 						"description": 'View all the Application Icons Available',
+						"headline": "Application Icons",
+						"information": 'Click on each icon for more details.',
 						"form": {
 							"headline": 'Search Icons',
 							"submit": 'Search Icons',
@@ -207,9 +218,13 @@
 			
 			.modules-icons-content {
 				display: grid;
-				grid-template-columns: repeat(5, 1fr);
+				grid-template-columns: repeat(3, 1fr);
 				grid-auto-rows: minmax(100px, max-content);
 				grid-gap: 1rem;
+				
+				@media(min-width: 1600px) {
+					grid-template-columns: repeat(5, 1fr);
+				}
 				
 				.modules-icons-grid {
 					background-color: rgba(white, 0.1);
@@ -227,7 +242,7 @@
 			}
 			
 			.modules-icons-details {
-				position: absolute;
+				position: fixed;
 				top: 0;
 				right: 0;
 				bottom: 0;
@@ -252,6 +267,7 @@
 					max-width: 90vw;
 					padding: 0 1rem;
 					background: var(--blue-grey-800);
+					animation-duration: 350ms;
 					
 					div.modules-icons-detail-row {
 						border-bottom: 1px solid var(--blue-grey-700);

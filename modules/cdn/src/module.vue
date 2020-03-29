@@ -23,20 +23,27 @@
 			<!-- Analytics -->
 			
 			<div class="modules-cdn-row" :data-section="kebabCase(content('headlines.analytics'))">
-			
-				<v-details :title="content('headlines.analytics')" type="break" open>
+				
+				<section class="modules-section">
+					<header class="modules-divider">
+						<h4 class="modules-divider" v-html="content('headlines.analytics')"></h4>
+						<hr />
+						<div class="modules-divider">
+							<p class="lead modules-divider" v-html="content('descriptions.analytics')"></p>
+						</div>
+					</header>
 					<div class="modules-cdn-content">
 						<div class="modules-cdn-grid animated fadeIn a-delay" 
-							v-for="(value, key) in analytics"
-							:data-value="key">
-							<div class="flex-item">
-								<span class="v-icon icon"><i>{{ icons[key] }}</i></span>
-								<p class="lead">{{ value }}</p>
-								<p class="font-accent">{{ key }}</p>
+							v-for="row in analytics"
+							:data-value="row.text">
+							<div class="flex-item" :style="`color: ${ row.color };`">
+								<span class="v-icon icon"><i>{{ row.icon }}</i></span>
+								<p class="lead">{{ row.total }}</p>
+								<p class="font-accent">{{ row.text }}</p>
 							</div>
 						</div>
 					</div>
-				</v-details>
+				</section>
 			
 			</div>
 			
@@ -44,10 +51,26 @@
 			
 			<div class="modules-cdn-row" :data-section="kebabCase(content('headlines.assets'))">
 				
-				<v-details :title="content('headlines.assets')" type="break" open>
+				<section class="modules-section">
+					<header class="modules-divider">
+						<h4 class="modules-divider" v-html="content('headlines.assets')"></h4>
+						<hr />
+						<div class="modules-divider">
+							<p class="lead modules-divider" v-html="content('descriptions.assets')"></p>
+						</div>
+					</header>
+					
+					<nav class="modules-divider">
+						<a class="modules-divider active" href="#" data-mode="list" @click.stop.prevent="onClickToggleMode('list')">
+							<v-icon name="list">
+						</a>
+						<a class="modules-divider" href="#" data-mode="preview" @click.stop.prevent="onClickToggleMode('preview')">
+							<v-icon name="view_list">
+						</a>
+					</nav>
 					
 					<div class="modules-cdn-tree" v-if="tree">
-						<v-tree :tree="tree"></v-tree>
+						<app-files-tree :tree="tree" :open="true" :mode="mode"></app-files-tree>
 					</div>
 					
 					<section 
@@ -81,7 +104,7 @@
 							</div>
 						</div>
 					</section>
-				</v-details>
+				</section>
 			
 			</div>
 		</div>	
@@ -91,7 +114,17 @@
 				<h2 class="font-accent">{{ content('title') }}</h2>
 				<p class="p">{{ content('description') }}</p>
 			</section>
-			<section class="info-sidebar-section">
+			<nav class="info-sidebar-section info-sidebar-nav" v-if="!loading">
+				<a class="info-sidebar-nav" href="#" :data-section="kebabCase(content('headlines.analytics'))" @click.stop.prevent="onClickScroll(kebabCase(content('headlines.analytics')))">
+					<span class="info-sidebar-nav-icon"><v-icon name="view_quilt" left></span>
+					<span class="info-sidebar-nav-text" v-html="content('headlines.analytics')"></span>
+				</a>
+				<a class="info-sidebar-nav" href="#" :data-section="kebabCase(content('headlines.assets'))" @click.stop.prevent="onClickScroll(kebabCase(content('headlines.assets')))">
+					<span class="info-sidebar-nav-icon"><v-icon name="account_tree" left></span>
+					<span class="info-sidebar-nav-text" v-html="content('headlines.assets')"></span>
+				</a>
+			</nav>	
+			<section class="info-sidebar-section" v-if="!loading">
 				<h2 class="font-accent">{{ this.content('form.search.headline') }}</h2>
 				<div class="info-sidebar-row">
 					<v-input
@@ -112,24 +145,19 @@
 						{{ content('form.search.submit') }}
 					</v-button>
 				</div>
-			</section>
-			<nav class="info-sidebar-section info-sidebar-nav" v-if="!loading">
-				<a class="info-sidebar-nav" href="#" @click.stop.prevent="onClickScroll(kebabCase(content('headlines.analytics')))">{{ content('headlines.analytics') }}</a>
-				<a class="info-sidebar-nav" href="#" @click.stop.prevent="onClickScroll(kebabCase(content('headlines.assets')))">{{ content('headlines.assets') }}</a>
-			</nav>		
+			</section>	
 		</v-info-sidebar>
 	</div>
 </template>
 
 <script>
 	import { cloneDeep, get, forEach, kebabCase, map, set, size } from 'lodash';
-	import TreeComponent from './components/tree.vue';
-	import VueTreeNavigation  from 'vue-tree-navigation';
+	import TreeComponent from './components/files/tree.vue';
 		
 	export default {
 		name: 'CDN',
 		components: {
-			'v-tree': TreeComponent
+			'app-files-tree': TreeComponent
 		},
 		computed: {
 			breadcrumb () {
@@ -214,12 +242,16 @@
 										
 				});
 				
-				this.loading = false;			
+				this.loading = false;	
+				
+				setTimeout(this.onScrollEnd, 500);		
 				
 				return this.files;
 			},
 			load () {
 				this.loading = true;
+				
+				let analytics = {};
 												
 				this.$api.api.get('/custom/cdn/files')
 				.then((response) => {
@@ -227,7 +259,7 @@
 					this.loading = false;
 					
 					forEach (response.meta, (value, index) => {
-						if (typeof value === "number") set(this.analytics, index, value);
+						if (typeof value === "number") set(analytics, index, value);
 					});
 					
 					forEach (response.meta.types, (value, index) => {
@@ -238,12 +270,38 @@
 						});
 						type = type || 'scripts';
 						
-						let currvalue = get(this.analytics, type);
+						let currvalue = get(analytics, type);
 						
-						if (!currvalue) set(this.analytics, type, value);
-						else set(this.analytics, type, (value + currvalue));
+						if (!currvalue) set(analytics, type, value);
+						else set(analytics, type, (value + currvalue));
 					});
 					
+					let colors = this.colors.slice();
+				
+					if (size(colors) < size(analytics)) {
+						let len = Math.ceil(size(analytics) / size(colors));
+						
+						while(len > 0) {
+							colors = colors.concat(colors);
+							
+							len--;
+						}
+					}
+					
+					let currindex = 0;
+					
+					forEach (analytics, (value, index) => {
+						set(analytics, index, {
+							total: value,
+							text: index,
+							color: colors[currindex],
+							icon: this.icons[index]
+						});
+						
+						currindex++;
+					});
+					
+					this.analytics = analytics;
 					this.response = response;	
 					this.items();				
 				})
@@ -258,8 +316,15 @@
 			},
 			onClickScroll (input) {
 				let $row = this.$el.querySelector(`.modules-cdn-row[data-section="${ input }"]`);
+				let $nav = this.$el.querySelector(`a.info-sidebar-nav[data-section="${ input }"]`);
+				
+				if (this.$nav) this.$nav.classList.remove('active');
 				
 				if (!$row) return false;
+				
+				this.$nav = $nav;
+				
+				this.$nav.classList.add('active');
 				
 				let props = $row.getBoundingClientRect();
 				let top = window.scrollY + (props.y - 100);
@@ -271,6 +336,18 @@
 					behavior: 'smooth'
 				});
 			},
+			onClickToggleMode (input) {
+				let $active = this.$el.querySelector(`[data-mode].active`);
+				let $nav = this.$el.querySelector(`[data-mode="${ input }"]`);
+				
+				if ($active === $nav) return false;
+				
+				$active.classList.remove('active');
+				
+				$nav.classList.add('active');
+				
+				this.mode = input;
+			},
 			onInputSearch (input) {
 				this.query = input;
 				
@@ -280,6 +357,27 @@
 				this.loading = true;
 				
 				this.items();
+			},
+			onScrollEnd () {
+				this.$sections = this.$sections || this.$el.querySelectorAll('.modules-cdn-row');
+				let offset = 200;
+				
+				if (this.$nav) this.$nav.classList.remove('active');
+				
+				this.$nav = null;
+				
+				forEach(this.$sections, (section) => {
+					let top = section.offsetTop - window.scrollY;
+					let bottom = top + section.offsetHeight;
+					
+					if (top < offset && bottom > offset) this.$section = section;
+				});
+				
+				if (window.scrollY && !this.$section) this.$section = get(this.$sections, size(this.$sections) - 1);
+				
+				if (this.$section) this.$nav = this.$el.querySelector(`a.info-sidebar-nav[data-section="${ this.$section.getAttribute('data-section') }"]`);
+				
+				if (this.$nav) this.$nav.classList.add('active');
 			},
 			onToggle (dir) {
 				let $parent = this.$el.querySelector(`[data-directory="${ dir }"]`);
@@ -309,18 +407,31 @@
 		data () {
 			return {
 				analytics: {},
+				colors: [
+					"#f44336",
+					"#ff9800",
+					"#ff5722",
+					"#ffeb3b",
+					"#4caf50",
+					"#2196f3",
+					"#3f51b5"
+				],
 				contents: {
 					"en-US": {
 						"title": "CDN",
 						"subtitle": 'CDN - Publicly accessible assets and files',
 						"description": 'Publicly accessible assets and files',
 						"headlines": {
-							"analytics": "CDN Analytics and Snapshot",						
-							"assets": "Assets and Files",
+							"analytics": "CDN Dashboard",						
+							"assets": "Folders and Files",
 							"name": "Name",
 							"type": "Type",
 							"modified": "Modified",
 							"size": "Size"
+						},
+						"descriptions": {
+							"analytics": "Analytics, Insights, and Snapshot of all the static assets and documents in your CDN <br>CDN: Local Storage",						
+							"assets": "Assets and Files in the CDN."
 						},
 						"form": {
 							"search": {
@@ -374,7 +485,8 @@
 				},
 				loading: false,
 				query: null,
-				tree: null
+				tree: null,
+				mode: 'list'
 			};
 		},
 		metaInfo() {
@@ -388,6 +500,11 @@
 			if (this.$loading) this.render();
 			
 			this.load();
+			
+			document.addEventListener('scrollend', this.onScrollEnd);
+		},
+		beforeDestroy () {
+			document.removeEventListener('scrollend', this.onScrollEnd);
 		}
 	}
 </script>
@@ -508,19 +625,25 @@
 		
 		.modules-cdn-content {
 			display: grid;
-			grid-template-columns: repeat(5, 1fr);
+			grid-template-columns: repeat(4, 1fr);
 			grid-auto-rows: minmax(200px, max-content);
 			grid-gap: 1rem;
 				
-			@media (min-width: 960px) {
+			@media (min-width: 1280px) {
 				[data-value="files"] {
 					grid-column: 1/3 !important;
 					grid-row: 1/3 !important;
 				}
-			}
 				
-			@media (min-width: 960px) {
 				[data-value="directories"] {
+					grid-column: 3/5 !important;
+				}
+				
+				[data-value="images"] {
+					grid-column: 1/3 !important;
+				}
+				
+				[data-value="fonts"] {
 					grid-column: 3/5 !important;
 				}
 			}

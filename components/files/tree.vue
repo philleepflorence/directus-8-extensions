@@ -1,20 +1,23 @@
 <template>
 	<ul class="modules-components-tree">
-		<li class="modules-components-tree" v-for="(row, index) in tree" v-if="row">
+		<li :class="classParent" v-for="(row, index) in tree" v-if="row">
 			<header class="modules-components-tree" v-if="row.name" @click="onClickToggle" :data-type="row.type" :data-index="index">
 				<span data-status="open" v-if="row.children"><v-icon name="arrow_right"></v-icon></span>
 				<span data-status="close" v-if="row.children"><v-icon name="arrow_drop_down"></v-icon></span>
 				<span data-status="toggle" v-if="!row.children"><v-icon name="more_horiz"></v-icon></span>
 				<p v-if="row.children">{{ row.name }}</p>
 				<p v-else-if="row && row.size">
-					<span class="name">{{ row.name }}</span> 
+					<span class="image" v-if="displayImage(row)">
+						<img :src="row.cdn" :alt="row.name">
+					</span> 
+					<span class="name" v-else>{{ row.name }}</span> 
 					<span class="muted">{{ row.type }}</span>
 					<span class="muted">{{ row.size.value }}{{ row.size.unit }}</span>
 					<span class="muted">{{ parseDate(row.modified) }}</span>
 				</p>
 			</header>
 			<div class="modules-components-tree" v-if="row.children">
-				<v-tree :tree="row.children"></v-tree>
+				<app-files-tree :tree="row.children" :mode="mode"></app-files-tree>
 			</div>
 		</li>
 	</ul>
@@ -24,14 +27,25 @@
 	import { get } from 'lodash';
 
 	export default {
-		name: 'v-tree',
+		name: 'app-files-tree',
 		props: [
+			"mode",
+			"open",
 			"tree"
 		],
 		computed: {
-			
+			classParent () {
+				let classname = ['modules-components-tree'];
+				
+				if (this.open) classname.push('active');
+				
+				return classname;
+			}
 		},
 		methods: {
+			displayImage (input) {
+				return this.mode === 'preview' && input.cdn && input.mime.indexOf('image/') === 0;
+			},
 			onClickToggle (e) {
 				if (!e.currentTarget) return false;
 				
@@ -102,9 +116,18 @@
 					flex-grow: 1;
 					font-size: 1rem;
 					
-					span.name {
+					span.name,
+					span.image {
 						flex-grow: 1;
 						padding-right: 0.5rem;
+					}
+					
+					span.image {
+						img {
+							display: block;
+							max-width: 200px;
+							height: auto;
+						}
 					}
 					
 					span.muted {

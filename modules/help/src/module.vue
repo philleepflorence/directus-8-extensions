@@ -19,18 +19,27 @@
 			</div>
 		</div>
 		
-		<div class="modules-help-content animated fadeIn" v-else-if="rows">
+		<div class="modules-help-content animated fadeIn" v-else-if="loaded && rows">
 			
-			<v-details :title="content(`headlines.${ index }`)" type="break" v-for="(section, index) in rows" open>
-				<ol class="modules-help-ol">
-					<li class="modules-help-li" v-for="(row, key) in section">
-						<section class="modules-help-section" :data-href="`${ index }-${ row.slug }`">
-							<h3 class="lead font-accent">{{ row.question }}</h3>
-							<div class="p" v-html="row.answer"></div>
-						</section>
-					</li>
-				</ol>
-			</v-details>
+			<section class="modules-section" :data-section="content(`sections.${ index }.headline`)" v-for="(section, index) in rows">
+				<header class="modules-divider">
+					<h4 class="modules-divider" v-html="content(`sections.${ index }.headline`)"></h4>
+					<hr />
+					<div class="modules-divider">
+						<p class="lead modules-divider" v-html="content(`sections.${ index }.description`)"></p>
+					</div>
+				</header>
+				<div class="modules-cdn-content">
+					<ol class="modules-help-ol">
+						<li class="modules-help-li" v-for="(row, key) in section">
+							<section class="modules-help-section" :data-href="`${ index }-${ row.slug }`">
+								<h3 class="lead font-accent">{{ row.question }}</h3>
+								<div class="p" v-html="row.answer"></div>
+							</section>
+						</li>
+					</ol>
+				</div>
+			</section>
 			
 		</div>	
 
@@ -40,7 +49,14 @@
 				<p class="p">{{ content('description') }}</p>
 				<p class="lead info-sidebar-count" v-if="rows">{{ count }}</p>
 			</section>
-			<section class="info-sidebar-section">
+			<nav class="info-sidebar-section info-sidebar-nav" v-if="loaded">
+				<h2 class="font-accent">{{ content('navigation') }}</h2>
+				<a class="info-sidebar-nav" href="#" :data-section="content(`sections.${ index }.headline`)"  v-for="(section, index) in rows" @click.stop.prevent="onClickScroll(content(`sections.${ index }.headline`))">
+					<span class="info-sidebar-nav-icon"><v-icon :name="content(`sections.${ index }.icon`)" left></span>
+					<span class="info-sidebar-nav-text">{{ content(`sections.${ index }.headline`) }}</span>
+				</a>
+			</nav>
+			<section class="info-sidebar-section" v-if="rows">
 				<h2 class="font-accent">{{ this.content('form.search.headline') }}</h2>
 				<div class="info-sidebar-row">
 					<v-input
@@ -62,19 +78,13 @@
 					</v-button>
 				</div>
 			</section>
-			<section class="info-sidebar-section" v-if="loaded" v-for="(section, index) in rows">
-				<h2 class="font-accent">{{ content(`headlines.${ index }`) }}</h2>
-				<nav class="info-sidebar-nav">
-					<a class="info-sidebar-nav" href="#" v-for="(row, key) in section" @click.stop.prevent="onClickScroll(`${ index }-${ row.slug }`)">{{ row.question }}</a>
-				</nav>
-			</section>
 		</v-info-sidebar>
 		
 	</div>
 </template>
 
 <script>
-	import { forEach, get, set } from 'lodash';
+	import { forEach, get, set, size } from 'lodash';
 	
 	export default {
 		name: 'Help',
@@ -129,9 +139,16 @@
 				});
 			},
 			onClickScroll (input) {
-				let $row = this.$el.querySelector(`[data-href="${ input }"]`);
+				let $row = this.$el.querySelector(`.modules-section[data-section="${ input }"]`);
+				let $nav = this.$el.querySelector(`a.info-sidebar-nav[data-section="${ input }"]`);
+				
+				if (this.$nav) this.$nav.classList.remove('active');
 				
 				if (!$row) return false;
+				
+				this.$nav = $nav;
+				
+				this.$nav.classList.add('active');
 				
 				let props = $row.getBoundingClientRect();
 				let top = props.y - 70;
@@ -147,6 +164,27 @@
 				this.query = input;
 				
 				if (input === '') this.render();
+			},
+			onScrollEnd () {
+				this.$sections = this.$sections || this.$el.querySelectorAll('.modules-section');
+				let offset = 200;
+				
+				if (this.$nav) this.$nav.classList.remove('active');
+				
+				this.$nav = null;
+				
+				forEach(this.$sections, (section) => {
+					let top = section.offsetTop - window.scrollY;
+					let bottom = top + section.offsetHeight;
+					
+					if (top < offset && bottom > offset) this.$section = section;
+				});
+				
+				if (window.scrollY && !this.$section) this.$section = get(this.$sections, size(this.$sections) - 1);
+				
+				if (this.$section) this.$nav = this.$el.querySelector(`a.info-sidebar-nav[data-section="${ this.$section.getAttribute('data-section') }"]`);
+				
+				if (this.$nav) this.$nav.classList.add('active');
 			},
 			onSubmitSearch (input) {
 				this.loading = true;
@@ -174,6 +212,9 @@
 				});
 				
 				this.loading = false;
+				this.loaded = true;
+				
+				setTimeout(this.onScrollEnd, 500);
 				
 				return this.rows;
 			}
@@ -185,9 +226,18 @@
 						"title": "Help",
 						"subtitle": 'Help - Collection of Help, Guide and FAQ Items',
 						"description": 'Collection of Help, Guide and FAQ Items',
-						"headlines": {
-							"guide": "How To Guide",						
-							"faqs": "Frequently Asked Questions"							
+						"navigation": "Scroll to Section",
+						"sections": {
+							"guide": {
+								"icon": "book",
+								"headline": "How To Guide",
+								"description": "Detailed guides on how to use the application"
+							},
+							"faqs": {
+								"icon": "question_answer",
+								"headline": "Frequently Asked Questions",
+								"description": "Answers to Questions submitted from the application or any common question related to the application."
+							}
 						},
 						"form": {
 							"search": {
@@ -200,7 +250,7 @@
 				},
 				count: 0,
 				items: null,
-				loaded: true,
+				loaded: false,
 				query: null,
 				rows: null
 			};
@@ -212,6 +262,11 @@
 		},
 		mounted () {
 			this.load();
+			
+			document.addEventListener('scrollend', this.onScrollEnd);
+		},
+		beforeDestroy () {
+			document.removeEventListener('scrollend', this.onScrollEnd);
 		}
 	}
 </script>

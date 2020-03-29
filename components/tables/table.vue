@@ -13,9 +13,9 @@
 					</div>
 				</div>
 				<div class="details animated fadeIn">
-					<section class="details-section" v-for="detail in row">
-						<h5 class="details-title">{{ detail.key }}</h5>
-						<div class="details-content" v-html="detail.value"></div>
+					<section class="details-section" v-for="(detail, field) in row">
+						<h5 class="details-title">{{ formatKey(detail, field) }}</h5>
+						<div class="details-content" v-html="formatValue(detail, field)"></div>
 					</section>
 				</div>
 			</div>
@@ -24,11 +24,12 @@
 </template>
 
 <script>
-	import { get, size } from 'lodash';
+	import { get, size, startCase } from 'lodash';
 	
 	export default {
 		name: 'AppTable',
 		props: [
+			"details",
 			"headers",
 			"rows"
 		],
@@ -46,6 +47,22 @@
 			}
 		},
 		methods: {
+			formatKey (detail, field) {
+				if (get(this.details, 'key')) return get(detail, this.details.key);
+				
+				return startCase(field);
+			},
+			formatValue (detail, field) {
+				if (get(this.details, 'value')) return get(detail, this.details.value);
+				
+				let currOption = get(this.details, `fields.${ field }`);
+				
+				if (currOption) return get(detail, currOption);
+				
+				if (detail !== "null" || typeof detail === "undefined") return detail;
+				
+				return '--';
+			},
 			onClickDetails (event) {
 				if (this.$details) this.$details.classList.remove('active');
 				if (this.$row) this.$row.classList.remove('active');

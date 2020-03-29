@@ -1,11 +1,11 @@
 {
-	"name": "analytics-app",
+	"name": "analytics",
 	"version": "1.0.0",
-	"description": "Analytics of the Application Visitors",
+	"description": "Analytics of the Application Visitors and Demographics",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/analytics-app",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/analytics-app",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/analytics",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/analytics",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [
