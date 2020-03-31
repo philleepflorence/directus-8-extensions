@@ -4,7 +4,7 @@
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
-			icon="pie_chart" 
+			:icon="icon" 
 			settings>
 		</v-header>
 						
@@ -260,12 +260,48 @@
 	import DoughnutChart from './components/charts/doughnut.vue';
 	import PieChart from './components/charts/pie.vue';
 	
+	import $meta from './meta.json';
+	
 	export default {
 		name: 'ModulesAnalytics',
 		components: {
 			'app-bar-chart': BarChart,
 			'app-doughnut-chart': DoughnutChart,
 			'app-pie-chart': PieChart
+		},
+		data () {
+			return {
+				analytics: {},
+				charts: {
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						legend: {
+							display: false
+						},
+						tooltips: {
+							enabled: false,
+							custom: this.tooltip
+						}
+					},
+					colors: [
+						"#f44336",
+						"#ff9800",
+						"#ff5722",
+						"#ffeb3b",
+						"#4caf50",
+						"#2196f3",
+						"#3f51b5"
+					]
+				},
+				contents: $meta.contents,
+				icon: $meta.icon,
+				endDate: null,
+				startDate: null,
+				legends: {},
+				loaded: false,
+				loading: false
+			};
 		},
 		computed: {
 			breadcrumb () {
@@ -473,183 +509,6 @@
 				
 				this.$overlay = $overlay;
 			}
-		},
-		data () {
-			return {
-				analytics: {},
-				charts: {
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							display: false
-						},
-						tooltips: {
-							enabled: false,
-							custom: this.tooltip
-						}
-					},
-					colors: [
-						"#f44336",
-						"#ff9800",
-						"#ff5722",
-						"#ffeb3b",
-						"#4caf50",
-						"#2196f3",
-						"#3f51b5"
-					]
-				},
-				contents: {
-					"en-US": {
-						"title": "Analytics",
-						"subtitle": 'Analytics - Report of the Application Visitors',
-						"description": 'Analytics Report of the Application Visitors',
-						"navigation": 'Scroll to Section',
-						"form": {
-							"empty": {
-								"message": "Oooops! <br>No analytics data was downloaded for the start and end dates. <br>Please try adjusting the start and end dates."
-							},
-							"headline": "Start and End Dates",
-							"startDate": {
-								"placeholder": "Analytics Start Date"
-							},
-							"endDate": {
-								"placeholder": "Analytics End Date"
-							},
-							"submit": {
-								"label": "Update Analytics"
-							}
-						},
-						"charts": {
-							"titles": {
-								"sessions": {
-									"icon": "people",
-									"text": "Visitors and Sessions",
-									"description": "Analytics of the unique visitors and application downloads."
-								},
-								"performance": {
-									"icon": "speed",
-									"text": "Performance and Views",
-									"description": "Analytics of the performance of the application and pages"
-								},
-								"locations": {
-									"icon": "person_pin",
-									"text": "Locations",
-									"description": "Analytics of the locations of the application visitors"
-								},
-								"browsers": {
-									"icon": "devices",
-									"text": "Browsers and Devices",
-									"description": "Analytics of the browsers and devices used to load and view the application"
-								}
-							},
-							"headlines": {
-								"sessions": "Visitors via Website vs Downloaded App"
-							}
-						},
-						"sections": {
-							"performance": {
-								"loaded": {
-									"average": "The average # seconds it takes to download and render the App",
-									"min": "The minimum # seconds it takes to download and render the App",
-									"max": "The maximum # seconds it takes to download and render the App"
-								},
-								"downloaded": {
-									"average": "The average # seconds it takes to download the App",
-									"min": "The minimum # seconds it takes to download the App",
-									"max": "The maximum # seconds it takes to download the App"
-								},
-								"rendered": {
-									"average": "The average # seconds it takes to render the App",
-									"min": "The minimum # seconds it takes to load the App",
-									"max": "The maximum # seconds it takes to load the App"
-								}
-							},
-							"views": {
-								"viewsize": {
-									"headline": "View Sizes",
-									"description": "The width and height of the browser or the app container"
-								},
-								"screensize": {
-									"headline": "Screen Sizes",
-									"description": "The width and height of the device used to view the app"
-								},
-								"page": {
-									"headline": "Pages",
-									"description": "The most and least viewed pages or sections of the app"
-								}
-							},
-							"sessions": {
-								"sessions": {
-									"headline": "Sessions",
-									"description": "# times the App was loaded",
-									"property": "meta.total"
-								},
-								"visitors": {
-									"headline": "Unique Visitors",
-									"description": "# unique visitors to the App",
-									"property": "meta.visitors"
-								},
-								"website": {
-									"headline": "Websites",
-									"description": "# times the App was loaded in a Browser",
-									"property": "data.sessions.website.total"
-								},
-								"pwa": {
-									"headline": "PWAs",
-									"description": "# times the App was loaded as an App",
-									"property": "data.sessions.pwa.total"
-								}
-							},
-							"locations": {
-								"time_zone": {
-									"headline": "Time Zones",
-									"description": "The time zones of all the visitors to the app"
-								},
-								"country": {
-									"headline": "Countries",
-									"description": "The countries of all the visitors to the app"
-								},
-								"region": {
-									"headline": "Regions",
-									"description": "The regions, states, or provinces of all the visitors to the app"
-								}
-							},
-							"browsers": {
-								"name": {
-									"headline": "Browsers",
-									"description": "The browsers with which visitors view the website or app"
-								},
-								"engine_name": {
-									"headline": "Browser Engines",
-									"description": "The browser engines with which visitors view the website or app"
-								},
-								"device_vendor": {
-									"headline": "Device Manufacturers",
-									"description": "The manufacturers of the devices with which visitors view the website or app"
-								},
-								"device_model": {
-									"headline": "Device",
-									"description": "The devices with which visitors view the website or app"
-								},
-								"device_type": {
-									"headline": "Device Type",
-									"description": "The type of devices with which visitors view the website or app"
-								},
-								"operating_system_name": {
-									"headline": "Operating System",
-									"description": "The operating systems of the devices with which visitors view the website or app"
-								}
-							}
-						}
-					}						
-				},
-				endDate: null,
-				startDate: null,
-				legends: {},
-				loaded: false,
-				loading: false
-			};
 		},
 		metaInfo() {
 			return {

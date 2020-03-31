@@ -3,7 +3,7 @@
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
-			icon="insert_emoticon" 
+			:icon="icon" 
 			settings>
 		</v-header>
 		
@@ -73,8 +73,26 @@
 <script>
 	import { get, filter, forEach, set, size, startCase } from 'lodash';
 	
+	import $meta from './meta.json';
+	
 	export default {
-		name: 'Modules',
+		name: 'ModulesIcons',
+		data () {
+			return {
+				contents: $meta.contents,
+				icon: $meta.icon,
+				count: 0,
+				details: null,
+				data: {
+					icons: [],
+				},
+				loading: true,
+				query: '',
+				timers: {
+					input: 0
+				}
+			};
+		},
 		computed: {
 			breadcrumb () {
 				return [
@@ -166,35 +184,6 @@
 				}, 
 				300);
 			}
-		},
-		data () {
-			return {
-				contents: {
-					"en-US": {
-						"title": "Icons",
-						"subtitle": 'Icons - View all the Application Icons Available',
-						"description": 'View all the Application Icons Available',
-						"headline": "Application Icons",
-						"information": 'Click on each icon for more details.',
-						"form": {
-							"headline": 'Search Icons',
-							"submit": 'Search Icons',
-							"filter": 'Search Icons',
-							"placeholder": 'Search Icons by Name and Keywords'
-						}
-					}										
-				},
-				count: 0,
-				details: null,
-				data: {
-					icons: [],
-				},
-				loading: true,
-				query: '',
-				timers: {
-					input: 0
-				}
-			};
 		},
 		metaInfo() {
 			return {

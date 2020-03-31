@@ -4,7 +4,7 @@
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
-			icon="bar_chart" 
+			:icon="icon" 
 			settings>
 		</v-header>
 						
@@ -185,11 +185,14 @@
 
 <script>
 	import { cloneDeep, filter, forEach, get, kebabCase, set, shuffle, size, startCase } from 'lodash';
+	
 	import AppTable from './components/tables/table.vue';
 	import BarChart from './components/charts/bar.vue';
 	import DoughnutChart from './components/charts/doughnut.vue';
 	import PieChart from './components/charts/pie.vue';
 	import RadarChart from './components/charts/radar.vue';
+	
+	import $meta from './meta.json';
 	
 	export default {
 		name: 'ModulesAnalyticsApplication',
@@ -225,43 +228,8 @@
 						"#3f51b5"
 					]
 				},
-				contents: {
-					"en-US": {
-						"title": "Reports and Insights",
-						"subtitle": 'Reports and Insights - Analytics Report of the Application Data',
-						"description": 'Analysis, Insights, and Reports of the various Application Data and Modules',
-						"disclaimer": "For performance and efficiency, where applicable, report data is only loaded for the current month. <br>Feel free to use the filter form to manipulate the data and get the report you want.",
-						"introduction": "Please select from one of the available reports listed! <br>Be sure the report has been confirgured by your webmaster.",
-						"navigation": "Choose a Report",
-						"form": {
-							"empty": {
-								"message": "Oooops! <br>No reports configuration is available. <br>Please try creating reports configuration for the collections you wish to view."
-							},
-							"headline": "Reports Filter Options - Select one or more filters to update the report.",
-							"startDate": {
-								"placeholder": "Reports Start Date"
-							},
-							"endDate": {
-								"placeholder": "Reports End Date"
-							},
-							"submit": {
-								"label": "Update Reports"
-							}
-						},
-						"sections": {
-							"reports": {
-								"headline": "Reports",
-								"description": "Analysis, Charts, and Reports",
-								"empty": "No reports configuration found!"
-							},
-							"rows": {
-								"headline": "Rows",
-								"description": "Click or tap on each row for more details.",
-								"empty": "No reports data found!"
-							}
-						}
-					}						
-				},
+				contents: $meta.contents,
+				icon: $meta.icon,
 				form: {},
 				filters: null,
 				endDate: null,

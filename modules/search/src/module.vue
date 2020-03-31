@@ -4,7 +4,7 @@
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
-			icon="view_quilt" 
+			:icon="icon" 
 			settings>
 		</v-header>
 		
@@ -29,12 +29,7 @@
 					<p class="modules-divider">{{ content('results.information') }} {{ results.meta.total }}</p>
 				</header>
 				<div class="modules-search-results">
-					<section class="modules-search-result" v-for="row in results.data" @click="onClickNavigate(row.path)">
-						<h3 class="modules-search-title font-accent">{{ row.title }}</h3>
-						<p class="modules-search-description">{{ row.description }}</p>
-						<small class="modules-search-headline">{{ row.headline }}</small>
-						<small class="modules-search-path">{{ url }}{{ row.path }}</small>
-					</section>
+					<app-table :headers="headers" :rows="results.data" @click="onClickNavigate"></app-table>					
 				</div>
 			</div>
 			
@@ -80,8 +75,31 @@
 <script>
 	import { get, set, size } from 'lodash';
 	
+	import AppTable from './components/tables/table.vue';
+	
+	import $meta from './meta.json';
+	
 	export default {
 		name: 'ModulesSearch',
+		components: {
+			'app-table': AppTable
+		},
+		data () {
+			return {
+				contents: $meta.contents,
+				icon: $meta.icon,
+				count: 0,
+				keys: {
+					element: 0
+				},
+				loading: false,
+				query: null,
+				results: null,
+				timers: {
+					input: 0
+				}
+			};
+		},
 		computed: {
 			breadcrumb () {
 				return [
@@ -97,6 +115,11 @@
 			},
 			currentProjectKey () {
 				return this.$store.state.currentProjectKey;
+			},
+			headers () {
+				let row = get(this.results.data, '0');
+				
+				return Object.keys(row);
 			},
 			locale () {
 				return get(this.$store.state, 'settings.values.default_locale');
@@ -132,8 +155,8 @@
 				this.set('extensions.modules.search.query', null);				
 				this.set('extensions.modules.search.results', null);
 			},
-			onClickNavigate (input) {
-				this.$router.push(input);
+			onClickNavigate (row) {
+				this.$router.push(row.path);
 			},
 			onInput (input) {
 				clearTimeout(this.timers.input);
@@ -177,40 +200,6 @@
 				
 				return window.sessionStorage.setItem(key, JSON.stringify(input));
 			}
-		},
-		data () {
-			return {
-				contents: {
-					"en-US": {
-						"title": "Search",
-						"subtitle": "Search - Find Items in all visible Collections",
-						"description": "Find Items in all visible Collections",
-						"disclaimer": [
-							"You must have access to the collection(s) you wish to search.",
-							"Only a maximum of 200 items per collection are returned for each search query.",
-							"NOTE: Core Directus Collections are not included in search results.",
-							"To begin a new search, enter your search query above."
-						],
-						"results": {
-							"headline": "Search Results",
-							"information": "Number of items and rows that contain the query - "
-						},
-						"input": {
-							"placeholder": "Search all visible collections"
-						}
-					}						
-				},
-				count: 0,
-				keys: {
-					element: 0
-				},
-				loading: false,
-				query: null,
-				results: null,
-				timers: {
-					input: 0
-				}
-			};
 		},
 		metaInfo() {
 			return {

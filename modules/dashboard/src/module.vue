@@ -4,7 +4,7 @@
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
-			icon="view_quilt" 
+			:icon="icon" 
 			settings>
 		</v-header>
 		
@@ -44,8 +44,18 @@
 <script>
 	import { get } from 'lodash';
 	
+	import $meta from './meta.json';
+	
 	export default {
-		name: 'Dashboard',		
+		name: 'Dashboard',	
+		data () {
+			return {
+				analytics: {},
+				contents: $meta.contents,
+				icon: $meta.icon,
+				loading: false
+			};
+		},	
 		computed: {
 			breadcrumb () {
 				return [];
@@ -88,49 +98,6 @@
 				
 				this.load();
 			}
-		},
-		data () {
-			return {
-				analytics: {},
-				contents: {
-					"en-US" : {
-						"title": "Dashboard",
-						"subtitle": 'Dashboard - Modules Snapshot',
-						"description": 'Directus Core &amp; Custom Modules',
-						"modules": {
-							"modules": {
-								"title": "Modules",
-								"description": "Assets, analytics, reports, guides, and tools",
-								"path": "/app/ext/modules",
-								"icon": "supervised_user_circle",
-								"analytics": "Modules"
-							},
-							"files": {
-								"title": "Files",
-								"description": "Uploaded files",
-								"path": "/app/files",
-								"icon": "cloud_done",
-								"analytics": "Files"
-							},
-							"collections": {
-								"title": "Collections",
-								"description": "Collections and Items",
-								"path": "/app/collections",
-								"icon": "view_module",
-								"analytics": "Collections"
-							},
-							"users": {
-								"title": "Users",
-								"description": "Directus Users Directory",
-								"path": "/app/users",
-								"icon": "storage",
-								"analytics": "Users"
-							}
-						}						
-					}				
-				},
-				loading: false
-			};
 		},
 		metaInfo() {
 			return {

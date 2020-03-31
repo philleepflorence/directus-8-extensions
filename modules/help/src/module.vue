@@ -86,8 +86,20 @@
 <script>
 	import { forEach, get, set, size } from 'lodash';
 	
+	import $meta from './meta.json';
+	
 	export default {
 		name: 'Help',
+		data () {
+			return {
+				contents: $meta.contents,
+				count: 0,
+				items: null,
+				loaded: false,
+				query: null,
+				rows: null
+			};
+		},
 		computed: {
 			breadcrumb () {
 				return [
@@ -219,43 +231,7 @@
 				return this.rows;
 			}
 		},
-		data () {
-			return {
-				contents: {
-					"en-US": {
-						"title": "Help",
-						"subtitle": 'Help - Collection of Help, Guide and FAQ Items',
-						"description": 'Collection of Help, Guide and FAQ Items',
-						"navigation": "Scroll to Section",
-						"sections": {
-							"guide": {
-								"icon": "book",
-								"headline": "How To Guide",
-								"description": "Detailed guides on how to use the application"
-							},
-							"faqs": {
-								"icon": "question_answer",
-								"headline": "Frequently Asked Questions",
-								"description": "Answers to Questions submitted from the application or any common question related to the application."
-							}
-						},
-						"form": {
-							"search": {
-								"headline": "Search",
-								"placeholder": "Search FAQs and Guides",
-								"submit": "Search"
-							}
-						}
-					}						
-				},
-				count: 0,
-				items: null,
-				loaded: false,
-				query: null,
-				rows: null
-			};
-		},
-		metaInfo() {
+		metaInfo () {
 			return {
 				title: this.content('subtitle')
 			};

@@ -1,9 +1,29 @@
 {
 	"name": "search",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "search",
 	"types": [
 		"string"
 	],
-	"options": {}
+	"options": {},
+	"contents": {
+		"en-US": {
+			"title": "Search",
+			"subtitle": "Search - Find Items in all visible Collections",
+			"description": "Find Items in all visible Collections",
+			"disclaimer": [
+				"You must have access to the collection(s) you wish to search.",
+				"Only a maximum of 200 items per collection are returned for each search query.",
+				"NOTE: Core Directus Collections are not included in search results.",
+				"To begin a new search, enter your search query above."
+			],
+			"results": {
+				"headline": "Search Results",
+				"information": "Number of items and rows that contain the query - "
+			},
+			"input": {
+				"placeholder": "Search all visible collections"
+			}
+		}
+	}
 }

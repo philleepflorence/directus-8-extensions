@@ -3,7 +3,7 @@
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
-			icon="view_module" 
+			:icon="icon" 
 			settings>
 		</v-header>
 		
@@ -153,11 +153,74 @@
 <script>
 	import { cloneDeep, get, forEach, kebabCase, map, set, size } from 'lodash';
 	import TreeComponent from './components/files/tree.vue';
+	
+	import $meta from './meta.json';
 		
 	export default {
 		name: 'CDN',
 		components: {
 			'app-files-tree': TreeComponent
+		},
+		data () {
+			return {
+				analytics: {},
+				colors: [
+					"#f44336",
+					"#ff9800",
+					"#ff5722",
+					"#ffeb3b",
+					"#4caf50",
+					"#2196f3",
+					"#3f51b5"
+				],
+				contents: $meta.contents,
+				icon: $meta.icon,
+				icons: {
+					files: "insert_drive_file",
+					directories: "folder",
+					images: "camera_alt",
+					scripts: "code",
+					fonts: "text_fields",
+					text: "notes"
+				},
+				types: {
+					images: [
+						"jpg",
+						"jpeg",
+						"png"
+					],
+					scripts: [
+						"css",
+						"dist",
+						"hb",
+						"js",
+						"less",
+						"map",
+						"php",
+						"scss",
+						"sql"
+					],
+					fonts: [
+						"eot",
+						"svg",
+						"ttf",
+						"woff",
+						"woff2"
+					],
+					text: [
+						"csv",
+						"handlebars",
+						"html",
+						"json",
+						"markdown",
+						"md"
+					]
+				},
+				loading: false,
+				query: null,
+				tree: null,
+				mode: 'list'
+			};
 		},
 		computed: {
 			breadcrumb () {
@@ -403,91 +466,6 @@
 				
 				this.load();
 			}
-		},
-		data () {
-			return {
-				analytics: {},
-				colors: [
-					"#f44336",
-					"#ff9800",
-					"#ff5722",
-					"#ffeb3b",
-					"#4caf50",
-					"#2196f3",
-					"#3f51b5"
-				],
-				contents: {
-					"en-US": {
-						"title": "CDN",
-						"subtitle": 'CDN - Publicly accessible assets and files',
-						"description": 'Publicly accessible assets and files',
-						"headlines": {
-							"analytics": "CDN Dashboard",						
-							"assets": "Folders and Files",
-							"name": "Name",
-							"type": "Type",
-							"modified": "Modified",
-							"size": "Size"
-						},
-						"descriptions": {
-							"analytics": "Analytics, Insights, and Snapshot of all the static assets and documents in your CDN <br>CDN: Local Storage",						
-							"assets": "Assets and Files in the CDN."
-						},
-						"form": {
-							"search": {
-								"headline": "Search",
-								"placeholder": "Search Assets and Files",
-								"submit": "Search"
-							}
-						}
-					}						
-				},
-				icons: {
-					files: "insert_drive_file",
-					directories: "folder",
-					images: "camera_alt",
-					scripts: "code",
-					fonts: "text_fields",
-					text: "notes"
-				},
-				types: {
-					images: [
-						"jpg",
-						"jpeg",
-						"png"
-					],
-					scripts: [
-						"css",
-						"dist",
-						"hb",
-						"js",
-						"less",
-						"map",
-						"php",
-						"scss",
-						"sql"
-					],
-					fonts: [
-						"eot",
-						"svg",
-						"ttf",
-						"woff",
-						"woff2"
-					],
-					text: [
-						"csv",
-						"handlebars",
-						"html",
-						"json",
-						"markdown",
-						"md"
-					]
-				},
-				loading: false,
-				query: null,
-				tree: null,
-				mode: 'list'
-			};
 		},
 		metaInfo() {
 			return {

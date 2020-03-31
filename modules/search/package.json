@@ -1,7 +1,7 @@
 {
 	"name": "Search",
-	"version": "1.0.0",
-	"description": "Search al visible collections in Directus for items containing a query",
+	"version": "1.1.0",
+	"description": "Search all visible collections in Directus for items containing a query",
 	"main": "",
 	"scripts": {
 		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/search",

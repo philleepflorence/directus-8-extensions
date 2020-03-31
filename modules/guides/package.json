@@ -1,22 +1,24 @@
 {
-	"name": "Modules",
-	"version": "1.1.0",
-	"description": "Collection of all custom modules available to the Directus application",
+	"name": "Guides",
+	"version": "1.0.0",
+	"description": "Directus App Guides and Documentation",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/modules",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/modules",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/guides",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/guides",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [
 		"custom",
-		"modules"
+		"modules",
+		"guides"
 	],
 	"author": "Philleep Florence",
 	"license": "GPL-3.0",
 	"dependencies": {
 		"@directus/extension-toolkit": "^0.0.1",
 		"lodash": "^4.17.15",
+		"marked": "^0.8.2",
 		"vue": "^2.6.11",
 		"vue-hot-reload-api": "^2.3.4",
 		"vuex": "^3.1.2"

@@ -45,6 +45,8 @@
 <script>
 	import { forEach, get, set, size } from 'lodash';
 	
+	import $meta from './meta.json';
+	
 	export default {
 		name: 'Modules',
 		computed: {
@@ -101,62 +103,7 @@
 		data () {
 			return {
 				analytics: {},
-				contents: {
-					"en-US": {
-						"title": "Modules",
-						"subtitle": 'Modules - Collection of Custom Modules',
-						"description": 'Collection of Custom Modules',
-						"headlines": {
-							"analytics": "Analytics - Reports",						
-							"assets": "Assets - Application",						
-							"guides": "Guides - Tools"
-						},
-						"modules": {
-							"analytics": {
-								"title": "Application Analytics",
-								"description": "Application Visitors and Performance Analytics",
-								"path": "/app/ext/analytics",
-								"icon": "pie_chart",
-								"analytics": "sessions"
-							},
-							"reports": {
-								"title": "Application Reports",
-								"description": "Application Data and Modules Reports",
-								"path": "/app/ext/reports",
-								"icon": "bar_chart",
-								"analytics": "Reports"
-							},
-							"cdn": {
-								"title": "CDN",
-								"description": "CDN Static Assets and Documents",
-								"path": "/app/ext/cdn",
-								"icon": "cloud",
-								"analytics": "Items"
-							},
-							"faqs": {
-								"title": "Help and FAQs",
-								"description": "Get help with common tasks and more",
-								"path": "/app/ext/help",
-								"icon": "question_answer",
-								"analytics": "Items"
-							},
-							"icons": {
-								"title": "Icons",
-								"description": "Icons available to the applications",
-								"path": "/app/ext/icons",
-								"icon": "insert_emoticon",
-								"analytics": "Icons"
-							},
-							"search": {
-								"title": "Search",
-								"description": "Search all visible collection items",
-								"path": "/app/ext/search",
-								"icon": "search",
-								"analytics": "Collections"
-							}
-						}
-					}						
-				},
+				contents: $meta.contents,
 				loading: false
 			};
 		},
@@ -194,11 +141,14 @@
 				overflow: hidden;
 				animation-duration: 600ms;
 				
-/*
-				&.modules-modules-analytics {
+				&.modules-modules-guides {
 					grid-row: 1/3 !important;
 				}
-*/
+				
+				&.modules-modules-reports {
+					grid-row: 1/2 !important;
+					grid-column: 2/4 !important;
+				}
 				
 				.flex-item {
 					flex-grow: 1;

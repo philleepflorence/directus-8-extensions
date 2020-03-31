@@ -5,5 +5,31 @@
 	"types": [
 		"string"
 	],
-	"options": {}
+	"options": {},
+	"contents": {
+		"en-US": {
+			"title": "CDN",
+			"subtitle": 'CDN - Publicly accessible assets and files',
+			"description": 'Publicly accessible assets and files',
+			"headlines": {
+				"analytics": "CDN Dashboard",						
+				"assets": "Folders and Files",
+				"name": "Name",
+				"type": "Type",
+				"modified": "Modified",
+				"size": "Size"
+			},
+			"descriptions": {
+				"analytics": "Analytics, Insights, and Snapshot of all the static assets and documents in your CDN <br>CDN: Local Storage",						
+				"assets": "Assets and Files in the CDN."
+			},
+			"form": {
+				"search": {
+					"headline": "Search",
+					"placeholder": "Search Assets and Files",
+					"submit": "Search"
+				}
+			}
+		}						
+	}
 }

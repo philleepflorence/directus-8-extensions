@@ -1,0 +1,66 @@
+{
+	"name": "guides",
+	"version": "1.0.0",
+	"icon": "book",
+	"types": [
+		"string"
+	],
+	"options": {},
+	"contents": {
+		"en-US": {
+			"title": "Guides",
+			"subtitle": "Guides - Directus App Guides and Documentation",
+			"description": "Directus App Guides and Documentation",
+			"navigation": "Guides",
+			"disclaimer": "To navigate between guides, click on any guide below or use the forward and back buttons on the left.",
+			"exit": "To exit Guides, click on any navigation item!"
+		}
+	},
+	"links": [{
+			"text": "Website",
+			"link": "https://directus.io"
+		},
+		{
+			"text": "Cloud",
+			"link": "https://directus.cloud"
+		},
+		{
+			"text": "Demo",
+			"link": "https://directus.app"
+		}
+	],
+	"github": {
+		"baseURL": "https://raw.githubusercontent.com/directus/docs/master",
+		"index": "/getting-started/introduction.md",
+		"navigation": {
+			"getting-started": {
+				"headline": "Getting Started",
+				"nav": {
+					"introduction": "/getting-started/introduction.md"
+				}
+			},
+			"guides": {
+				"headline": "Guides",
+				"nav": {
+					"user-guide": "/guides/user-guide.md",
+					"admin-guide": "/guides/admin-guide.md",
+					"accountability": "/guides/accountability.md",
+					"authentication": "/guides/authentication.md",
+					"collections": "/guides/collections.md",
+					"database": "/guides/database.md",
+					"fields": "/guides/fields.md",
+					"field-types": "/guides/field-types.md",
+					"files": "/guides/files.md",
+					"interfaces": "/guides/interfaces.md",
+					"layouts": "/guides/layouts.md",
+					"modules": "/guides/modules.md",
+					"permissions": "/guides/permissions.md",
+					"relationships": "/guides/relationships.md",
+					"roles": "/guides/roles.md",
+					"status": "/guides/status.md",
+					"users": "/guides/users.md"
+				}
+			}
+		}
+	}
+}

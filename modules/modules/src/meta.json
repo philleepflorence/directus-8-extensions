@@ -1,9 +1,67 @@
 {
 	"name": "modules",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "view_module",
-	"types": [
-		"string"
-	],
-	"options": {}
+	"contents": {
+		"en-US": {
+			"title": "Modules",
+			"subtitle": "Modules - Collection of Custom Modules",
+			"description": "Collection of Custom Modules",
+			"headlines": {
+				"analytics": "Analytics - Reports",
+				"assets": "Assets - Application",
+				"guides": "Guides - Tools"
+			},
+			"modules": {
+				"guides": {
+					"title": "Guides and Documentation",
+					"description": "Guides and Documentation on using the Directus App",
+					"path": "/app/ext/guides",
+					"icon": "book"
+				},
+				"analytics": {
+					"title": "Application Analytics",
+					"description": "Application Visitors and Performance Analytics",
+					"path": "/app/ext/analytics",
+					"icon": "pie_chart",
+					"analytics": "sessions"
+				},
+				"reports": {
+					"title": "Application Reports",
+					"description": "Application Data and Modules Reports",
+					"path": "/app/ext/reports",
+					"icon": "bar_chart",
+					"analytics": "Reports"
+				},
+				"cdn": {
+					"title": "CDN",
+					"description": "CDN Static Assets and Documents",
+					"path": "/app/ext/cdn",
+					"icon": "cloud",
+					"analytics": "Items"
+				},
+				"faqs": {
+					"title": "Help and FAQs",
+					"description": "Get help with common tasks and more",
+					"path": "/app/ext/help",
+					"icon": "question_answer",
+					"analytics": "Items"
+				},
+				"icons": {
+					"title": "Icons",
+					"description": "Icons available to the applications",
+					"path": "/app/ext/icons",
+					"icon": "insert_emoticon",
+					"analytics": "Icons"
+				},
+				"search": {
+					"title": "Search",
+					"description": "Search all visible collection items",
+					"path": "/app/ext/search",
+					"icon": "search",
+					"analytics": "Collections"
+				}
+			}
+		}
+	}
 }
