@@ -1,0 +1,40 @@
+{
+	"name": "collections",
+	"version": "1.0.0",
+	"icon": "account_tree",
+	"types": [
+		"string"
+	],
+	"options": {},
+	"contents": {
+		"en-US": {
+			"title": "Collections",
+			"subtitle": "Collections - Project Data Collections Relationships and Insights",
+			"description": "Project Data Collections Relationships and Insights",
+			"introduction": "View Insights and get to know the relationships between the collections in the database. <br>Select one of the collections in the menu to load the diagram, relationships and insights!",
+			"navigation": {
+				"headline": "Select a Collection",
+				"loading": "Loading Menu..."
+			},
+			"modules": {
+				"who": {
+					"headline": "Collection"
+				},
+				"what": {
+					"headline": "Definition"
+				},
+				"when": {
+					"headline": "Additional Information"
+				},
+				"how": {
+					"headline": "Fields and Relationships",
+					"description": "Click on each collection to view the collection or click on each field for more information."
+				}
+			},
+			"loaders": {
+				"collections": "Loading Collections...Please wait!",
+				"menu": "Loading Menu...Please wait!"
+			}			
+		}						
+	}
+}

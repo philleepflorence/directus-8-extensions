@@ -21,23 +21,23 @@
 				},
 				"files": {
 					"title": "Files",
-					"description": "Uploaded files",
+					"description": "View, Create, &amp; Edit Uploaded files",
 					"path": "/app/files",
 					"icon": "cloud_done",
 					"analytics": "Files"
 				},
 				"collections": {
 					"title": "Collections",
-					"description": "Collections and Items",
+					"description": "View, Create, &amp; Edit Collections and Items",
 					"path": "/app/collections",
-					"icon": "view_module",
+					"icon": "storage",
 					"analytics": "Collections"
 				},
 				"users": {
 					"title": "Users",
 					"description": "Directus Users Directory",
 					"path": "/app/users",
-					"icon": "storage",
+					"icon": "supervised_user_circle",
 					"analytics": "Users"
 				}
 			}						

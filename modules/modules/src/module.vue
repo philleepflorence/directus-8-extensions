@@ -2,7 +2,7 @@
 	<div class="modules-modules">
 		
 		<v-header 
-			:title="content('title')" 
+			:title="getContent('title')" 
 			:breadcrumb="breadcrumb" 
 			icon="view_module" 
 			settings>
@@ -10,7 +10,7 @@
 		
 		<div class="modules-modules-content animated fadeIn">
 			
-			<div v-for="(row, index) in content('modules')"
+			<div v-for="(row, index) in getContent('modules')"
 				:class="`modules-modules-grid modules-modules-${index} animated fadeInUpSmall a-delay`" 				 
 				@click="onClick(row.path)">
 				<div class="flex-item">
@@ -33,8 +33,8 @@
 
 		<v-info-sidebar wide>
 			<section class="info-sidebar-section">
-				<h2 class="font-accent">{{ content('title') }}</h2>
-				<p class="p">{{ content('description') }}</p>
+				<h2 class="font-accent">{{ getContent('title') }}</h2>
+				<p class="p">{{ getContent('description') }}</p>
 				<p class="lead info-sidebar-count" v-if="count">{{ count }}</p>
 			</section>
 		</v-info-sidebar>
@@ -66,7 +66,7 @@
 			}
 		},
 		methods: {
-			content (input) {
+			getContent (input) {
 				let translation = get(this.contents, this.locale);
 					translation = translation || get(this.contents, 'en-US');
 
@@ -109,7 +109,7 @@
 		},
 		metaInfo() {
 			return {
-				title: this.content('subtitle')
+				title: this.getContent('subtitle')
 			};
 		},
 		mounted () {
@@ -117,7 +117,7 @@
 			
 			if (this.$content) this.render();
 			
-			this.count = size(this.content('modules'));
+			this.count = size(this.getContent('modules'));
 		}
 	}
 </script>
@@ -143,11 +143,6 @@
 				
 				&.modules-modules-guides {
 					grid-row: 1/3 !important;
-				}
-				
-				&.modules-modules-reports {
-					grid-row: 1/2 !important;
-					grid-column: 2/4 !important;
 				}
 				
 				.flex-item {

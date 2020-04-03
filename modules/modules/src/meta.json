@@ -24,7 +24,7 @@
 					"description": "Application Visitors and Performance Analytics",
 					"path": "/app/ext/analytics",
 					"icon": "pie_chart",
-					"analytics": "sessions"
+					"analytics": "Sessions"
 				},
 				"reports": {
 					"title": "Application Reports",
@@ -32,6 +32,13 @@
 					"path": "/app/ext/reports",
 					"icon": "bar_chart",
 					"analytics": "Reports"
+				},
+				"collections": {
+					"title": "Collections",
+					"description": "Project Data Collections Relationships and Insights",
+					"path": "/app/ext/collections",
+					"icon": "account_tree",
+					"analytics": "Insights"
 				},
 				"cdn": {
 					"title": "CDN",

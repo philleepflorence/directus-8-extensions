@@ -15,8 +15,8 @@
 				@click="onClick(row.path)">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
-					<h3 class="font-accent">{{ row.title }}</h3>
-					<p class="lead">{{ row.description }}</p>
+					<h3 class="font-accent" v-html="row.title"></h3>
+					<p class="lead" v-html="row.description"></p>
 					<div class="modules-dashboard-analytics">
 						<v-spinner
 							v-show="loading"
