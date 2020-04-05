@@ -269,6 +269,22 @@ class Analytics
 			ArrayUtils::set($response, 'modules.total', $count);
 		}
 		
+		# Get Number of Directus Activity Items	
+		
+		$count = $connection->query("SELECT COUNT(*) AS count FROM `directus_activity`;", Adapter::QUERY_MODE_EXECUTE);
+		$count = $count->toArray();
+		$count = ArrayUtils::get($count, '0.count');
+		
+		ArrayUtils::set($response, 'notifications.total', intval($count));
+		
+		# Get Number of Directus Settings Items	
+		
+		$count = $connection->query("SELECT COUNT(*) AS count FROM `directus_settings`;", Adapter::QUERY_MODE_EXECUTE);
+		$count = $count->toArray();
+		$count = ArrayUtils::get($count, '0.count');
+		
+		ArrayUtils::set($response, 'settings.total', intval($count));
+		
 		# Get Number of Files Uploaded	
 		
 		$count = $connection->query("SELECT COUNT(*) AS count FROM `directus_files`;", Adapter::QUERY_MODE_EXECUTE);

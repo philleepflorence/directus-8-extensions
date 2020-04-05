@@ -29,14 +29,7 @@
 				</div>
 			</div>
 			
-		</div>	
-
-		<v-info-sidebar wide>
-			<section class="info-sidebar-section">
-				<h2 class="font-accent" v-html="content('title')"></h2>
-				<p class="p" v-html="content('description')"></p>
-			</section>
-		</v-info-sidebar>
+		</div>
 		
 	</div>
 </template>
@@ -115,6 +108,7 @@
 <style lang="scss" scoped>
 	.modules-dashboard {
 		padding: var(--page-padding);
+		margin-right: -64px;
 		
 		.modules-dashboard-content {
 			display: grid;
@@ -138,6 +132,10 @@
 				
 				&.modules-dashboard-files {
 					grid-column: 2/4 !important;
+				}
+				
+				&.modules-dashboard-settings {
+					grid-column: 1/3 !important;
 				}
 				
 				.flex-item {

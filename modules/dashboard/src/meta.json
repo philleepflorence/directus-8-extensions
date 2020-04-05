@@ -39,6 +39,20 @@
 					"path": "/app/users",
 					"icon": "supervised_user_circle",
 					"analytics": "Users"
+				},
+				"settings": {
+					"title": "Settings",
+					"description": "View &amp; Edit Directus Settings",
+					"path": "/app/settings",
+					"icon": "more_horiz",
+					"analytics": "Settings"
+				},
+				"notifications": {
+					"title": "Notifications",
+					"description": "View Directus Notifications &amp; Activity",
+					"path": "/app/activity",
+					"icon": "notifications",
+					"analytics": "Notifications"
 				}
 			}						
 		}				

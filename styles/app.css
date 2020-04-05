@@ -1,0 +1,11 @@
+/*
+	Project Specific Variables and Assets
+	Update the following variables with the values specific to the project!
+*/
+
+:root {
+	--project-name: 'Directus Suite';
+	--project-tagline: 'An API, Content, and Database Manager';
+	--main-primary-color: #BCA474 !important;
+	--main-primary-color-active: #8b7548 !important;
+}
