@@ -322,6 +322,14 @@ class Analytics
 		
 		$response = [];
 		
+		# Get Number of Application Users	
+		
+		$count = $connection->query("SELECT COUNT(*) AS count FROM `app_users`;", Adapter::QUERY_MODE_EXECUTE);
+		$count = $count->toArray();
+		$count = ArrayUtils::get($count, '0.count');
+		
+		ArrayUtils::set($response, 'notifications.total', intval($count));
+		
 		# Get Number of Directus Collections Configuration	
 		
 		$count = $connection->query("SELECT COUNT(*) AS count FROM `app_collections_configuration` WHERE `type` = 'treemap';", Adapter::QUERY_MODE_EXECUTE);

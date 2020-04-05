@@ -2,7 +2,7 @@
 	<div class="modules-dashboard">
 		
 		<v-header 
-			:title="content('title')" 
+			:title="getContent('title')" 
 			:breadcrumb="breadcrumb" 
 			:icon="icon" 
 			settings>
@@ -10,7 +10,7 @@
 		
 		<div class="modules-dashboard-content">
 			
-			<div v-for="(row, index) in content('modules')"
+			<div v-for="(row, index) in getContent('modules')"
 				:class="`modules-dashboard-grid modules-dashboard-${index} animated fadeInUpSmall a-delay`" 				 
 				@click="onClick(row.path)">
 				<div class="flex-item">
@@ -58,13 +58,13 @@
 			}
 		},
 		methods: {
-			content (input) {
+			getContent (input) {
 				let translation = get(this.contents, this.locale);
 					translation = translation || get(this.contents, 'en-US');
 
 				return get(translation, input);
 			},
-			load () {
+			loadAnalytics () {
 				this.loading = true;
 												
 				this.$api.api.get('/custom/analytics/dashboard').then((response) => {
@@ -83,24 +83,24 @@
 			onClick (path) {
 				this.$router.push(path);
 			},
-			render () {
+			renderGrid () {
 				let rect = this.$content.getBoundingClientRect();
 				let height = window.innerHeight - rect.y - 10;
 				
 				this.$content.style.minHeight = `${ height }px`;
 				
-				this.load();
+				this.loadAnalytics();
 			}
 		},
 		metaInfo() {
 			return {
-				title: this.content('subtitle')
+				title: this.getContent('subtitle')
 			};
 		},
 		mounted () {
 			this.$content = this.$el.querySelector('.modules-dashboard-content');
 			
-			if (this.$content) this.render();
+			if (this.$content) this.renderGrid();
 		}
 	}
 </script>
@@ -142,6 +142,7 @@
 					flex-grow: 1;
 					text-align: center;
 					color: var(--main-primary-color);
+					padding: 1.5rem;
 					
 					h3 {
 						font-size: 1.5rem;

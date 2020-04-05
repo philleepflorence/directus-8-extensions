@@ -29,15 +29,7 @@
 				</div>
 			</div>
 			
-		</div>	
-
-		<v-info-sidebar wide>
-			<section class="info-sidebar-section">
-				<h2 class="font-accent">{{ getContent('title') }}</h2>
-				<p class="p">{{ getContent('description') }}</p>
-				<p class="lead info-sidebar-count" v-if="count">{{ count }}</p>
-			</section>
-		</v-info-sidebar>
+		</div>
 		
 	</div>
 </template>
@@ -72,7 +64,7 @@
 
 				return get(translation, input);
 			},
-			load () {
+			loadModules () {
 				this.loading = true;
 												
 				this.$api.api.get('/custom/analytics/modules').then((response) => {
@@ -91,13 +83,13 @@
 			onClick (path) {
 				this.$router.push(path);
 			},
-			render () {
+			renderModules () {
 				let rect = this.$content.getBoundingClientRect();
 				let height = window.innerHeight - rect.y - 10;
 				
 				this.$content.style.minHeight = `${ height }px`;
 				
-				this.load();
+				this.loadModules();
 			}
 		},
 		data () {
@@ -115,7 +107,7 @@
 		mounted () {
 			this.$content = this.$el.querySelector('.modules-modules-content');
 			
-			if (this.$content) this.render();
+			if (this.$content) this.renderModules();
 			
 			this.count = size(this.getContent('modules'));
 		}
@@ -125,6 +117,7 @@
 <style lang="scss" scoped>
 	.modules-modules {
 		padding: var(--page-padding);
+		margin-right: -64px;
 		
 		.modules-modules-content {
 			display: grid;
@@ -141,14 +134,11 @@
 				overflow: hidden;
 				animation-duration: 600ms;
 				
-				&.modules-modules-guides {
-					grid-row: 1/3 !important;
-				}
-				
 				.flex-item {
 					flex-grow: 1;
 					text-align: center;
 					color: var(--main-primary-color);
+					padding: 1.5rem;
 					
 					h3 {
 						font-size: 1.5rem;

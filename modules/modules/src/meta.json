@@ -33,6 +33,13 @@
 					"icon": "bar_chart",
 					"analytics": "Reports"
 				},
+				"notifications": {
+					"title": "Send Notifications",
+					"description": "Send Push, SMS, or Email Notifications to Application Users",
+					"path": "/app/ext/notifications",
+					"icon": "send",
+					"analytics": "Users"
+				},
 				"collections": {
 					"title": "Collections",
 					"description": "Project Data Collections Relationships and Insights",
