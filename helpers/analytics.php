@@ -306,6 +306,22 @@ class Analytics
 		
 		$response = [];
 		
+		# Get Number of Directus Collections Configuration	
+		
+		$count = $connection->query("SELECT COUNT(*) AS count FROM `app_collections_configuration` WHERE `type` = 'treemap';", Adapter::QUERY_MODE_EXECUTE);
+		$count = $count->toArray();
+		$count = ArrayUtils::get($count, '0.count');
+		
+		ArrayUtils::set($response, 'collections.total', intval($count));
+		
+		# Get Number of Directus Reports Configuration	
+		
+		$count = $connection->query("SELECT COUNT(*) AS count FROM `app_collections_configuration` WHERE `type` = 'reports';", Adapter::QUERY_MODE_EXECUTE);
+		$count = $count->toArray();
+		$count = ArrayUtils::get($count, '0.count');
+		
+		ArrayUtils::set($response, 'reports.total', intval($count));
+		
 		# Get Number of Directus FAQs	
 		
 		$count = $connection->query("SELECT COUNT(*) AS count FROM `contents_faqs` WHERE `application` = 'directus';", Adapter::QUERY_MODE_EXECUTE);

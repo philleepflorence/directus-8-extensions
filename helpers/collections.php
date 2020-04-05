@@ -77,7 +77,7 @@ class Collections
 				
 		# Load the configurations for the collections
 		
-		$tableGateway = Api::TableGateway('app_collections_configuration', true);
+		$tableGateway = Api::TableGateway('app_collections_configuration', null);
 		$query = [
 			"status" => "published",
 			"fields" => "slug,collection,options,server",
@@ -88,7 +88,7 @@ class Collections
 			]
 		];
 		
-		if ($collections !== "*") ArrayUtils::set($query, "filter.name", ["in" => $collections]);
+		if ($collections !== "*") ArrayUtils::set($query, "filter.slug", ["in" => $collections]);
 		
 		$collections = $tableGateway->getItems($query);
 		$collections = ArrayUtils::get($collections, 'data');
@@ -110,7 +110,7 @@ class Collections
 			$collection_name = ArrayUtils::get($row, "slug");
 			$server = ArrayUtils::get($row, "server");
 			$slug = ArrayUtils::get($row, "slug");
-			$tableGateway = Api::TableGateway($collection, true);
+			$tableGateway = Api::TableGateway($collection, null);
 			$parameter = (array) ArrayUtils::get($row, "options.params"); 
 			$fields = ArrayUtils::get($parameter, "fields"); 
 			

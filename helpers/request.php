@@ -24,7 +24,7 @@ class Request
 		$method = strtolower(ArrayUtils::get($_SERVER, 'REQUEST_METHOD'));
 		$referer = ArrayUtils::get($_SERVER, 'HTTP_REFERER');
 		
-		if (is_array($filters) && $method === "get" && stripos($referer, '/admin/'))
+		if (is_array($filters) && $method === "get" && stripos($referer, '/admin/') && stripos($_SERVER["REQUEST_URI"], '/app/custom/') === false)
 		{
 			foreach ($filters as $key => $value)
 			{

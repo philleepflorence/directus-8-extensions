@@ -53,6 +53,10 @@ helpers/functions.php
 │   │   │   ├── Export.php
 │   │   │   └── Import.php
 │   │   └── endpoints.php
+│   ├── curl
+│   │   ├── controllers
+│   │   │   └── Content.php
+│   │   └── endpoints.php
 │   ├── database
 │   │   ├── controllers
 │   │   │   ├── Backup.php
@@ -114,6 +118,8 @@ helpers/functions.php
 │   ├── user.php
 │   └── utils.php
 ├── hooks
+│   ├── collections
+│   │   └── hooks.php
 │   ├── request
 │   │   └── hooks.php
 │   └── response
@@ -216,7 +222,31 @@ helpers/functions.php
 │   │       │       └── tree.vue
 │   │       ├── meta.json
 │   │       └── module.vue
+│   ├── collections
+│   │   ├── dist
+│   │   │   ├── meta.json
+│   │   │   ├── module.css
+│   │   │   ├── module.js
+│   │   │   └── module.js.map
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── meta.json
+│   │       └── module.vue
 │   ├── dashboard
+│   │   ├── dist
+│   │   │   ├── meta.json
+│   │   │   ├── module.css
+│   │   │   ├── module.js
+│   │   │   └── module.js.map
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── meta.json
+│   │       └── module.vue
+│   ├── guides
 │   │   ├── dist
 │   │   │   ├── meta.json
 │   │   │   ├── module.css
@@ -294,10 +324,14 @@ helpers/functions.php
 │       ├── package.json
 │       ├── readme.md
 │       └── src
+│           ├── components
+│           │   └── tables
+│           │       └── table.vue
 │           ├── meta.json
 │           └── module.vue
 ├── scripts
 └── styles
+└── vendors
 ```
 
 #### Endpoints
@@ -319,3 +353,8 @@ Layouts are different ways to view or even interact with data on the Item Browse
 #### Modules
 Modules are a way to add full-featured modules to Directus. You can build page modules for custom dashboards, reporting, point-of-sale systems, or anything else. 
 Each page is protected within the auth gateway and can easily access project data and global variables.
+
+#### Vendor
+Vendor dependents of the custom endpoints or helpers.
+Avoids changing the core Directus Composer Settings.
+For use mainly in the API, for Modules and Interfaces, use the package.json to manage dependents.

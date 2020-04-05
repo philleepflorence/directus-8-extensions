@@ -57,14 +57,7 @@ class Format
 	
 	public function JSON ($input = '')
 	{
-		if (substr($input, 0, 1) === "{" || substr($input, 0, 1) === "[" || preg_match("/^\d+$/", $input)) return json_decode($input, true);
-		
-		/*$object = json_decode($input, true);
-		
-		if (is_int($object)) return $object;
-		
-		if ($object === false || json_last_error() === JSON_ERROR_NONE) return $input;*/
-		Debugger::Log(substr($input, 0, 1), $input);
+		$input = json_decode($input, true);
 		
 		return $input;
 	}

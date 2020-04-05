@@ -206,14 +206,31 @@ class Api
 	
 	/*
 		Get a configuration value via key path
+		
 		ARGUMENTS:
 			$find - @String: Dot Syntax Property to find
+			$core - Directus Settings vs Project Api Settings
 		
 		@return value
 	*/
 	
-	public static function Settings ($find = null)
+	public static function Settings ($find = null, $directus = false)
 	{
+		if ($directus === true)
+		{
+			$app = Application::getInstance();
+
+			$app_settings = $app->getContainer()->get('app_settings');
+			
+			$settings = [];
+			
+			foreach ($app_settings as $item) ArrayUtils::set($settings, ArrayUtils::get($item, 'key'), ArrayUtils::get($item, 'value'));
+						
+			if (is_string($find)) return ArrayUtils::get($settings, $find);
+			
+			return $settings;
+		}
+		
 		$configuration = self::Configuration();
 		
 		if (!is_string($find)) return null;

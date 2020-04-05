@@ -1,6 +1,6 @@
 <?php
 
-use Directus\Custom\Helpers\Debug;
+use Directus\Custom\Helpers\Debugger;
 use Directus\Custom\Helpers\Response;
 
 use Directus\Hook\Payload;
@@ -19,7 +19,7 @@ return [
 			
 			# Process Files
 			
-			$data = Response::CDN($data);
+			if ($collection) $data = Response::CDN($data);
 			
 			# Editable Links
 			
