@@ -8,6 +8,10 @@
 			settings>
 		</v-header>
 		
+		<div class="modules-module-loading" v-if="loading">
+			<v-progress-linear background-color="--main-primary-color" color="--blue-grey-700" indeterminate>
+		</div>
+		
 		<div class="modules-modules-content animated fadeIn">
 			
 			<div v-for="(row, index) in getContent('modules')"
@@ -41,6 +45,13 @@
 	
 	export default {
 		name: 'Modules',
+		data () {
+			return {
+				analytics: {},
+				contents: $meta.contents,
+				loading: true
+			};
+		},
 		computed: {
 			breadcrumb () {
 				return [
@@ -91,13 +102,6 @@
 				
 				this.loadModules();
 			}
-		},
-		data () {
-			return {
-				analytics: {},
-				contents: $meta.contents,
-				loading: false
-			};
 		},
 		metaInfo() {
 			return {

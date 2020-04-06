@@ -1,0 +1,64 @@
+{
+	"name": "notifications",
+	"version": "1.0.0",
+	"icon": "notifications",
+	"types": [
+		"string"
+	],
+	"options": {},
+	"contents": {
+		"en-US": {
+			"title": "Notifications",
+			"subtitle": "Notifications - Send Push, SMS, or Email Notifications or Messages to Application Users",
+			"description": "Send Push, SMS, or Email Notifications or Messages to Application Users",
+			"sections": {
+				"mode": {
+					"headline": "Select Notifications Mode",
+					"inputs": {
+						"sms": {
+							"label": "SMS",
+							"value": "sms",
+							"description": "Send Message via Mobile Phone SMS",
+							"icon": "smartphone",
+							"model": "form.notifications"
+						},
+						"push": {
+							"label": "Push",
+							"value": "push",
+							"description": "Send Message via Push Notification",
+							"icon": "vibration",
+							"model": "form.notifications"
+						},
+						"email": {
+							"label": "Email",
+							"value": "email",
+							"description": "Send Message via Email Address",
+							"icon": "email",
+							"model": "form.notifications"
+						}
+					}
+				},
+				"users": {
+					"headline": "Select Users - (Optional)"
+				}
+			},
+			"form": {
+				"headline": "Send Notification or Message",
+				"processing": "Please wait...Processing Notifications!",
+				"description": [
+					"To get started, select the mode(s) of notification.",
+					"By default, notifications are sent to all active users or active applications (push notifications only)!",
+					"SMS Notifications require a subscription to an SMS API such as <a href=\"https://www.twilio.com/sms\" target=\"_blank\">Twilio Programmable SMS</a>.",
+					"To send to a select users, please choose from the users displayed (useful for testing).",
+					"NOTE: When sending notifications as PUSH or SMS, pay attention to the length of the message!"
+				],
+				"message": {
+					"placeholder": "Enter Message - Plaintext Only!"
+				},
+				"submit": {
+					"label": "Send Notification"
+				}
+			}
+		}
+	}
+}

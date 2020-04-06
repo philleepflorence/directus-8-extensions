@@ -454,6 +454,10 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 	font-size: 16px !important;
 }
 
+.nav-menu .router-link-active, .nav-menu .router-link-exact-active {
+	background-color: var(--main-primary-color) !important;
+}
+
 .title.has-breadcrumb .breadcrumb .breadcrumb-item:last-of-type a {
 	color: var(--blue-grey-300) !important;
 	font-size: 1.25rem !important;
