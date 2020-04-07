@@ -95,6 +95,9 @@ class Database
 		"directus_relations" => "`collection_one` = '{{collection}}'"
 	];
 	
+	private static $archive_directory = "/.cache/:project/database/archives";
+	private static $archive_path = ":project/database/archives";
+	
 	private static $backup_directory = "/.cache/:project/database/backups";
 	private static $backup_path = ":project/database/backups";
 	
@@ -121,6 +124,165 @@ class Database
 		}
 		
 		return $input;
+	}
+	
+	/*
+		Database Utility
+		Archive Directus Activity and Revisions Collections - Requires the Super Admin Token!
+		ARGUMENTS:
+			params - @Array
+				date - only archive rows created before the date - defaults to NOW()
+				folder - the directory in which the rows will be stored - defaults to .cache/<project>/database/archives/<date>
+				super_admin_token - super admin token (prevents non admins from changing DB Schema)
+			
+		@return array
+	*/
+	
+	public static function Archive ($params = [], $debug)
+	{
+		$date = ArrayUtils::get($params, 'date', date('Y-m-d'));
+		$folder = ArrayUtils::get($params, 'folder', self::$archive_directory);
+		$super_admin_token = ArrayUtils::get($params, 'super_admin_token');
+				
+		# Super Admin Token and Administrative Permissions are required for destructive updates to the Database
+		
+		if (!Api::SuperAdmin($super_admin_token, false))
+		{
+			return [
+				"error" => true,
+				"message" => Api::Responses('database.archive.super-admin-token')
+			];
+		}
+		
+		$base_path = base_path();
+		$project = get_api_project_from_request();
+		
+		$directory = str_replace(":project", $project, $folder);
+		$directory = "{$base_path}{$directory}/{$date}";
+		
+		# Get the Max ID of Directus Activity - Directus Revisions is linked to directus Activity via Row ID
+		
+		$connection = Api::Connection();
+		$max = $connection->query("SELECT MAX(id) AS id FROM `directus_activity` WHERE `action_on` < '{$date}';", Adapter::QUERY_MODE_EXECUTE);
+		$max = $max->toArray();
+		$max = ArrayUtils::get($max, '0.id');
+		
+		$app = Application::getInstance();
+		$database = $app->getConfig()->get('database');
+		$collections = [
+			"directus_activity" => [
+				"collection" => "directus_activity",
+				"params" => [
+					"limit" => -1,
+					"filter" => [
+						"action_on" => [
+							"<" => $date
+						]
+					]
+				]
+			], 
+			"directus_revisions" => [
+				"collection" => "directus_revisions",
+				"params" => [
+					"limit" => -1,
+					"filter" => [
+						"id" => [
+							"<=" => $max
+						]
+					]
+				]
+			]
+		];
+		
+		$machine = [
+			php_uname('s'),
+			php_uname('r'),
+			php_uname('m')
+		];
+		$machine = implode(' - ', $machine);
+		$host = ArrayUtils::get($database, 'host');
+		$dbname = ArrayUtils::get($database, 'name');
+		$sname = ArrayUtils::get($_SERVER, 'HTTP_HOST') ?: ArrayUtils::get($_SERVER, 'SERVER_NAME');
+		
+		$response = [
+			"meta" => [
+				"debug" => $debug,
+				"mode" => "archives",
+				"collections" => ["directus_activity", "directus_revisions"],
+				"directory" => $directory,
+				"information" => []
+			],
+			"data" => []
+		];
+				
+		foreach ($collections as $collection => $row) 
+		{
+			$statements = [];
+			$parameter = $row['params'];
+		
+			# Get Items
+			
+			$tableGateway = Api::TableGateway($collection);
+			$items = $tableGateway->getItems($parameter);
+			$items = ArrayUtils::get($items, 'data');
+			$count = count($items);
+			
+			$information = [
+				"-- Directus MySQL Collection Archive",
+				"--",
+				"-- Host: {$host}    Database: {$dbname}",
+				"-- Collection: {$collection}",
+				"-- Items: {$count}",
+				"-- Archive Date: {$date}",
+				"-- ------------------------------------------------------",
+				"-- Server Domain: {$sname}",
+				"-- Server Version: {$machine}"
+			];
+			
+			ArrayUtils::set($response, "meta.information.{$collection}", $information);
+			
+			foreach ($items as $item)
+			{
+				$fields = array_keys($item);
+				$values = array_values($item);
+				
+				array_walk($values, function (&$value)
+				{
+					$value = Database::Parse($value);
+				});
+				
+				$fields = implode('`, `', $fields);
+				$values = implode("', '", $values);
+				
+				$statement = "INSERT INTO `{$collection}` (`{$fields}`) VALUES ('{$values}');";
+				
+				array_push($statements, $statement);
+			}
+			
+			$filepath = "{$directory}/{$collection}.sql";
+			
+			ArrayUtils::set($response, "meta.filepath.{$collection}", $filepath);
+			ArrayUtils::set($response, "data.{$collection}", $statements);
+			
+			if ($debug === false)
+			{
+				$information = implode("\n", $information);
+				$statements = implode("\n", $statements);
+		
+				$content = "{$information}\n\n\n{$statements}";
+		
+				$created = Filesystem::set($filepath, $content);
+				
+				ArrayUtils::set($response, "meta.created.{$collection}", file_exists($filepath));
+			}
+		}
+		
+		# Delete rows but do not truncate, keeping the auto-increment
+		
+		$connection->query("DELETE FROM `directus_activity` WHERE `action_on` < '{$date}';", Adapter::QUERY_MODE_EXECUTE);
+		$connection->query("DELETE FROM `directus_revisions` WHERE `id` <= '{$max}';", Adapter::QUERY_MODE_EXECUTE);
+		
+		return $response;
 	}
 	
 	/*

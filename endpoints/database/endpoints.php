@@ -2,6 +2,7 @@
 
 namespace Directus\Custom\Endpoints\Database;
 
+require __DIR__ . '/controllers/Archive.php';
 require __DIR__ . '/controllers/Backup.php';
 require __DIR__ . '/controllers/Collection.php';
 require __DIR__ . '/controllers/Field.php';
@@ -9,6 +10,10 @@ require __DIR__ . '/controllers/Migrate.php';
 require __DIR__ . '/controllers/Schema.php';
 
 return [
+    '/archive' => [
+        'method' => 'GET',
+        'handler' => Archive::class
+    ],
     '/backup' => [
         'method' => 'GET',
         'handler' => Backup::class
