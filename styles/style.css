@@ -216,6 +216,10 @@ body .lead {
 	font-weight: 300;;
 }
 
+body .sidebar-button {
+	background-color: var(--main-primary-color) !important;
+}
+
 body .info-sidebar-section {
 	animation: fadeIn 450ms ease-in-out;
 }

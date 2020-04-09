@@ -129,7 +129,7 @@ class User
 		@return array
 	*/
 	
-	public static function Metadata ($params = [], $debug)
+	public static function Metadata ($params = [], $debug = false)
 	{
 		$form = ArrayUtils::get($params, 'form');
 		
@@ -202,9 +202,9 @@ class User
 				
 				ArrayUtils::set($row, 'id', $id);
 				
-				if (!$debug) $tableGateway->updateRecord($id, $row);
+				if (!$debug = false) $tableGateway->updateRecord($id, $row);
 			}
-			elseif (!$debug)
+			elseif (!$debug = false)
 			{
 				$tableGateway->createRecord($row);
 			}
@@ -233,32 +233,27 @@ class User
 		User Account - Notifications
 		Process the Notifications Relation Collection (useful for new users) - Email, SMS, or Push!
 		PARAMETERS:
-			form - form object with a filter for the users collection
+			users - @"form object with a filter for the users collection"Array of user IDs
 			
 		@return array
 	*/
 	
-	public static function Notifications ($params = [], $debug)
+	public static function Notifications ($params = [], $debug = false)
 	{
-		$filter = ArrayUtils::get($params, 'form.filter');
+		$users = ArrayUtils::get($params, 'users');
 		$user_ids = [];
 		
-		if (!$filter)
-		{
-			return [
-				"error" => true,
-				"message" => Api::Responses('user.notifications.filter')
-			];
-		}
-		
 		# Get all users
+		
+		$parameters = [
+		    "fields" => User::Fields("privilege"),
+		    "status" => "published"
+	    ];
+	    
+	    if ($users) ArrayUtils::set($parameters, 'filter.id.in', implode(',', $users));
     
 	    $tableGateway = Api::TableGateway("app_users", true);
-	    $entries = $tableGateway->getItems([
-		    "fields" => User::Fields("privilege"),
-		    "filter" => $filter,
-		    "status" => "published"
-	    ]);
+	    $entries = $tableGateway->getItems($parameters);
 	    $users = ArrayUtils::get($entries, 'data');
 	        
 	    # Get all available notifications
@@ -293,20 +288,20 @@ class User
 				
 				$existing = $tableGateway->getItems([
 					"limit" => 1,
-					"status" => "draft,published",
+					"status" => "*",
 				    "filter" => [
-					    "user_id" => $user_id,
-					    "notification_id" => $notification_id
+					    "user" => $user_id,
+					    "notification" => $notification_id
 				    ]
 			    ]);
 			    
 			    if (ArrayUtils::get($existing, 'data.0')) continue;
 			    
-			    if (!$debug) 
+			    if (!$debug = false) 
 			    {
 				    $tableGateway->createRecord([
-					    "user_id" => $user_id,
-					    "notification_id" => $notification_id
+					    "user" => $user_id,
+					    "notification" => $notification_id
 				    ]); 				    
 			    }
 		    }	    
@@ -316,7 +311,7 @@ class User
 	    
 	    $entries = $tableGateway->getItems([
 		    "filter" => [
-			    "user_id" => [
+			    "user" => [
 				    "in" => implode(',', $user_ids)
 			    ]
 		    ]
@@ -342,7 +337,7 @@ class User
 		@return array
 	*/
 	
-	public static function Settings ($params = [], $debug)
+	public static function Settings ($params = [], $debug = false)
 	{
 		$form = ArrayUtils::get($params, 'form.user');
 		$user_id = ArrayUtils::get($params, 'form.id');

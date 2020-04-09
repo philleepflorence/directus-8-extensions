@@ -2,6 +2,7 @@
 
 use Directus\Custom\Helpers\Api;
 use Directus\Custom\Helpers\FileSystem;
+use Directus\Custom\Helpers\User;
 
 use Directus\Hook\Payload;
 use Directus\Util\ArrayUtils;
@@ -13,6 +14,15 @@ return [
         'file.save:after' => function ($file) 
         {
 	        if (stripos($_SERVER['REQUEST_URI'], '/app/files') === false) FileSystem::Thumbnailer();	 
+        },
+        'item.create.app_users:after' => function ($item) 
+        {
+	        if ($item) {
+		        $id = ArrayUtils::get($item, 'id');
+		        
+		        User::Notifications([$id]);	        
+	        }
+	        else User::Notifications();	  
         },
         'item.update.directus_files:after' => function ($item) 
         {

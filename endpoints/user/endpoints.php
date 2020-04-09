@@ -12,7 +12,7 @@ return [
         'handler' => Metadata::class
     ],
     '/notifications' => [
-        'method' => 'GET',
+        'method' => 'POST',
         'handler' => Notifications::class
     ],
     '/settings' => [

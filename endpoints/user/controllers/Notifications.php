@@ -7,7 +7,7 @@
 	Endpoint - /app/custom/user/notifications
 	Authentication - yes!
 	Parameters
-		form - form object with a filter for the users collection
+		users - @Array of User IDs
 		debug - return JSON data for debugging
 */
 
