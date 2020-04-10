@@ -103,7 +103,7 @@
 						<p class="lead modules-divider" v-else>{{ content('sections.rows.description') }}</p>
 					</div>
 				</header>
-				<div class="modules-section-content">
+				<div class="modules-section-content" v-if="report.rows">
 					<app-table :headers="headers" :rows="report.rows" :details="report.options.render.details"></app-table>					
 				</div>
 			</section>
@@ -430,7 +430,7 @@
 					
 					let details = get(response, `data.${ this.$menu }`);
 					
-					row.rows = details.data;
+					if (size(details.data)) row.rows = details.data;
 					
 					this.filters = get(row, 'options.render.filters');
 					
@@ -448,7 +448,7 @@
 					
 					let charts = get(row, 'options.render.charts');
 					
-					if (charts) this.process(charts, row.rows);
+					if (row.rows && charts) this.process(charts, row.rows);
 										
 					this.report = row;
 																				
@@ -485,6 +485,7 @@
 				let activeMenu = get(this.menu, input);
 				
 				if (input) this.form = {};
+				if (input) this.reports = null;
 				
 				this.filters = get(activeMenu, 'options.render.filters');
 				
@@ -522,7 +523,7 @@
 						/* Set the total aggregate for each chart item */
 						
 						forEach(items, (item) => {
-							let count = get(item, row.field);
+							let count = get(item, row.field, row.unknown || "unknown");
 							
 							if (!counts[count]) counts[count] = 1;
 							else counts[count]++;
@@ -531,7 +532,7 @@
 						
 						/* Build the legend for each chart item */
 						
-						forEach(counts, (count, legend) => {							
+						forEach(counts, (count, legend) => {														
 							set(row, `legend.${ kebabCase(legend) }`, {
 								legend: legend,
 								key: `[${ index }].legend.${ kebabCase(legend) }`,

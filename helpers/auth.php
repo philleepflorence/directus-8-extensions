@@ -753,6 +753,7 @@ class Auth
 	    
 	    ArrayUtils::set($form, 'reset_token', $reset_token);
 	    ArrayUtils::set($form, 'salt', $salt);
+	    ArrayUtils::set($form, 'created', date('Y-m-d H:i:s'));
 	    
 	    if (!$username) ArrayUtils::set($form, 'username', User::Username($form));
 	    
@@ -795,7 +796,7 @@ class Auth
 		    if ($value) ArrayUtils::set($insert, $field, $value);
 	    }
 	    	    
-	    $created = $tableGateway->createRecord($insert);
+	    $created = $tableGateway->createRecord($insert);    
 	    
 	    # Set reset link - if applicable
 	    	    

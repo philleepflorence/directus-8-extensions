@@ -33,12 +33,12 @@
 				"reports": {
 					"headline": "Reports",
 					"description": "Analysis, Charts, and Reports",
-					"empty": "No reports configuration found!"
+					"empty": "No reports data found for the date range - please adjust dates and try again!"
 				},
 				"rows": {
 					"headline": "Rows",
 					"description": "Click or tap on each row for more details.",
-					"empty": "No reports data found!"
+					"empty": "No reports data found for the date range - please adjust dates and try again!"
 				}
 			}
 		}						

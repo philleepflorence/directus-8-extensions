@@ -286,16 +286,25 @@ body .info-sidebar-section a.info-sidebar-nav span.info-sidebar-nav-icon {
 
 body .info-sidebar-section a.info-sidebar-nav span.info-sidebar-nav-text {
 	flex-grow: 1;
+	font-weight: 500;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
-body .info-sidebar-section a.info-sidebar-nav.active,
 body .info-sidebar-section a.info-sidebar-nav:hover,
 body .info-sidebar-section a.info-sidebar-nav:active {
 	background-color: var(--sidebar-background-color-alt);
     border-radius: var(--border-radius);
+}
+
+body .info-sidebar-section a.info-sidebar-nav.active {
+	background-color: var(--main-primary-color);
+    border-radius: var(--border-radius);
+}
+
+body .info-sidebar-section a.info-sidebar-nav.active span {
+	color: white !important;
 }
 
 body .p blockquote {
@@ -491,7 +500,11 @@ button.not-managed {
 
 .v-table .toolbar .cell,
 .v-table .body .cell {
-	flex-basis: 140px !important;
+	flex-basis: 180px !important;
+}
+
+.v-table .body .cell span.no-wrap {
+	display: block;
 }
 
 .v-table .toolbar .cell.manual-sort,

@@ -307,7 +307,23 @@ class User
 		    }	    
 	    }
 	    
+	    # Update the Users Collection to reflect Notifications Updated
+	    
+	    $tableGateway = Api::TableGateway("app_users", true);
+	    
+	    foreach ($users as $user)
+	    {
+		    $user_id = ArrayUtils::get($user, 'id');
+		    $record = [
+			    "notifications_updated" => date('Y-m-d H:i:s')
+		    ];
+		    
+		    if ($user_id) $tableGateway->updateRecord($user_id, $record); 	    
+	    }
+	    
 	    # Return all notifications that were created
+	    
+	    $tableGateway = Api::TableGateway("joins_app_users_notifications", true);
 	    
 	    $entries = $tableGateway->getItems([
 		    "filter" => [
