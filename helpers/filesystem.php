@@ -62,6 +62,69 @@ class FileSystem
 	}	
 	
 	/*
+		Remove all images not included in the Directus Files Collection
+		
+		@return array
+	*/
+	
+	public static function Files ($params = [], $debug = false) 
+	{
+		$basepath = base_path();
+		$app = Application::getInstance();	    
+	    $storage = $app->getConfig()->get('storage');
+	    $originals = "{$basepath}/" . ArrayUtils::get($storage, 'root');
+	    
+		$folder = ArrayUtils::get($params, 'folder', $originals);
+		
+		# Get all the files in the folder
+		
+		$files = is_dir($folder) ? scandir($folder) : [];
+		$response = [
+			"meta" => [
+				"mode" => "Files Unlink",
+				"total" => 0,
+				"unlink" => 0
+			],
+			"data" => []
+		];
+		
+		$tableGateway = Api::TableGateway('directus_files');
+		
+		foreach ($files as $file)
+		{
+			if (strpos($file, '.') === 0) continue;
+			
+			$response['meta']['total']++;
+			
+			$parameters = [
+				"limit" => 1,
+				"fields" => "id,filename_disk",
+				"filter" => [
+					"filename_disk" => $file
+				]
+			];
+			
+			$entries = $tableGateway->getItems($parameters);
+			$entries = ArrayUtils::get($entries, 'data.0');
+			
+			if (!$entries)
+			{
+				$realpath = "{$folder}/{$file}";				
+				array_push($response['data'], [
+					"file" => $file,
+					"path" => $realpath,
+					"exists" => is_file($realpath)
+				]);
+				$response['meta']['unlink']++;
+				
+				if (!$debug) FileSystem::Unlink($realpath);
+			}
+		}
+	    
+	    return $response;
+	}
+	
+	/*
 		Load and process file contents
 		
 		@return string|array
@@ -144,6 +207,9 @@ class FileSystem
 	    	    
         $filesettings = get_directus_files_settings();
         $thumbnailsettings = get_directus_thumbnail_settings();
+        
+        foreach($thumbnailsettings as &$thumbnailsetting) if (is_string($thumbnailsetting)) $thumbnailsetting = json_decode($thumbnailsetting);
+        return [$filesettings, $thumbnailsettings];
         
         $file_naming = ArrayUtils::get($filesettings, 'file_naming');
         $whitelists = ArrayUtils::get($thumbnailsettings, 'asset_whitelist');      
