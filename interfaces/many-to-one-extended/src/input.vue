@@ -295,9 +295,11 @@
 	}
 	
 	.interface-many-to-one-extended .many-to-one-extended-value span {
-		display: flex; 
+		display: flex;
 		align-items: center;
 		padding: 10px 10px 10px 38px;
+		height: 100%;
+		width: 100%;
 	}
 	
 	.interface-many-to-one-extended .many-to-one-extended-select .value .no-wrap {

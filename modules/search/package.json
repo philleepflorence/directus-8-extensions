@@ -1,6 +1,6 @@
 {
 	"name": "Search",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Search all visible collections in Directus for items containing a query",
 	"main": "",
 	"scripts": {

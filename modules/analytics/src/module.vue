@@ -212,7 +212,7 @@
 				<p class="p">{{ content('description') }}</p>
 			</section>
 			<nav class="info-sidebar-section info-sidebar-nav" v-if="loaded && analytics.meta.total">
-				<h2 class="font-accent">{{ content('navigation') }}</h2>
+				<h2 class="font-accent">{{ content('navigation.scroll') }}</h2>
 				<a class="info-sidebar-nav" href="#" v-for="(row, key) in content('charts.titles')" :data-section="kebabCase(row.text)" @click.stop.prevent="onClickScroll(kebabCase(row.text))">
 					<span class="info-sidebar-nav-icon"><v-icon :name="row.icon" left></span>
 					<span class="info-sidebar-nav-text">{{ row.text }}</span>
@@ -248,7 +248,14 @@
 						block>{{ content('form.submit.label') }}
 					</v-button>
 				</div>
-			</section>		
+			</section>	
+			<nav class="info-sidebar-section info-sidebar-nav">
+				<h2 class="font-accent">{{ content('navigation.headline') }}</h2>
+				<a class="info-sidebar-nav" :href="row.path" v-for="row in content('navigation.rows')">
+					<span class="info-sidebar-nav-icon"><v-icon :name="row.icon" left></span>
+					<span class="info-sidebar-nav-text">{{ row.text }}</span>
+				</a>
+			</nav>	
 		</v-info-sidebar>
 		
 	</div>

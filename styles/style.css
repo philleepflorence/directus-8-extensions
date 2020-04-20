@@ -10,6 +10,30 @@
 
 /*
 	Import CSS Config - Project Specific Variables
+	REQUIRED:
+	
+		@import url(Brand web font to use);
+
+		:root {
+			--project-name: Name of Project;
+			--project-tagline: Project Tagline;
+			
+			--main-primary-color: HEX Color;
+			--main-primary-color-active: HEX Color;
+			--main-primary-color-rgb: RGB Color;
+			--main-primary-color-active-rgb: RGBA Color;
+			
+			--main-font-accent: Web Font Family;
+			
+			--font-size-h1: 28px !important;
+			--font-size-h2: 24px !important;
+			--font-size-h3: 20px !important;
+			--font-size-h4: 18px !important;
+			--font-size-h5: 16px !important;
+			--font-size-h6: 14px !important;
+			
+			--font-size-logo: 20px !important;
+		}
 */
 
 @import url('../uploads/app/config/app.css');
@@ -20,15 +44,15 @@
 
 @import url('../uploads/app/vendors/animate.css/animate.css');
 @import url('../uploads/app/vendors/material-design-icons/css/materialdesignicons.css');
-@import url('https://fonts.googleapis.com/css?family=Encode+Sans+Condensed:100,300,400,500,600,700|Josefin+Sans:100,300,400,600,700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Condensed:wght@100;300;400;500;600;700&display=swap');
 
 /*
 	Global Variables Override!
 */
 
 body {
-	--main-font-accent: 'Josefin Sans';
-	--main-font-body: 'Encode Sans Condensed';
+	--main-font-body: 'Encode Sans Condensed', sans-serif;
 	
 	--blue-grey-50: var(--grey-50) !important;
 	--blue-grey-100: var(--grey-100) !important;
@@ -77,7 +101,7 @@ body {
 */
 
 body.public .container {
-	background-color: var(--blue-grey-700);
+	background-color: var(--blue-grey-800);
 }
 
 body.public .container .logo {
@@ -87,7 +111,7 @@ body.public .container .logo {
 	background-repeat: no-repeat !important;
 	filter: brightness(0) invert(1) !important;
 	height: 64px !important;
-	width: 60% !important;
+	width: 50% !important;
 }
 
 body.public .container .logo img {
@@ -100,7 +124,7 @@ body.public .art {
 	position: relative !important;
 }
 
-body.public .art:not([style]) {
+body.public .art:not([style*="image"]) {
 	background-image: url("/uploads/app/media/image.jpg") !important;
 }
 
@@ -111,7 +135,11 @@ body.public .art:before {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+body.public .art .public-note {
+	background-color: rgba(var(--main-primary-color-active-rgb), 0.2);
 }
 
 body.public .art .public-note h1,
@@ -121,6 +149,7 @@ body.public .art .public-note h4,
 body.public .art .public-note h5,
 body.public .art .public-note h6 {
 	font-family: var(--main-font-accent) !important;
+	font-size: var(--font-size-h3) !important;
 	margin-bottom: 0.75em !important;
 }
 
@@ -133,10 +162,9 @@ body.public .art .public-note h6 {
 		padding: 1rem;
 		color: var(--main-primary-color) !important;
 		font-family: var(--main-font-accent);
-		font-weight: 100;
+		font-weight: 300;
 		font-size: 7vw;
-		line-height: 7vw;
-		letter-spacing: -0.3vw;
+		line-height: calc(7vw - 2rem);
 		margin-top: -7vw;
 	}
 	body.public:after {
@@ -149,15 +177,16 @@ body.public .art .public-note h6 {
 		font-family: var(--main-font-main);
 		font-weight: 500;
 		font-size: 1.5rem;
+		letter-spacing: 0.25rem;
 	}
 }
 
 body.public form input, 
 body.public form input:hover {
-	background-color: var(--blue-grey-600) !important;
-	border-color: var(--blue-grey-600) !important;
+	background-color: var(--blue-grey-900) !important;
+	border-color: var(--blue-grey-900) !important;
 	color: var(--blue-grey-300) !important;
-	transition: all 500ms ease;
+	transition: all 300ms ease;
 }
 
 body.public form button[type="submit"] {
@@ -183,11 +212,15 @@ body.public form .buttons a.secondary:active {
 	color: var(--main-primary-color) !important;
 }
 
+body.public form input {
+	transition-property: background;
+}
+
 body.public form input:focus,
 body.public form button:hover, 
 body.public form button:active {
-	background-color: var(--blue-grey-800) !important;
-	border-color: var(--blue-grey-800) !important;
+	background-color: var(--blue-grey-700) !important;
+	border-color: var(--blue-grey-700) !important;
 }
 
 body.public form input::placeholder {
@@ -197,15 +230,32 @@ body.public form input::placeholder {
 body.public form input:-webkit-autofill,
 body.public form input:-webkit-autofill:hover, 
 body.public form input:-webkit-autofill:focus {
-	background-color: var(--blue-grey-800) !important;
-	border-color: var(--blue-grey-800) !important;
+	background: var(--blue-grey-900) !important;
+	border-color: var(--blue-grey-900) !important;
 	-webkit-text-fill-color: var(--blue-grey-300) !important;
-	-webkit-box-shadow:0 0 0 30px var(--blue-grey-800) inset !important;
+	-webkit-box-shadow:0 0 0 64px var(--blue-grey-900) inset !important;
 }
 
 /*
 	Global Styles Override - Private!
 */
+
+body .page-loading {
+	color: var(--main-primary-color) !important;
+	font-family: var(--main-font-accent) !important;
+	font-size: 5vw;
+	font-weight: 300;
+	position: fixed;
+	width: 100%;
+	top: 50%;
+	margin-top: -2.5vw;
+	padding: 1.5rem;
+	text-transform: lowercase;
+}
+
+body .page-loading:after {
+	content: '...';
+}
 
 body .text-capitalize {
 	text-transform: capitalize;
@@ -249,7 +299,7 @@ body .info-sidebar-section .info-sidebar-row  + .info-sidebar-row {
 body .info-sidebar-section h2 {
 	color: var(--blue-grey-500) !important;
     font-family: var(--main-font-accent) !important;
-    font-size: 16px !important;
+    font-size: var(--font-size-h3) !important;
 	margin-bottom: 8px;
 }
 
@@ -323,6 +373,10 @@ body .main-bar {
 	animation: fadeIn 800ms ease-in;
 }
 
+body .page-root {
+	min-height: calc(100vh - 76px) !important;
+}
+
 .body .row button.remove {
 	background-color: var(--main-primary-color) !important;
 	color: white !important;
@@ -352,6 +406,7 @@ body .main-bar {
 
 .nav-sidebar .project-switcher .content .project-name {
 	font-family: var(--main-font-accent);
+	font-size: var(--font-size-logo) !important;
 	font-weight: 500 !important;
 }
 
@@ -375,7 +430,12 @@ body .main-bar {
 }
 
 .module-bar a.link.router-link-active {
-	background-color: var(--blue-grey-700) !important;
+	background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.module-bar a.link.router-link-active span i,
+.module-bar a.link.router-link-active span:after {
+	color: var(--main-primary-color) !important;
 }
 
 div.settings.page-root header.v-header div.v-header-button.back button.button span.v-icon i, 
@@ -401,6 +461,10 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
     vertical-align: middle;
 }
 
+.module-bar a.link[href*="#/app/collections"] {
+	background: rgba(255, 255, 255, 0.1);	
+}
+
 .module-bar a.link[href*="#/app/ext/"] {
 	background: rgba(255, 255, 255, 0.05);	
 }
@@ -410,7 +474,7 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 }
 
 .module-bar a.link.settings .icon:after {
-	color: var(--blue-grey-400) !important;
+	color: var(--blue-grey-400);
 }
 
 .module-bar a.link.settings.active .icon:after {
@@ -423,13 +487,16 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 
 .v-details summary {
 	font-family: var(--main-font-accent) !important;
-	font-size: 1.25rem !important;
-	text-transform: uppercase !important;
-	margin-top: -14px !important;
+	font-size: 24px !important;
+	line-height: 24px;
+	display: inline-flex !important;
+	align-items: center;
+	margin-top: -19px !important;
 }
 
 .v-details summary:after {
-	line-height: 1rem !important;
+	font-size: 24px !important;
+	line-height: 24px !important;
 	text-transform: lowercase !important;
 }
 
@@ -450,30 +517,59 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 .main-bar .nav-bookmarks.menu-section:before {	
 	content: 'Project';	
 	display: block;	
-	margin: 8px 0;	
-}	
+}
+
+.main-bar .nav-bookmarks.menu-section .bookmark button {
+	display: none !important;
+	pointer-events: none;
+}
+
+.main-bar .menu-section + .menu-section {
+	padding-top: 8px !important;
+}
+	
 .main-bar .menu-section ul {	
 	margin-left: -12px !important;	
 	margin-right: -12px !important;	
 }	
+
+.main-bar .menu-section ul li {
+	margin: 3px 0 !important;
+}
+
 .main-bar .menu-section ul li a {	
 	padding-left: 12px !important;	
-}	
+}
+
+.main-bar .menu-section ul li a span.icon {
+	opacity: 0.5;
+}
+	
 .main-bar .nav-bookmarks.menu-section:before,	
 .main-bar .nav-menu.menu-section h3 {
 	color: var(--blue-grey-500) !important;
 	text-transform: capitalize;
 	font-family: var(--main-font-accent) !important;
-	font-size: 16px !important;
+	font-size: var(--font-size-h3) !important;
+	font-weight: 500 !important;
+	margin: 8px 0 !important;	
 }
 
-.nav-menu .router-link-active, .nav-menu .router-link-exact-active {
+.menu-section .router-link-active, .menu-section .router-link-exact-active {
 	background-color: var(--main-primary-color) !important;
 }
 
 .title.has-breadcrumb .breadcrumb .breadcrumb-item:last-of-type a {
 	color: var(--blue-grey-300) !important;
 	font-size: 1.25rem !important;
+}
+
+.page-root header.v-header .title .type-title {
+	color: var(--blue-grey-500) !important;
+}
+
+.page-root header.v-header .title .type-title span {
+	color: var(--blue-grey-600) !important;
 }
 
 .title.has-breadcrumb .breadcrumb .breadcrumb-item:last-of-type a:hover,
@@ -496,6 +592,25 @@ button.not-managed {
 
 .modal-container header button {
 	color: white !important;
+}
+
+.body .link .cell .v-popover .trigger .menu-toggle:after {
+	content: 'more_horiz';
+	color: var(--blue-grey-600);
+	font-size: 24px;
+	font-family: 'Material Icons';
+	font-weight: 400;
+	font-style: normal;
+	line-height: 1.1;
+	text-transform: none;
+	letter-spacing: normal;
+	word-wrap: normal;
+	white-space: nowrap;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	padding-left: 0.5rem;
+	margin-bottom: -5px;
+	position: relative;
 }
 
 .v-table .toolbar .cell,
@@ -545,9 +660,14 @@ button.not-managed {
 }
 
 .form div[data-field^="divider"] .type-note {
+	font-size: var(--input-font-size);
 	font-style: normal !important;
 	padding-top: var(--input-note-margin) !important;
 	line-height: 1.75em !important;
+}
+
+.form div[data-field^="divider"] .field h2 {
+	color: var(--blue-grey-500) !important;
 }
 
 .form .field .selectable .notice {
@@ -597,7 +717,9 @@ button.not-managed {
 .table .header .row button:not(.sort-column):nth-last-child(2):nth-child(1),
 .table .header .row button:not(.sort-column):nth-last-child(1):nth-child(2),
 .table .body .row .field-preview:nth-last-child(3):nth-child(1),
-.table .body .row .field-preview:nth-last-child(2):nth-child(2) {
+.table .body .row .field-preview:nth-last-child(2):nth-child(2),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(3):nth-child(1),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(2):nth-child(2) {
 	flex-grow: 1;
 	max-width: 50% !important;
 }
@@ -607,7 +729,10 @@ button.not-managed {
 .table .header .row button:not(.sort-column):nth-last-child(1):nth-child(3),
 .table .body .row .field-preview:nth-last-child(4):nth-child(1),
 .table .body .row .field-preview:nth-last-child(3):nth-child(2),
-.table .body .row .field-preview:nth-last-child(2):nth-child(3) {
+.table .body .row .field-preview:nth-last-child(2):nth-child(3),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(4):nth-child(1),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(3):nth-child(2),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(2):nth-child(3) {
 	flex-grow: 1;
 	max-width: 33.3333% !important;
 }
@@ -619,7 +744,11 @@ button.not-managed {
 .table .body .row .field-preview:nth-last-child(5):nth-child(1),
 .table .body .row .field-preview:nth-last-child(4):nth-child(2),
 .table .body .row .field-preview:nth-last-child(3):nth-child(3),
-.table .body .row .field-preview:nth-last-child(2):nth-child(4) {
+.table .body .row .field-preview:nth-last-child(2):nth-child(4),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(5):nth-child(1),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(4):nth-child(2),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(3):nth-child(3),
+.interface-many-to-many .table .body .row div:not(.sort-column):nth-last-child(2):nth-child(4) {
 	flex-grow: 1;
 	max-width: 25% !important;
 }
@@ -683,7 +812,6 @@ header.modules-divider p.modules-divider {
 	color: var(--note-text-color);
 	font-size: 1.25rem;
 	line-height: 1.75rem;
-	max-width: 768px;
 	margin-top: 1rem;
 }
 

@@ -1,6 +1,6 @@
 {
 	"name": "analytics",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "pie_chart",
 	"types": [
 		"string"
@@ -11,7 +11,6 @@
 			"title": "Analytics",
 			"subtitle": 'Analytics - Report of the Application Visitors',
 			"description": 'Analytics Report of the Application Visitors',
-			"navigation": 'Scroll to Section',
 			"form": {
 				"empty": {
 					"message": "Oooops! <br>No analytics data was downloaded for the start and end dates. <br>Please try adjusting the start and end dates."
@@ -26,6 +25,32 @@
 				"submit": {
 					"label": "Update Analytics"
 				}
+			},
+			"navigation": {
+				"headline": "Analytics Collections",
+				"scroll": "Scroll to Section",
+				"rows": [
+					{
+						"text": "Analytics Configuration",
+						"path": "#/app/collections/app_analytics",
+						"icon": "bar_chart"
+					},
+					{
+						"text": "Application Analytics",
+						"path": "#/app/collections/contents_analytics",
+						"icon": "equalizer"
+					},
+					{
+						"text": "Analytics Browsers",
+						"path": "#/app/collections/app_browsers",
+						"icon": "desktop_windows"
+					},
+					{
+						"text": "Analytics Locations",
+						"path": "#/app/collections/contents_analytics_locations",
+						"icon": "my_location"
+					}
+				]
 			},
 			"charts": {
 				"titles": {

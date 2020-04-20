@@ -41,7 +41,7 @@
 			<header class="modules-divider">
 				<h2 class="modules-divider" v-html="getContent('modules.how.headline')"></h2>
 				<hr />
-				<p class="modules-divider" v-html="getContent('modules.how.description')"></p>
+				<p class="modules-divider" v-for="description in getContent('modules.how.description')" v-html="description"></p>
 			</header>
 			
 			<section class="modules-module-collection">
@@ -388,6 +388,7 @@
 					align-items: center;
 					padding: 10px;
 					width: 100%;
+					font-size: var(--font-size-h4);
 					
 					span.icon {
 						width: 2rem;

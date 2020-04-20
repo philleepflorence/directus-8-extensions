@@ -1,6 +1,6 @@
 {
 	"name": "collections",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "account_tree",
 	"types": [
 		"string"
@@ -28,7 +28,12 @@
 				},
 				"how": {
 					"headline": "Fields and Relationships",
-					"description": "Click on each collection to view the collection or click on each field for more information."
+					"description": [
+						"The column on the right is the current collection you selected.",
+						"The column on the right has all the collections that are related to the current collection.",
+						"This means the values you may see in the current collections are the IDs of the rows in the related collections",
+						"Click on each collection to view the collection or click on each field for more information."
+					]
 				}
 			},
 			"loaders": {

@@ -67,6 +67,13 @@
 					<p class="info-sidebar-row" v-for="row in content('disclaimer')">{{ row }}</p>
 				</header>
 			</section>
+			<nav class="info-sidebar-section info-sidebar-nav">
+				<h2 class="font-accent">{{ content('navigation.headline') }}</h2>
+				<a class="info-sidebar-nav" :href="row.path" v-for="row in content('navigation.rows')">
+					<span class="info-sidebar-nav-icon"><v-icon :name="row.icon" left></span>
+					<span class="info-sidebar-nav-text">{{ row.text }}</span>
+				</a>
+			</nav>
 		</v-info-sidebar>
 		
 	</div>

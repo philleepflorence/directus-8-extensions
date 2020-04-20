@@ -1,6 +1,6 @@
 {
 	"name": "search",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"icon": "search",
 	"types": [
 		"string"
@@ -23,6 +23,26 @@
 			},
 			"input": {
 				"placeholder": "Search all visible collections"
+			},
+			"navigation": {
+				"headline": "Search Collections",
+				"rows": [
+					{
+						"text": "Search Cache",
+						"path": "#/app/collections/contents_search_cache",
+						"icon": "cached"
+					},
+					{
+						"text": "Search Queries",
+						"path": "#/app/collections/contents_search_queries",
+						"icon": "search"
+					},
+					{
+						"text": "Search Terms",
+						"path": "#/app/collections/contents_search_terms",
+						"icon": "label"
+					}
+				]
 			}
 		}
 	}
