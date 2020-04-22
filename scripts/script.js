@@ -4,9 +4,44 @@
  * Use to it add whatever client scripts your project might need
  */
 (function() {
-    const timers = {
-        loaded: 0
+    let timers = {
+        loaded: 0,
+        logo: 0,
+        mutation: 0
     };
+
+    const get = function(url, done) {
+        let request = new XMLHttpRequest();
+
+        request.addEventListener("load", function(response) {
+            return done(JSON.parse(this.response));
+        });
+
+        request.open("GET", url);
+        request.send();
+    };
+    
+    const projectName = String( getComputedStyle(document.documentElement).getPropertyValue('--project-name') ).replace(/"/g, '');
+    const projectTagline = String( getComputedStyle(document.documentElement).getPropertyValue('--project-tagline') ).replace(/"/g, '');
+    const isPublic = window.location.hash.indexOf('/login') > 0;
+    
+    
+    if (isPublic) {
+	    timers.logo = window.setInterval(function() {
+
+	        const logo = document.querySelector('.container .logo');
+	        
+	        if (logo) {
+		        clearInterval(timers.logo);
+		        
+		        document.title = `${ projectName } - ${ projectTagline }`;
+		        
+		        logo.href = window.location.href;
+		        logo.target = "_self";
+	        }
+	
+	    }, 1000);
+    }
     
     /*
 	   Force dark mode for all users...
@@ -20,7 +55,7 @@
 
     this.load = function() {
 
-        this.get("/app/collections", function(response) {
+        get("/app/collections", function(response) {
             let $collections = [];
 
             if (response.data) response.data.forEach(function(row) {
@@ -102,21 +137,30 @@
         });
     };
     
-    this.header = (input) => {
-	    if (this.$currHash === this.$hash) return false;
-	    
-	    this.$currHash = window.location.hash.split('?').shift();
-	    
-	    let title = (input.id.indexOf('-title') > 0 || input.id.indexOf('-name') > 0) ? input.value : null;
+    this.header = () => {
 	    let ID = this.$hash.split('?').shift().split('/').pop();
-	    let HTML = `${ this.$title.innerHTML } - ${ ID }.`;	
+	    	    
+	    if (this.$title.getAttribute('data-currpath') === this.$hash || !/\d/.test(ID)) return false;
 	    
-	    if (title) HTML = `${ HTML } ${ title }`; 
+	    let input, fields = this.$page.querySelectorAll('.form [data-collection][data-field]');	    
+	    let title, titles = ['title', 'name'];
 	    
-	    if (HTML && this.$title && !this.$title.getAttribute('data-title') !== HTML) {
+	    for (let field of fields) {
+		    if (field && field.getAttribute && titles.includes(field.getAttribute('data-field'))) {
+			    input = field.querySelector('.field input');
+		    }
+	    }
+	    
+	    if (input) title = input.value;
+	    	    	    
+	    if (!title) return false;	    
+	    
+	    let HTML = `${ this.$title.innerHTML } - ${ ID }. ${ title }`;	
+	    
+	    if (HTML && this.$title && !this.$title.getAttribute('data-currpath') !== this.$hash) {
 		    this.$title.innerHTML = HTML;		    
-		    this.$title.setAttribute('data-title', HTML);
-	    }	    
+		    this.$title.setAttribute('data-currpath', this.$hash);
+	    }    
     };
 
     this.mutation = (mutations) => {
@@ -130,7 +174,10 @@
         for (mutation of mutations) {
 	        let input = mutation.target.querySelector('.field input');
 	        
-	        if (this.$title && input) this.header(input);
+	        if (this.$title) {
+		        clearTimeout(timers.mutation);		        
+		        timers.mutation = setTimeout(this.header, 500);
+	        }
 	        
             if (mutation.type === "childList" && mutation.target && mutation.target.classList.contains('interface-wysiwyg')) {
                 let iframe = mutation.target.querySelector('iframe');
@@ -155,15 +202,17 @@
     };
     
     this.styles = function () {
-	    let cellWidth = Math.floor((this.$page.offsetWidth - 135) * 0.2);
+	    let cellWidth = Math.floor((this.$page.offsetWidth - 140) * 0.2);
 	    let style = document.createElement('style');
 	    	style.innerHTML = `.v-table .toolbar .cell, .v-table .body .cell { flex-basis: ${ cellWidth }px !important; }`;
 	    
 	    document.head.appendChild(style);
     };
+        
+    if (isPublic) return false;
 
     /*
-	   Custom Window Events
+	   Custom Window Events and Authenticated Events
    */
 
     let isScrolling;
@@ -197,15 +246,4 @@
         if (this.$menu && this.$page) this.loaded();
 
     }, 1000);
-
-    this.get = function(url, done) {
-        var request = new XMLHttpRequest();
-
-        request.addEventListener("load", function(response) {
-            return done(JSON.parse(this.response));
-        });
-
-        request.open("GET", url);
-        request.send();
-    };
 })();

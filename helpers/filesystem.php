@@ -6,6 +6,8 @@
 */
 
 namespace Directus\Custom\Helpers;
+
+use \ZipArchive;
 	
 use Directus\Application\Application;
 use Directus\Util\ArrayUtils;
@@ -59,7 +61,50 @@ class FileSystem
 	    $directory = rtrim("{$basepath}/public/uploads/{$project}/{$path}", '/');
 	    
 	    return $directory;
+	}
+	
+	public static function Directory ($filename = NULL, $permission = 0777)
+	{
+		if (!$filename) return null;
+
+        $folder = dirname($filename);
+
+        if (!is_dir($folder)) @mkdir($folder, $permission, true);
+        
+        return is_dir($folder);
 	}	
+	
+	/*
+		Download Files as Zip Archive!
+		
+		@return array
+	*/
+	
+	public static function Download ($files, $zipname = "download.zip")
+	{
+		$directory = FileSystem::Directory($zipname);   
+		$filename = pathinfo($zipname, PATHINFO_BASENAME); 
+        
+		$zip = new ZipArchive;
+		$zip->open($zipname, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+		
+		foreach ($files as $file) $zip->addFile($file, pathinfo($file, PATHINFO_BASENAME));
+		
+		if (!is_file($zipname)) return false;
+		
+		$zip->close();
+		
+        header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");		
+		header("Cache-Control: public");
+        header("Content-Type: application/zip");
+        header("Content-Transfer-Encoding: Binary");
+        header("Content-Length: " . filesize($zipname));
+        header("Content-Disposition: attachment; filename={$filename}");
+        
+        readfile($zipname);
+        
+        die();
+	}
 	
 	/*
 		Remove all images not included in the Directus Files Collection

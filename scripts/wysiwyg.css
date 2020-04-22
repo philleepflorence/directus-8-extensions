@@ -2,10 +2,10 @@
 	HTML Editor CSS Styles
 */
 
-@import url('https://fonts.googleapis.com/css?family=Barlow+Condensed:100,300,400,500,600,700|Encode+Sans+Condensed:100,300,400,500,600,700&display=swap');
+@import url('app.css');
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Condensed:wght@100;300;400;500;600;700&display=swap');
 
 :root {
-	--main-font-accent: 'Barlow Condensed';
 	--main-font-body: 'Encode Sans Condensed';
 }
 

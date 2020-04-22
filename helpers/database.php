@@ -92,7 +92,7 @@ class Database
 		"directus_collections" => "`collection` = '{{collection}}'",
 		"directus_fields" => "`collection` = '{{collection}}'",
 		"directus_permissions" => "`collection` = '{{collection}}'",
-		"directus_relations" => "`collection_one` = '{{collection}}'"
+		"directus_relations" => "`collection_one` = '{{collection}}' OR `collection_many` = '{{collection}}'"
 	];
 	
 	private static $archive_directory = "/.cache/:project/database/archives";
@@ -104,6 +104,7 @@ class Database
 	private static $migrations_directory = "/.cache/:project/database/migrations";
 	private static $migrations_path = ":project/database/migrations";
 	
+	private static $schema_zip = "/.cache/:project/database/collections/zip";	
 	private static $schema_directory = "/.cache/:project/database/collections";
 	private static $schema_path = ":project/database/collections";
 	
@@ -922,7 +923,8 @@ class Database
 		ARGUMENTS:
 			params - @Array
 				collections - only export the provided CSV list of collections
-				print - display schema instead of saving
+				download - print: display schema instead of saving
+					zip: download schema as a zip archive
 				super_admin_token - super admin token (prevents non admins from changing DB Schema)
 			
 		@return array
@@ -931,6 +933,7 @@ class Database
 	public static function Schema ($params = [], $debug)
 	{
 		$collections = ArrayUtils::get($params, 'collections');
+		$download = ArrayUtils::get($params, 'download');
 		$super_admin_token = ArrayUtils::get($params, 'super_admin_token');	
 		
 		$app = Application::getInstance();
@@ -1002,6 +1005,9 @@ class Database
 			$contents[$collection][] = "--\n-- Create Collection: {$collection} \n--";
 			$contents[$collection][] = "{$result};";
 			
+			$contents[$collection][] = "--\n-- Reset Collection: {$collection} \n--";
+			$contents[$collection][] = "ALTER TABLE `{$collection}` AUTO_INCREMENT = 1;";
+			
 			# Get rows from the options for the current collection
 			
 			foreach (self::$schema as $currcollection => $where)
@@ -1019,7 +1025,7 @@ class Database
 				
 				array_walk_recursive($result, function (&$value, $key)
 				{
-					if ($key === 'id') $value = 'NULL';
+					if ($key === 'id') $value = NULL;
 				});
 			
 				$fields = reset($result);
@@ -1063,6 +1069,10 @@ class Database
 		$directory = base_path() . self::$schema_directory;
 		$directory = str_replace(':project', $project, $directory);
 		
+		$zip_directory = base_path() . self::$schema_zip;
+		$zip_directory = str_replace(':project', $project, $zip_directory);
+		$zip_path = "{$zip_directory}/schema.zip";
+		
 		$url = $cdn . self::$schema_path;
 		$url = str_replace(':project', $project, $url);
 		
@@ -1071,10 +1081,17 @@ class Database
 			return [
 				"meta" => [
 					"directory" => $directory,
-					"url" => $url
+					"zip" => $download === "zip" ? $zip_path : NULL
 				],
 				"data" => $contents
 			];			
+		}
+		
+		if ($download === "print")
+		{
+			print implode("\n\n", $contents);
+			
+			die();
 		}
 		
 		$result = [
@@ -1085,12 +1102,16 @@ class Database
 			"data" => []
 		];
 		
+		$filepaths = [];
+		
 		foreach ($contents as $collection => $content)
 		{
 			# Write contents to file in the database collections directory
 			
 			$filepath = "{$directory}/{$collection}.sql";
 			$fileurl = "{$url}/{$collection}.sql";
+			
+			array_push($filepaths, $filepath);
 					
 			FileSystem::Set($filepath, $content);
 			
@@ -1101,6 +1122,8 @@ class Database
 			];
 		}
 		
+		if ($download === "zip" && count($filepaths)) FileSystem::Download($filepaths, $zip_path);
+					
 		return $result;
 	}
 }
