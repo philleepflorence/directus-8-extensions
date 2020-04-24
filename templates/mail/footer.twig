@@ -1,0 +1,16 @@
+<footer style="text-align: center; padding-bottom: 10px;">
+	<p style="margin-top:10px; margin-bottom:10px;">
+		This email was sent by Directus &mdash; <a href="{{ settings.project_url }}">{{settings.project_name }} - {{settings.project_tagline }}</a>.
+	</p>
+	<p style="margin-top:20px; margin-bottom:20px;">
+		This message is intended solely for the use of the individual or organization to whom it is addressed. 
+		<br>It may contain privileged or confidential information. 
+		<br>If you have received this message in error, please notify the originator immediately. 
+		<br>If you are not the intended recipient, you should not use, copy, alter, or disclose the contents of this message.
+	</p>
+	{% if settings.app_url %}
+	<p style="margin-top:10px; margin-bottom:10px;">
+		<a href="{{ settings.app_url }}">Log in</a> to manage your email preferences.
+	</p>
+	{% endif %}
+</footer>

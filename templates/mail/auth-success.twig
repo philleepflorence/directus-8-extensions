@@ -1,0 +1,23 @@
+{% extends "base.twig" %}
+{% block content %}
+<p>Hello {{user.first_name}} {{user.last_name}},</p>
+
+<p>You successfully signed into the Directus API Admin Console for: <b><a href="{{ settings.app_url }}">{{ settings.project_name }}</a></b></p>
+
+<h3>Authentication Information</h3>
+<p>
+    <b>Date:</b> {{ request.date }}<br><br>
+    <b>IP Address:</b> {{ request.ip }}<br><br>
+    <b>Browser Useragent:</b> {{ request.user_agent }}
+</p>
+
+<h3>User Information</h3>
+<p>
+    <b>Last Accessed On:</b> {{ user.last_access_on|default('Never') }}<br><br>
+    <b>Current Status:</b> {{ user.status }}
+</p>
+
+<p>If you did not make this sign in attempt, please contact your webmaster as soon as possible!</p>
+
+<p>Love,<br>{{ settings.project_name }} &mdash; {{ settings.project_tagline }}</p>
+{% endblock %}

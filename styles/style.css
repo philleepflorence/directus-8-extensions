@@ -185,9 +185,8 @@ body.public .art .public-note h6 {
 		padding: 1rem;
 		color: var(--main-primary-color) !important;
 		font-family: var(--main-font-main);
-		font-weight: 500;
-		font-size: 1.5rem;
-		letter-spacing: 0.25rem;
+		font-weight: 400;
+		font-size: 1.5rem;		
 		animation: fadeIn 1.2s ease-in-out;
 	}
 }
@@ -358,7 +357,7 @@ body .info-sidebar-section a.info-sidebar-nav:active {
 }
 
 body .info-sidebar-section a.info-sidebar-nav.active {
-	background-color: var(--link-active-background) !important;
+	background-color: var(--blue-grey-900) !important;
     border-radius: var(--border-radius);
     border-left-color: var(--main-primary-color) !important;
 }
@@ -573,7 +572,7 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 
 .menu-section .router-link-active, 
 .menu-section .router-link-exact-active {
-	background-color: var(--link-active-background) !important;
+	background-color: var(--blue-grey-900) !important;
 	border-left-color: var(--main-primary-color) !important;
 }
 

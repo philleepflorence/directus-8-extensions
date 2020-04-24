@@ -9,7 +9,9 @@
         logo: 0,
         mutation: 0
     };
-
+    
+    if (window.location.hash === "#/") window.location.hash = "#/app/ext/dashboard";
+    
     const get = function(url, done) {
         let request = new XMLHttpRequest();
 
