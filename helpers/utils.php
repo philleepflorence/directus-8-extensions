@@ -163,6 +163,21 @@ class Utils
 	}
 	
 	/*
+		JSON String Helper - Return JSON Object if applicable
+		ARGUMENTS:
+			$input - @String: Input String
+	*/
+	
+	public static function JSON ($input = NULL)
+	{
+		$json = json_decode($input, true);
+		
+		if ($json === NULL) return $input;
+		
+		return $json;
+	}
+	
+	/*
 		RegExp Validation Wrapper - Check to see if argument is a RegEx Pattern
 		ARGUMENTS: 
 			$pattern - @String: Regular Expression Pattern

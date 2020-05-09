@@ -5,6 +5,7 @@ namespace Directus\Custom\Endpoints\Analytics;
 require __DIR__ . '/controllers/Application.php';
 require __DIR__ . '/controllers/Dashboard.php';
 require __DIR__ . '/controllers/Modules.php';
+require __DIR__ . '/controllers/Project.php';
 require __DIR__ . '/controllers/Set.php';
 
 return [
@@ -19,6 +20,10 @@ return [
     '/modules' => [
         'method' => 'GET',
         'handler' => Modules::class
+    ],
+    '/project' => [
+        'method' => 'GET',
+        'handler' => Project::class
     ],
     '/set' => [
         'method' => 'POST',

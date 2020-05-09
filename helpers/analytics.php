@@ -388,46 +388,107 @@ class Analytics
 	}
 	
 	/*
+		Get Project Collections Dashboard!
+	*/
+	
+	public static function Project ($params = [], $debug)
+	{
+		$connection = Api::Connection();
+		$tableGateway = Api::TableGateway('app_collections_configuration');
+		$item = $tableGateway->getItems([
+			"filter" => [
+				'slug' => 'project',
+				'type' => 'module'
+			],
+			"single" => 1
+		]);
+		$options = ArrayUtils::get($item, 'data.options');
+		$options = Utils::ToArray($options);
+		
+		$collections = [];
+		
+		foreach ($options as $option) array_push($collections, ArrayUtils::get($option, 'collection'));
+		
+		$tableGateway = Api::TableGateway('directus_collections');
+		$collections = $tableGateway->getItems([
+			"fields" => "collection,icon,note,translation",
+			"filter" => [
+				'collection' => [
+					"in" => $collections
+				]
+			]
+		]);
+		$collections = ArrayUtils::get($collections, 'data');
+		
+		foreach ($options as &$option) 
+		{
+			$collection = ArrayUtils::get($option, 'collection');
+			$currow = [];
+			
+			foreach ($collections as $row) if ($collection === ArrayUtils::get($row, 'collection')) $currow = $row;
+			
+			# Load analytics data
+			
+			$count = $connection->query("SELECT COUNT(*) AS count FROM `{$collection}`;", Adapter::QUERY_MODE_EXECUTE);
+			$count = $count->toArray();
+			$count = ArrayUtils::get($count, '0.count');
+			
+			ArrayUtils::set($option, 'analytics.total', $count);
+			
+			$option = array_merge($option, $currow);
+		}
+		
+		$response = [
+			"meta" => [
+				"total" => count($options)
+			],
+			"data" => $options
+		];		
+		
+		return $response;
+	}
+	
+	/*
 		Set Analytics!
 		Add Analytics and Browser data to the Database
 		PARAMETERS:
 			params - @Array
 				analytics
-					{
-						"type": "timing",
-						"category": "Application Loaded",
-						"action": "load",
-						"label": "Directus Unit Testing",
-						"value": 300,
-						"url": "/",
-						"ip_address": "192.168.1.0",
-						"created": "YYYY-MM-DD HH:mm:ss",
-						"page": 1
-					}
+				{
+					"type": "timing",
+					"category": "Application Loaded",
+					"action": "load",
+					"label": "Directus Unit Testing",
+					"value": 300,
+					"url": "/",
+					"ip_address": "192.168.1.0",
+					"created": "YYYY-MM-DD HH:mm:ss",
+					"page": 1
+				}
 				browser
-					{
-						"name": "Chrome",
-						"version": "79",
-						"major": "79.10",
-						"operating_system_name": "Mac OS X",
-						"operating_system_version": "10.14",
-						"engine_name": "Webkit",
-						"engine_version": "118.0",
-						"device_vendor": "Apple",
-						"device_model": "iPad",
-						"device_tyoe": "Tablet",
-						"user_agent": "5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"
-					}
+				{
+					"name": "Chrome",
+					"version": "79",
+					"major": "79.10",
+					"operating_system_name": "Mac OS X",
+					"operating_system_version": "10.14",
+					"engine_name": "Webkit",
+					"engine_version": "118.0",
+					"device_vendor": "Apple",
+					"device_model": "iPad",
+					"device_tyoe": "Tablet",
+					"user_agent": "5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"
+				}
 				location
-					{
-						"city": "Brooklyn",
-						"region": "NY",
-						"country": "USA",
-						"time_zone": "America/New_York",
-						"longitude": "40.178947",
-						"latitude": "-194.56897",
-						"ip_address": "192.168.1.0"
-					}
+				{
+					"city": "Brooklyn",
+					"region": "NY",
+					"country": "USA",
+					"time_zone": "America/New_York",
+					"longitude": "40.178947",
+					"latitude": "-194.56897",
+					"ip_address": "192.168.1.0"
+				}
 	*/
 	
 	public static function Set ($params = [], $debug)

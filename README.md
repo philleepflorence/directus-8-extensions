@@ -28,6 +28,7 @@ helpers/functions.php
 │   │   │   ├── Application.php
 │   │   │   ├── Dashboard.php
 │   │   │   ├── Modules.php
+│   │   │   ├── Project.php
 │   │   │   └── Set.php
 │   │   └── endpoints.php
 │   ├── auth
@@ -65,6 +66,10 @@ helpers/functions.php
 │   │   │   ├── Field.php
 │   │   │   ├── Migrate.php
 │   │   │   └── Schema.php
+│   │   └── endpoints.php
+│   ├── files
+│   │   ├── controllers
+│   │   │   └── Unlink.php
 │   │   └── endpoints.php
 │   ├── form
 │   │   ├── controllers
@@ -213,6 +218,18 @@ helpers/functions.php
 │   │       │       └── pie.vue
 │   │       ├── meta.json
 │   │       └── module.vue
+│   ├── application
+│   │   ├── dist
+│   │   │   ├── meta.json
+│   │   │   ├── module.css
+│   │   │   ├── module.js
+│   │   │   └── module.js.map
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── meta.json
+│   │       └── module.vue
 │   ├── cdn
 │   │   ├── dist
 │   │   │   ├── meta.json
@@ -348,10 +365,22 @@ helpers/functions.php
 │           ├── meta.json
 │           └── module.vue
 ├── scripts
-│   └── script.js
-└── styles
-|   ├── app.css
-|   └── style.css
+│   ├── app.css
+│   ├── script.js
+│   └── wysiwyg.css
+├── styles
+│   ├── app.css
+│   └── style.css
+└── templates
+|   └── mail
+|       ├── auth-fail.twig
+|       ├── auth-success.twig
+|       ├── base.twig
+|       ├── footer.twig
+|       ├── new-install.twig
+|       ├── plain.twig
+|       ├── reset-password.twig
+|       └── user-invitation.twig
 └── vendors
 ```
 

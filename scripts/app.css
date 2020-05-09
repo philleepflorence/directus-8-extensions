@@ -9,7 +9,8 @@
 	--project-tagline: 'Web Technologies';
 
 	--main-primary-color: #BCA474 !important;
-	--main-primary-color-active: #8b7548 !important;
+	--main-primary-color-active: #8B7548 !important;
+	--main-primary-color-text: #FFFFFF !important;
 	--main-primary-color-rgb: 188, 164, 116 !important;
 	--main-primary-color-active-rgb: 139, 117, 72 !important;
 	
@@ -23,4 +24,12 @@
 	--font-size-h6: 14px !important;
 	
 	--font-size-logo: 22px;
+}
+
+@media (min-width: 1000px) {
+	body.public .art .public-note {
+		padding: 1.5rem;
+		min-width: 540px;
+		text-align: right;
+	}
 }

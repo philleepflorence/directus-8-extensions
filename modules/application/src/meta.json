@@ -1,0 +1,12 @@
+{
+	"name": "modules",
+	"version": "1.0.0",
+	"icon": "storage",
+	"contents": {
+		"en-US": {
+			"title": "Application Collections",
+			"subtitle": "Project Application Collections Dashboard",
+			"description": "Project Application Collections Dashboard"
+		}
+	}
+}

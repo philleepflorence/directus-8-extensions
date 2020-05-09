@@ -216,15 +216,18 @@ class Api
 	
 	public static function Settings ($find = null, $directus = false)
 	{
+		$directus = $find === true ? true : $directus;
+		
 		if ($directus === true)
 		{
 			$app = Application::getInstance();
 
 			$app_settings = $app->getContainer()->get('app_settings');
+			$app_settings = Utils::ToArray($app_settings);
 			
 			$settings = [];
 			
-			foreach ($app_settings as $item) ArrayUtils::set($settings, ArrayUtils::get($item, 'key'), ArrayUtils::get($item, 'value'));
+			foreach ($app_settings as $item) ArrayUtils::set($settings, ArrayUtils::get($item, 'key'), Utils::JSON(ArrayUtils::get($item, 'value')));
 						
 			if (is_string($find)) return ArrayUtils::get($settings, $find);
 			
