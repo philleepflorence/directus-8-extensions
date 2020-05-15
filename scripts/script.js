@@ -117,6 +117,9 @@
 
     this.bookmarks = () => {
         if (!this.$bookmarks) return false;
+        
+        let $menu = document.querySelector('.nav-bookmarks.menu-section');
+        let $first = document.querySelector('.nav-menu.menu-section');
 
         window._.forEach(this.$bookmarks, (bookmark) => {
             let collection = this.$hash.split('/')[3];
@@ -150,6 +153,8 @@
                 if (collection === Collection) bookmark.classList.add("router-link-active");
             };
         });
+        
+        $menu.parentNode.insertBefore($menu, $first);
     };
     
     this.collections = () => {
