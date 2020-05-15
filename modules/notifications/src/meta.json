@@ -1,6 +1,6 @@
 {
 	"name": "notifications",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "notifications",
 	"types": [
 		"string"
@@ -9,32 +9,60 @@
 	"contents": {
 		"en-US": {
 			"title": "Notifications",
-			"subtitle": "Notifications - Send Push, SMS, or Email Notifications or Messages to Application Users",
-			"description": "Send Push, SMS, or Email Notifications or Messages to Application Users",
+			"subtitle": "Notifications - Send Push, SMS, or Email Notifications or Messages to Application Users or Email Messages to Directus Users",
+			"description": "Send Push, SMS, or Email Notifications or Messages to Application Users or Email Messages to Directus Users",
+			"introduction": "You can send Push, SMS, or Email Notifications or Messages to Application Users. <br>You can also send Email Messages to other Directus Users. <br>To begin select the Module in the Menu!",
+			"modes": {
+				"headline": "Select Module",
+				"modes": [
+					"Application",
+					"Directus"
+				]
+			},
 			"sections": {
 				"mode": {
-					"headline": "Select Notifications Mode",
-					"inputs": {
-						"sms": {
-							"label": "SMS",
-							"value": "sms",
-							"description": "Send Message via Mobile Phone SMS",
-							"icon": "smartphone",
-							"model": "form.notifications"
-						},
-						"push": {
-							"label": "Push",
-							"value": "push",
-							"description": "Send Message via Push Notification",
-							"icon": "vibration",
-							"model": "form.notifications"
-						},
-						"email": {
-							"label": "Email",
-							"value": "email",
-							"description": "Send Message via Email Address",
-							"icon": "email",
-							"model": "form.notifications"
+					"app": {
+						"headline": "Select Notifications Mode",
+						"title": "Application Users",
+						"mode": "app",
+						"icon": "account_circle",
+						"inputs": {
+							"sms": {
+								"label": "SMS",
+								"value": "sms",
+								"description": "Send Message via Mobile Phone SMS",
+								"icon": "smartphone",
+								"model": "form.notifications"
+							},
+							"push": {
+								"label": "Push",
+								"value": "push",
+								"description": "Send Message via Push Notification",
+								"icon": "vibration",
+								"model": "form.notifications"
+							},
+							"email": {
+								"label": "Email",
+								"value": "email",
+								"description": "Send Message via Email Address",
+								"icon": "email",
+								"model": "form.notifications"
+							}
+						}
+					},
+					"directus": {
+						"headline": "Select Message Mode",
+						"mode": "directus",
+						"title": "Directus Users",
+						"icon": "supervised_user_circle",
+						"inputs": {
+							"email": {
+								"label": "Email",
+								"value": "email",
+								"description": "Send Message via Email Address",
+								"icon": "email",
+								"model": "form.notifications"
+							}
 						}
 					}
 				},
@@ -43,20 +71,54 @@
 				}
 			},
 			"form": {
-				"headline": "Send Notification or Message",
-				"processing": "Please wait...Processing Notifications!",
-				"description": [
-					"To get started, select the mode(s) of notification.",
-					"By default, notifications are sent to all active users or active applications (push notifications only)!",
-					"SMS Notifications require a subscription to an SMS API such as <a href=\"https://www.twilio.com/sms\" target=\"_blank\">Twilio Programmable SMS</a>.",
-					"To send to a select users, please choose from the users displayed (useful for testing).",
-					"NOTE: When sending notifications as PUSH or SMS, pay attention to the length of the message!"
-				],
-				"message": {
-					"placeholder": "Enter Message - Plaintext Only!"
+				"app": {
+					"headline": "Send Notification or Message",
+					"processing": "Please wait...Processing Notifications!",
+					"description": [
+						"To get started, select the mode(s) of notification.",
+						"By default, notifications are sent to all active users or active applications (push notifications only)!",
+						"SMS Notifications require a subscription to an SMS API such as <a href=\"https://www.twilio.com/sms\" target=\"_blank\">Twilio Programmable SMS</a>.",
+						"To send to a select users, please choose from the users displayed (useful for testing).",
+						"NOTE: When sending notifications as PUSH or SMS, pay attention to the length of the message!"
+					],
+					"message": {
+						"placeholder": "Enter Message - Plaintext Only!"
+					},
+					"submit": {
+						"label": "Send Notification"
+					},
+					"endpoint": "/custom/notifications/push",
+					"params": {
+						"limit": -1,
+						"status": "published",
+						"fields": "id,username,first_name,last_name,email,privilege.name"
+					}
 				},
-				"submit": {
-					"label": "Send Notification"
+				"directus": {
+					"headline": "Send Email Message",
+					"processing": "Please wait...Processing Email!",
+					"description": [
+						"To get started, select the mode(s) of notification.",
+						"By default, email messages are sent to all active admin users!",
+						"To send to a select users, please choose from the users displayed (useful for testing).",
+						"You DO NOT need to enter the greeting - all messages are prefixed with: <br>'Hello {{ user.first_name }} {{ user.last_name }}'!",
+						"You DO NOT need to enter the salutation - all messages are annexed with: <br>'Love, <br>{{ settings.project_name }} &mdash; {{ settings.project_tagline }}'!"
+					],
+					"message": {
+						"placeholder": "Enter Message - Raw HTML or Plaintext - Required!"
+					},
+					"subject": {
+						"placeholder": "Enter Subject - Required!"
+					},
+					"submit": {
+						"label": "Send Email"
+					},
+					"endpoint": "/custom/directus/mail",
+					"params": {
+						"limit": -1,
+						"status": "active",
+						"fields": "id,first_name,last_name,email,role.name"
+					}
 				}
 			}
 		}

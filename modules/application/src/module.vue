@@ -51,7 +51,12 @@
 		},
 		computed: {
 			breadcrumb () {
-				return [];
+				return [
+					{
+						name: 'Dashboard',
+						path: `/${this.currentProjectKey}/ext/dashboard`
+					}
+				];
 			},
 			currentProjectKey () {
 				return this.$store.state.currentProjectKey;

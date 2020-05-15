@@ -122,6 +122,9 @@ body {
 
 .directus-tour-start {
 	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	border-radius: 50%;
 	height: 44px;
 	width: 44px;
@@ -129,6 +132,9 @@ body {
 	right: 1.5rem;
 	cursor: pointer;
 	z-index: 123456789;
+	color: white;
+	background: var(--main-primary-color);
+	
 	animation: zoomIn 1s ease-in-out;
 	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
 }
@@ -136,7 +142,7 @@ body {
 .directus-tour-button:before {
 	content: '';
 	position: absolute;
-	background: var(--blue-grey-300);
+	background: var(--main-primary-color);
 	border-radius: 50%;
 	height: 44px;
 	width: 44px;
@@ -150,7 +156,7 @@ body {
 
 .directus-tour-button span.d-icon {
 	position: relative;
-	color: var(--blue-grey-900);
+	color: white;
 	z-index: 10;
 	
 	animation: spin 2s infinite;
@@ -232,7 +238,8 @@ body {
 }
 
 .directus-tour-overlay section.directus-tour-content footer.directus-tour-content .d-icon,
-.directus-tour-button span.d-icon {
+.directus-tour-button span.d-icon,
+.directus-tour-start span.d-icon {
 	font-size: 24px;
 	font-family: Material Icons;
 	font-weight: 400;

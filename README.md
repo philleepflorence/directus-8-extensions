@@ -21,6 +21,13 @@ helpers/functions.php
 │   │   └── tree.vue
 │   └── tables
 │       └── table.vue
+├── core
+│   └── Directus
+│       ├── Authentication
+│       │   └── Provider.php
+│       └── Database
+│           └── TableGateway
+│               └── RelationalTableGateway.php
 ├── endpoints
 │   ├── analytics
 │   │   ├── controllers
@@ -66,6 +73,12 @@ helpers/functions.php
 │   │   │   ├── Field.php
 │   │   │   ├── Migrate.php
 │   │   │   └── Schema.php
+│   │   └── endpoints.php
+│   ├── directus
+│   │   ├── controllers
+│   │   │   ├── App.php
+│   │   │   ├── Mail.php
+│   │   │   └── Metadata.php
 │   │   └── endpoints.php
 │   ├── files
 │   │   ├── controllers
@@ -115,6 +128,7 @@ helpers/functions.php
 │   ├── curl.php
 │   ├── database.php
 │   ├── debugger.php
+│   ├── directus.php
 │   ├── filesystem.php
 │   ├── form.php
 │   ├── format.php
@@ -371,18 +385,22 @@ helpers/functions.php
 ├── styles
 │   ├── app.css
 │   └── style.css
-└── templates
-|   └── mail
-|       ├── auth-fail.twig
-|       ├── auth-success.twig
-|       ├── base.twig
-|       ├── footer.twig
-|       ├── new-install.twig
-|       ├── plain.twig
-|       ├── reset-password.twig
-|       └── user-invitation.twig
-└── vendors
+├── templates
+│   └── mail
+│       ├── auth-fail.twig
+│       ├── auth-success.twig
+│       ├── base.twig
+│       ├── footer.twig
+│       ├── new-install.twig
+│       ├── plain.twig
+│       ├── reset-password.twig
+│       ├── user-invitation.twig
+│       └── user.twig
+└── vendor
 ```
+
+#### Core
+Core Directus Files that have been edited - may also be included in a Pull Request
 
 #### Endpoints
 Custom endpoints are easy to create files that return an array with the endpoint path, method, and handler.
@@ -403,6 +421,9 @@ Layouts are different ways to view or even interact with data on the Item Browse
 #### Modules
 Modules are a way to add full-featured modules to Directus. You can build page modules for custom dashboards, reporting, point-of-sale systems, or anything else. 
 Each page is protected within the auth gateway and can easily access project data and global variables.
+
+#### Modules
+View templates that have been edited. API Twig Templates.
 
 #### Vendor
 Vendor dependents of the custom endpoints or helpers.

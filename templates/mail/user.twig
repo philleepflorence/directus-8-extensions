@@ -1,0 +1,6 @@
+{% extends "base.twig" %}
+{% block content %}
+<p>Hello {{ user.first_name }} {{ user.last_name }}!</p>
+<div>{{ body|raw }}</div>
+<p>Love, <br>{{ settings.project_name }} &mdash; {{ settings.project_tagline }}</p>
+{% endblock %}

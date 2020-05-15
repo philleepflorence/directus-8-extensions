@@ -8,6 +8,9 @@
 namespace Directus\Custom\Helpers;
 	
 use Directus\Util\ArrayUtils;
+use Directus\Util\DateTimeUtils;
+
+use function Directus\get_request_host;
 
 class Request 
 {
@@ -82,5 +85,18 @@ class Request
         }
         
         return $headers;
+	}
+	
+	/*
+		Request Utility - Get Common Properties for the incoming request
+	*/
+	
+	public static function Properties () 
+	{
+		return [
+			'date' => DateTimeUtils::nowInUTC()->toString(),
+			'user_agent' => ArrayUtils::get($_SERVER, 'HTTP_USER_AGENT'),
+			'ip' => get_request_host()
+		];
 	}
 }

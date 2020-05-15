@@ -16,15 +16,15 @@
 					"title": "Modules",
 					"description": "Assets, analytics, reports, guides, and tools",
 					"path": "/app/ext/modules",
-					"icon": "supervised_user_circle",
+					"icon": "extension",
 					"analytics": "Modules"
 				},
-				"files": {
-					"title": "Files",
-					"description": "View, Create, &amp; Edit Uploaded files",
-					"path": "/app/files",
-					"icon": "cloud_done",
-					"analytics": "Files"
+				"project": {
+					"title": "Project",
+					"description": "View, &amp; Edit Project Collections and Items",
+					"path": "/app/ext/application",
+					"icon": "view_module",
+					"analytics": "Project Collections"
 				},
 				"collections": {
 					"title": "Collections",
@@ -39,6 +39,13 @@
 					"path": "/app/users",
 					"icon": "supervised_user_circle",
 					"analytics": "Users"
+				},
+				"files": {
+					"title": "Files",
+					"description": "View, Create, &amp; Edit Uploaded files",
+					"path": "/app/files",
+					"icon": "cloud_done",
+					"analytics": "Files"
 				},
 				"settings": {
 					"title": "Settings",

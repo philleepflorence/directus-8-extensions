@@ -6,12 +6,18 @@
 */
 
 namespace Directus\Custom\Helpers;
+
+use Directus\Mail\Mailer;
+use Directus\Mail\Message;
 	
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 
 use function Directus\base_path;
-use function Directus\get_api_project_from_request;
+use function Directus\get_directus_setting;
+use function Directus\get_kv_directus_settings;
+use function Directus\parse_body;
+use function Directus\send_mail_with_template;
 
 class Directus 
 {
@@ -84,6 +90,77 @@ class Directus
 		ArrayUtils::set($response, "data.tours", $items);
 		
 		return $response;
+	}
+	
+	/*
+		Directus internal mailer to API Users
+		ARGUMENTS:
+			$params
+				template - @String: Filename of twig mail template - src/mail
+				subject - @String: Subject sprinf template (project name variable is required!)
+				users - @Array: User Array
+	*/
+	
+	public static function Mail ($params)
+	{
+		$template = ArrayUtils::get($params, 'template', 'user.twig');
+		$subject = ArrayUtils::get($params, 'subject');
+		$users = ArrayUtils::get($params, 'users');
+		$body = ArrayUtils::get($params, 'body');
+		
+		$data = [
+	        "request" => Request::Properties(),
+	        "settings" => get_kv_directus_settings(),
+	        "body" => $body
+        ];
+        
+        $response = [
+	        "meta" => [
+		        "mode" => "mail",
+		        "template" => $template,
+		        "message" => Api::Responses('directus.email.error')
+	        ],
+	        "data" => []	        
+        ];
+        
+        $tableGateway = Api::TableGateway('directus_users', false);
+        
+        foreach ($users as $user)
+        {
+	        if (is_numeric($user))
+	        {
+		        $user = $tableGateway->getItems([ 
+			        "filter" => [
+				        "id" => $user
+			        ] 
+		        ]);
+		        $user = ArrayUtils::get($user, 'data.0');
+	        }
+        
+			if (ArrayUtils::get($user, 'email')) 
+			{
+				ArrayUtils::set($data, 'user', $user);				
+				ArrayUtils::set($data, 'body', $body);
+				
+				$mailed = send_mail_with_template($template, $data, function (Message $message) use ($subject, $user) {
+			        $message->setSubject(
+			            sprintf($subject, get_directus_setting('project_name', ''))
+			        );
+			        $message->setTo($user['email']);
+			    }); 
+			    
+			    array_push($response['data'], [
+				    "first_name" => ArrayUtils::get($user, 'first_name'),
+				    "last_name" => ArrayUtils::get($user, 'last_name'),
+				    "email" => ArrayUtils::get($user, 'email')
+			    ]);
+			}
+        }
+        
+        ArrayUtils::set($response, 'meta.message', Api::Responses('directus.email.success'));
+        ArrayUtils::set($response, 'meta.success', true);
+		
+		return $response;	
 	}
 	
 	/*

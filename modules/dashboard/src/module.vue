@@ -125,12 +125,8 @@
 					grid-row: 1/3 !important;
 				}
 				
-				&.modules-dashboard-files {
+				&.modules-dashboard-project {
 					grid-column: 2/4 !important;
-				}
-				
-				&.modules-dashboard-settings {
-					grid-column: 1/3 !important;
 				}
 				
 				.flex-item {

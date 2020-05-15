@@ -64,6 +64,8 @@
     this.Public = function () {
 	    const logo = document.querySelector('.container .logo');
         const submit = document.querySelector('form button[type="submit"]');
+        
+        if (this.$hash && this.$hash !== window.location.hash) return window.location.reload();
 
         if (!logo || !submit) return false;
         
@@ -251,9 +253,13 @@
 	    
 	    let remainder = this.$tours.length - index.tours;
 	    
-	    let $button = document.createElement("span");
-	    	$button.innerHTML = '<span class="d-icon">add</span>';
-	    	$button.classList.add('directus-tour-button');
+	    let $button = document.querySelector('.directus-tour-button');	 
+	    
+	    if ($button) $button.remove();
+	       
+	    $button = document.createElement("span");
+	    $button.innerHTML = '<span class="d-icon">add</span>';
+	    $button.classList.add('directus-tour-button');
 	    
 	    let $element = document.querySelector(currtour.element);
 	    	    
@@ -301,12 +307,15 @@
 		    if (e) e.stopPropagation();
 		    if (e) e.preventDefault();
 		    		    
-		    this.tours.empty();
+		    this.tours.empty();	    
 		    
 		    $tourStart = document.createElement('span');
 		    $tourStart.classList.add('directus-tour-start');
+		    $tourStart.innerHTML = '<span class="d-icon">add</span>';
 		    
 		    this.$page.appendChild($tourStart);
+		    
+		    $tourStart.addEventListener('click', this.tours);
 	    };
 	    
 	    this.tours.next = (e) => {
@@ -352,6 +361,11 @@
 			
 			if ($tourClose) $tourClose.addEventListener('click', this.tours.close);
 			if ($tourNext) $tourNext.addEventListener('click', this.tours.next);
+		    
+		    $tourStart = document.querySelector('.directus-tour-start');
+		    
+		    if ($tourStart) $tourStart.removeEventListener('click', this.tours);
+			if ($tourStart) $tourStart.remove();
 			
 			$button.removeEventListener('click', this.tours.open);
 			$button.addEventListener('click', this.tours.next);
@@ -402,6 +416,8 @@
 
     this.loaded = function () {
         clearInterval(timers.loaded);
+        
+        this.$container = this.$page.parentElement;
 
         this.$hash = window.location.hash;
         this.$bookmarks = this.$menu.querySelectorAll('ul li.bookmark a');

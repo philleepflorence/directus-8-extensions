@@ -1,7 +1,7 @@
 {
 	"name": "modules",
 	"version": "1.3.0",
-	"icon": "view_module",
+	"icon": "extension",
 	"contents": {
 		"en-US": {
 			"title": "Modules",
@@ -35,7 +35,7 @@
 				},
 				"notifications": {
 					"title": "Send Notifications",
-					"description": "Send Push, SMS, or Email Notifications to Application Users",
+					"description": "Send Push, SMS, or Email Notifications to Application Users or Email Messages to Directus Users",
 					"path": "/app/ext/notifications",
 					"icon": "send",
 					"analytics": "Users"
