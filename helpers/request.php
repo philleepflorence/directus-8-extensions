@@ -60,6 +60,15 @@ class Request
 	public static function Headers ()
 	{
 		$input = file_get_contents('php://input');
+		
+		# Parse GET Variables if the Global GET is empty!
+		
+		parse_str(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY), $query);		
+		
+		if (is_array($query) && count($query) && !count($_GET))
+		{
+			$_REQUEST = array_merge_recursive($_REQUEST, $query);
+		}
 	        
         if (is_string($input))
         {

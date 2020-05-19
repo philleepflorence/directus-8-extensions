@@ -20,7 +20,7 @@
 				:placeholder="options.placeholder"
 				:icon="options.icon"
 				:other="options.allow_other"
-				@input="$emit('input', $event)">
+				@input="input">
 			</v-select>
 		
 			<v-spinner
@@ -37,7 +37,7 @@
 
 <script>
 	import mixin from '@directus/extension-toolkit/mixins/interface';
-	import { sortBy } from 'lodash';
+	import { kebabCase, startCase } from 'lodash';
 	
 	export default {
 		name: "InterfaceDropdownExtended",
@@ -78,6 +78,11 @@
 			this.fetchItems();
 		},
 		methods: {
+			input (value) {
+				if (this.options.format_value) value = kebabCase(value);
+
+				this.value = value;
+			},
 			/*
 				Parse the Filter Array into an Object
 			*/
@@ -109,7 +114,7 @@
 					group: this.options.field,
 					filter: this.formatFilters(this.options.filters)
 				};
-	
+					
 				this.$api
 					.getItems(this.options.collection, params)
 					.then((response) => {
@@ -119,11 +124,9 @@
 							response.data.forEach((row) => {
 								let value = row[this.options.field];
 								
-								if (!this.dropdown[value]) this.dropdown[value] = value;
+								if (!this.dropdown[value]) this.dropdown[value] = startCase(value);
 							});
-						}
-						
-						this.dropdown = sortBy(this.dropdown, [function(o) { return o; }]);
+						}					
 						
 						this.loading = false;						
 					})

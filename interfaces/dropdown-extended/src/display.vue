@@ -4,6 +4,7 @@
 
 <script>
 	import mixin from '@directus/extension-toolkit/mixins/interface';
+	import { startCase } from 'lodash';
 	export default {
 		mixins: [mixin],
 		computed: {
@@ -13,14 +14,14 @@
 					: this.options.choices;
 			},
 			displayValue() {
-				if (this.options.formatting) {
-					if (this.choices[this.value]) {
-						return this.choices[this.value];
-					} else {
-						return this.value;
-					}
-				}
-				return this.value;
+				let value = '--';
+				
+				if (this.options.formatting && this.choices && this.choices[this.value]) value = this.choices[this.value];
+				else value = this.value;
+				
+				if (this.options.format_value) value = startCase(value);
+								
+				return value;
 			}
 		}
 	};

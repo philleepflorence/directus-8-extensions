@@ -39,16 +39,6 @@
 			"comment": "The field in the collection to load the dynamic values",
 			"length": 50
 		},
-		"filters": {
-			"name": "Filters",
-			"comment": "The filters to use when loading from the collection",
-			"interface": "json",
-			"advanced": true,
-			"options": {
-				"language": "application/json"
-			},
-			"default": {}
-		},
 		"placeholder": {
 			"name": "Placeholder",
 			"interface": "text-input",
@@ -60,14 +50,32 @@
 			"name": "Allow Other",
 			"comment": "Allow the user to add a new value other than the pre-defined key:value options",
 			"interface": "switch",
+			"type": "boolean",
 			"default": false
 		},
 		"formatting": {
 			"name": "Show Display Text",
 			"comment": "Show the Text (Key) instead of the Value (Option)",
 			"interface": "switch",
-			"type": "BOOLEAN",
+			"type": "boolean",
 			"default": true
+		},
+	    "format_value": {
+			"name": "Format Value",
+			"comment": "Convert the display value to Title Case and value to Kebab Case",
+			"interface": "switch",
+			"type": "boolean",
+			"default": true
+	    },
+		"filters": {
+			"name": "Filters",
+			"comment": "The filters to use when loading from the collection",
+			"interface": "json",
+			"advanced": true,
+			"options": {
+				"language": "application/json"
+			},
+			"default": {}
 		},
 		"icon": {
 			"name": "Icon",
