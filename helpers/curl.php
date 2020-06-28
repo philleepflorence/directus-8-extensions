@@ -12,6 +12,7 @@ use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 
 use \DOMDocument;
+use \DOMXPath;
 
 class Curl 
 {
@@ -134,6 +135,8 @@ class Curl
 		$html = [];
 		$doc = new DOMDocument();
 		
+		$doc->preserveWhiteSpace = false;
+		
 		libxml_use_internal_errors(true);
 
 		@$doc->loadHTML($data);
@@ -162,12 +165,46 @@ class Curl
 		if (!filter_var($url, FILTER_VALIDATE_URL)) return [ 
 			"error" => true,
 			"message" => Api::Responses('curl.metadata.url')
-		 ];
+		];
+		
+		#$body = $dom->getElementsByTagName('body')->item(0);
 
 		$return = [
-			'url' => $url
+			'url' => $url,
+			'content' => []
 		];
 		$return = array_merge($return, $parsed);
+		
+		# Parse all text nodes!
+		
+		$xpath = new DOMXPath($dom);
+		
+		$textnodes = $xpath->query('//text()');
+		
+		if ($textnodes) 
+		{
+			$texts = [];
+			
+			foreach ($textnodes as $textnode) 
+			{
+				$string = trim($textnode->wholeText);
+				
+				preg_match('/(var+\s)[_a-zA-Z][_a-zA-Z0-9]{0,30}/', $string, $matches, PREG_OFFSET_CAPTURE);
+				
+				if (count($matches) || stripos($string, 'window.') === 0) continue;
+				
+				$string = str_replace(["\r\n", "\n"], '<br>', $string);
+				$string = Utils::JSON($string);
+				
+				if (is_string($string) && strlen($string)) array_push($texts, $string);
+				elseif (is_array($string)) array_push($texts, Utils::ToString($string));
+			}
+			
+			$texts = array_unique($texts);
+			$texts = array_filter($texts);
+			
+			$return['content'] = implode("<br>", $texts);
+		}
 
 		# Parse Title
 

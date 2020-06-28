@@ -1,0 +1,95 @@
+{
+	"name": "Map Extended",
+	"version": "1.0.1",
+	"types": ["json"],
+	"fieldset": true,
+	"icon": "place",
+	"options": {
+		"address_to_code": {
+			"name": "Address Geocode Input",
+			"comment": "Add an input field to automatically get the geocodes from an address. Uses <a href=\"https://wiki.openstreetmap.org/wiki/Nominatim\" target=\"_blank\">Nominatim</a>. Please check their usage policy.",
+			"interface": "switch",
+			"type": "boolean",
+			"default": true
+		},
+		"height": {
+			"name": "Height",
+			"interface": "text-input",
+			"comment": "The height of the map in pixels or add the unit to the height",
+			"type": "string",
+			"default": "40vh"
+		},
+		"display": {
+			"name": "Display Value",
+			"interface": "text-input",
+			"comment": "The property of the map object to save",
+			"placeholder": "house_number, address, neighbourhood, suburb, city, state, postcode, country, country_code, lat, lng"
+		},
+		"mapLat": {
+			"name": "Default Latitude",
+			"comment": "This is the latitude to use when displaying the map",
+			"interface": "text-input",
+			"default": 40.72803624
+		},
+		"mapLng": {
+			"name": "Default Longitude",
+			"comment": "This is the longitude to use when displaying the map",
+			"interface": "text-input",
+			"default": -73.948963880
+		},
+		"defaultZoom": {
+			"name": "Default Zoom",
+			"comment": "This is the initial zoom level to use when displaying the map",
+			"interface": "text-input",
+			"default": 12
+		},
+		"maxZoom": {
+			"name": "Max Zoom",
+			"comment": "This is the maximum zoom level to allow when displaying the map",
+			"interface": "text-input",
+			"default": 17
+		},
+		"inputs": {
+			"name": "Address Input",
+			"interface": "json",
+			"options": {
+				"language": "application/json"
+			},
+			"default": {
+				"city": null,
+				"country": null,
+				"country_code": null,
+				"county": null,
+				"house_number": null,
+				"lat": null,
+				"lng": null,
+				"neighbourhood": null,
+				"postcode": null,
+				"road": null,
+				"state": null,
+				"suburb": null
+			},
+			"comment": "Input configuration - attach the name of the applicable fields to the data properties",
+			"advanced": true
+		},
+		"theme": {
+			"name": "Interface Theme",
+			"comment": "Depending on additional themes available, you may be able to choose the style theme of the map",
+			"interface": "dropdown",
+			"type": "JSON",
+			"advanced": true,
+			"default": "https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png",
+			"options": {
+				"choices": [{
+						"label": "Grayscale",
+						"value": "https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png"
+					},
+					{
+						"label": "Color",
+						"value": "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
+					}
+				]
+			}
+		}
+	}
+}

@@ -14,7 +14,7 @@
 			"comment": "Enter placeholder text",
 			"interface": "text-input",
 			"length": 200,
-			"default": "Enter a valid URL to import the resources..."
+			"default": "Enter a valid URL to import content...after importing you may copy from the imported content below!"
 		},
 		"mirroredTitle": {
 			"name": "Mirrored Title Field",
@@ -28,6 +28,12 @@
 			"interface": "text-input",
 			"default": "description"
 		},
+		"mirroredContent": {
+			"name": "Mirrored Content Field",
+			"comment": "The Content field to place the Resource Content Details.",
+			"interface": "text-input",
+			"default": "content"
+		},
 		"mirroredImage": {
 			"name": "Mirrored Image Field",
 			"comment": "The Image field to place the Resource Image.",
@@ -37,25 +43,25 @@
 		"showCharacterCount": {
 			"name": "Show Character Count",
 			"comment": "Show the number of characters entered into the text input.",
-			"interface": "toggle",
+			"interface": "switch",
 			"default": true
 		},
 		"uploadImage": {
 			"name": "Upload Image",
 			"comment": "Upload the image after loading the Resources from URL.",
-			"interface": "toggle",
+			"interface": "switch",
 			"default": true
 		},
 		"onlyOnCreate": {
 			"name": "Only On Create",
 			"comment": "Load Resources from URL only on create.",
-			"interface": "toggle",
+			"interface": "switch",
 			"default": false
 		},
 		"forceLowercase": {
 			"name": "Force Lowercase",
 			"comment": "Force the URL to lowercase.",
-			"interface": "toggle",
+			"interface": "switch",
 			"default": true
 		},
 		"iconLeft": {

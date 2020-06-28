@@ -1,0 +1,22 @@
+/*
+	HTML Editor CSS Styles
+*/
+
+@import url('app.css');
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Condensed:wght@100;300;400;500;600;700&display=swap');
+
+:root {
+	--main-font-body: 'Encode Sans Condensed';
+}
+
+body {
+	font-family: var(--main-font-body) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--main-font-accent) !important;
+}
+
+p, ul, ol, blockquote {
+	font-family: var(--main-font-body) !important;
+}

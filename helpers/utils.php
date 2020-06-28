@@ -198,4 +198,32 @@ class Utils
 		
 		return $object;
 	}
+	
+	/*
+		Convert Standard Objects or Arrays to Description/List
+	*/
+	
+	public static function ToString ($object = null)
+	{
+		if (!is_object($object) && !is_array($object)) return $object;
+		
+		$dl = [];
+		
+		foreach ($object as $key => $value)
+		{
+			$title = preg_replace('/(?!^)([[:upper:]][[:lower:]]+)/', ' $0', $key);
+			$title = preg_replace('/(?!^)([[:lower:]])([[:upper:]])/', '$1 $2', $title);
+			$title = ucwords($title);
+			
+			if (is_array($value)) $currvalue = json_encode($value);
+			else $currvalue = $value;
+			
+			if (is_string($currvalue) || is_numeric($currvalue)) array_push($dl, "{$title}<br>{$currvalue}");
+			
+		}
+		
+		$dl = implode("<br><br>", $dl);
+		
+		return $dl;
+	}
 }

@@ -18,6 +18,8 @@ use function Directus\base_path;
 use function Directus\get_api_project_from_request;
 use function Directus\get_directus_files_settings;
 use function Directus\get_directus_thumbnail_settings;
+use function Directus\generate_uuid4;
+use function Directus\get_random_string;
 
 class FileSystem 
 {
@@ -244,6 +246,9 @@ class FileSystem
 	
 	public static function Thumbnailer ($params = [], $debug = false, $currfile = null) 
 	{
+		set_time_limit(3600);
+		ini_set('memory_limit', '1024M');
+		
 		$params = $params ?: [];
 		
 		$app = Application::getInstance();
@@ -254,10 +259,9 @@ class FileSystem
         $thumbnailsettings = get_directus_thumbnail_settings();
         
         foreach($thumbnailsettings as &$thumbnailsetting) if (is_string($thumbnailsetting)) $thumbnailsetting = json_decode($thumbnailsetting);
-        return [$filesettings, $thumbnailsettings];
         
         $file_naming = ArrayUtils::get($filesettings, 'file_naming');
-        $whitelists = ArrayUtils::get($thumbnailsettings, 'asset_whitelist');      
+        $whitelists = ArrayUtils::get($thumbnailsettings, 'asset_whitelist');     
         
         if (!$file_naming || !$whitelists) return [
 			"error" => true,
@@ -268,7 +272,6 @@ class FileSystem
 	    
 	    $storage = $app->getConfig()->get('storage');
 	    $basepath = base_path();
-	    $whitelists = json_decode($whitelists);
 	    $whitelists = Utils::ToArray($whitelists);
 	    
         $pattern = $file_naming === "file_id" ? '/^[0][0-9]{0,11}$/' : '/^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$/';
@@ -315,6 +318,13 @@ class FileSystem
 				    $original = "{$originals}/{$file}";
 				    				    
 				    if (file_exists($filepath)) continue;
+				    
+				    if ($debug === true) 
+				    {
+					    array_push($images, $filepath);
+					    
+					    continue;
+				    }
 				    				    					     
 				    $thumbnail = Image::make($original);
 				    
@@ -350,9 +360,14 @@ class FileSystem
 		    return [
 			    "meta" => [
 				    "mode" => "thumbnailer",
+				    "debug" => $debug,
+				    "file_name" => $file_naming,
 				    "sizes" => $whitelists,
-				    "images" => $imageslen,
-				    "files" => $fileslen
+				    "processed_files" => $imageslen,
+				    "loaded_files" => $fileslen,
+				    "memory_usage" => memory_get_usage(),
+					"memory_limit" => Utils::Bytes(ini_get('memory_limit')),
+				    "time_limit" => ini_get('max_execution_time')
 			    ],
 			    "data" => $images
 		    ];
@@ -365,6 +380,109 @@ class FileSystem
 			    
 		    ];
 	    }
+	}
+	
+	/*
+		Migrate files from legacy Directus versions
+	*/
+	
+	public static function Migrate ($params = [], $debug = false) 
+	{
+		# Get files that need to be updated
+		
+		set_time_limit(0);
+
+		$tableGateway = Api::TableGateway('directus_files', true);
+		$items = $tableGateway->getItems([
+			"fields" => "id,filename_disk,filename_download,private_hash,checksum,title",
+			"filter" => [
+				"private_hash" => [
+					"null" => 1
+				]
+			]
+		]);
+
+		$files = ArrayUtils::get($items, 'data');
+
+		$response = [
+			"meta" => [
+				"mode" => "migrate",
+				"total" => count($files)
+			],
+			"data" => $files
+		];
+
+		if (!count($files)) return $files;
+
+		# Get File Originals Folder
+
+		$basepath = base_path();
+		$app = Application::getInstance();
+		$storage = $app->getConfig()->get('storage');
+		$originals = "{$basepath}/" . ArrayUtils::get($storage, 'root');   
+
+		forEach ($files as &$file) {
+
+			$realpath = "{$originals}/" . $file['filename_disk'];
+
+			if (!is_file($realpath)) continue;
+
+			$pathinfo = pathinfo($realpath);
+
+			$title = ArrayUtils::get($file, 'title');
+
+			$filename = generate_uuid4() . '.' . $pathinfo['extension'];
+
+			$filename_disk = preg_replace("/[^a-z0-9.-]/", '-', strtolower($title));
+
+			$filename_disk = preg_replace("/-{2,}/", '-', $filename_disk);
+
+			$imageData = file_get_contents($realpath);			
+
+			$imageData = base64_encode($imageData);
+
+			ArrayUtils::set($file, 'realpath', $realpath);
+
+			# Checksum - hash_file('md5', <file-data>)			
+
+			# Private Hash - get_random_string()			
+
+			# File Name - UUID: generate_uuid4()
+
+			$id = ArrayUtils::get($file, 'id');
+
+			$update = [
+
+			    "filename_disk" => $filename,
+
+			    "filename_download" => $filename_disk . '.' . $pathinfo['extension'],
+
+			    "private_hash" => get_random_string(),
+
+			    "checksum" => hash_file('md5', $realpath)
+
+			];
+
+			ArrayUtils::set($file, 'update', $update);
+
+			if ($debug === true) continue;
+
+			# Rename file
+
+			$filepath = "{$originals}/" . $update['filename_disk'];
+
+			rename($realpath, $filepath);
+
+			# Update the Files Collection
+
+			$tableGateway->updateRecord($id, $update);
+
+	    }
+
+		ArrayUtils::set($response, 'data', $files);
+
+		return $response;
+
 	}
 	
 	/*

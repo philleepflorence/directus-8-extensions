@@ -114,7 +114,7 @@ class Collections
 			$parameter = (array) ArrayUtils::get($row, "options.params"); 
 			$fields = ArrayUtils::get($parameter, "fields"); 
 			
-			if ($debug) ArrayUtils::set($parameter, "status", "draft,published");
+			if ($debug && ArrayUtils::get($parameter, "status")) ArrayUtils::set($parameter, "status", "draft,published");
 			
 			if ($fields) ArrayUtils::set($parameter, "fields", implode(',', $fields));
 			

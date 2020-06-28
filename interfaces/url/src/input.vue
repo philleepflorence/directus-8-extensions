@@ -10,9 +10,14 @@
 			v-bind:maxlength="length"
 			v-bind:icon-left="options.iconLeft"
 			v-bind:charactercount="options.showCharacterCount"
-			v-on:input="input"
-			v-on:keyup.enter.prevent.stop="load">
+			v-on:input="input">
 		</v-input>
+		
+		<span class="interface-url-upload" v-on:click.prevent.stop="load">
+			<v-icon name="import_export"></v-icon>
+		</span>
+		
+		<div class="interface-url-content" ref="content"></div>
 		
 		<v-spinner
 			v-show="loading"
@@ -44,7 +49,7 @@
 		},
 		methods: {
 			input (value) {
-				this.value = value;
+				if (value && value.length) this.value = value;
 			},
 			load (value) {
 				if (this.readonly === true || !this.value) return;
@@ -69,14 +74,21 @@
 						this.$emit('input', response.url);
 					}
 					
+					if (response.content) {
+						this.$refs.content.innerHTML = response.content;
+					}
+					
 					if (this.options.mirroredTitle && response.title) {
 						this.$emit('setfield', { field: this.options.mirroredTitle, value: response.title });
 					}
 					if (this.options.mirroredDescription && response.description) {
 						this.$emit('setfield', { field: this.options.mirroredDescription, value: response.description });
+					}
+					if (this.options.mirroredContent && response.content) {
+						this.$emit('setfield', { field: this.options.mirroredContent, value: response.content });
 					}			
 										
-					if (this.options.mirroredImage && response.image) {
+					if (this.options.mirroredImage && this.options.uploadImage && response.image) {
 						this.upload(response);
 					}
 				})
@@ -98,9 +110,9 @@
 					description: response.description,
 					filename_download: response.imageinfo.basename
 				})
-				.then((response) => {					
+				.then((e) => {					
 					this.$events.emit("warning", {
-						notify: `Image Resource Uploaded! Select the image with the title -${ response.title }- from existing files to add!`
+						notify: `Image Resource Uploaded! <br>Select the image with the title -${ response.title }- from existing files to add!`
 					});
 				})
 				.catch((error) => {
@@ -111,7 +123,10 @@
 	};
 </script>
 
-<style lang="scss">
+<style lang="scss">	
+	.interface-url {
+		position: relative;
+	}
 	.custom-interface-url {
 		color: var(--blue-grey-200);
 	}
@@ -119,9 +134,14 @@
 		display: block;
 		width: 100%;
 		height: auto;
-	}	
-	.interface-url {
-		position: relative;
+	}
+	.interface-url-upload {
+		position: absolute;
+		right: 2px;
+		top: 6px;
+		padding: 8px 10px;
+		cursor: pointer;
+		background-color: var(--blue-grey-900);
 	}
 	.interface-url .spinner {
 		position: absolute;
@@ -129,5 +149,13 @@
 		right: 0;
 		margin: 0 auto;
 		top: 12px;
+	}
+	.interface-url-content:not(:empty) {
+		background-color: var(--blue-grey-800);
+		color: var(--blue-grey-400);
+		padding: 1rem;
+		margin: 1rem 0;
+		max-height: 480px;
+		overflow: auto;
 	}
 </style>

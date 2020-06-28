@@ -24,8 +24,9 @@ class Import
     {
 	    $url = ArrayUtils::get($_REQUEST, 'url');
 	    $options = ArrayUtils::get($_REQUEST, 'options');
-	    $encode = ArrayUtils::get($_REQUEST, 'encode');
 	    $params = ArrayUtils::get($_REQUEST, 'params');
+	    
+	    $encode = filter_var(( ArrayUtils::get($_REQUEST, 'encode') ), FILTER_VALIDATE_BOOLEAN);
 	    
 	    $result = Curl::Metadata($url, $options, $encode, $params); 
 	    

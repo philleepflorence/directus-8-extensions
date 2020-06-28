@@ -132,7 +132,7 @@
 				.flex-item {
 					flex-grow: 1;
 					text-align: center;
-					color: var(--main-primary-color);
+					color: var(--page-text-color);
 					padding: 1.5rem;
 					
 					h3 {
@@ -142,6 +142,7 @@
 					
 					.lead {
 						font-size: 1rem;
+						
 					}
 					
 					.icon {
@@ -150,23 +151,23 @@
 						justify-content: center;
 						width: 50px;
 						height: 50px;
-						background: rgba(white, 0.1);
+						background-color: var(--main-primary-color);
 						margin: 0 auto 1rem auto;
 						border-radius: 50%;						
 					}
 					
-					.modules-dashboard-analytics {
+					.modules-modules-analytics {
 						position: relative;
 						padding: 1rem;
 						
 						p.lead {
-							color: var(--main-primary-color);
+							color: var(--page-text-color);
 							font-size: 2.5rem !important;
 							font-weight: 300 !important;
 							text-align: center;
 						
 							span + span {
-								color: rgba(white, 0.3);
+								color: rgba(white, 0.5);
 								font-size: 1.25rem;
 								font-weight: 400 !important;
 								text-transform: lowercase;

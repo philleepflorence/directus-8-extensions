@@ -31,10 +31,10 @@ class Directus
 		$user = ArrayUtils::get($params, 'user');
 		
 		$headers = getallheaders();
-		$referer = ArrayUtils::get($_SERVER, 'HTTP_REFERER') ?: ArrayUtils::get($headers, 'Referer');
 		$domain = Server::Domain();
+		$referer = ArrayUtils::get($_SERVER, 'HTTP_REFERER') ?: ArrayUtils::get($headers, 'Referer') ?: $domain;
 		
-		$admin = Api::SuperAdmin ($token, false);
+		$admin = Api::SuperAdmin($token, false);
 		
 		$response = [
 			"meta" => [
@@ -44,7 +44,7 @@ class Directus
 			"data" => []
 		];
 		
-		if (!$admin && !stripos($referer, $domain)) 
+		if (!$admin && stripos($referer, $domain) === false) 
 		{
 			http_response_code(401); 
 			
@@ -71,9 +71,25 @@ class Directus
 		
 		$tableGateway = Api::TableGateway('directus_collections', NULL);
 		$items = $tableGateway->getItems();
-		$items = ArrayUtils::get($items, "data");
+		$items = ArrayUtils::get($items, "data", []);
 		
-		ArrayUtils::set($response, "data.collections", $items);
+		$collections = $items;
+		
+		# Load Additional Bookmarks Configuration for Collections
+		
+		$tableGateway = Api::TableGateway('app_collections_configuration', NULL);
+		$items = $tableGateway->getItems([
+			"status" => "published",
+			"filter" => [
+				"slug" => "bookmarks",
+				"type" => "module"
+			]
+		]);
+		$items = ArrayUtils::get($items, "data.0.options", []);
+		
+		if ($items) $collections = array_merge($items, $collections);
+		
+		ArrayUtils::set($response, "data.collections", $collections);
 		
 		# Load Tour Options
 		

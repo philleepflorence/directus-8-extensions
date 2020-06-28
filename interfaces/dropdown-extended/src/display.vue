@@ -1,5 +1,5 @@
 <template>
-	<span class="no-wrap">{{ displayValue }}</span>
+	<span class="no-wrap dropdown-extended">{{ displayValue }}</span>
 </template>
 
 <script>
@@ -26,3 +26,9 @@
 		}
 	};
 </script>
+
+<style lang="scss" scoped>
+	.dropdown-extended {
+		position: relative;
+	}
+</style>

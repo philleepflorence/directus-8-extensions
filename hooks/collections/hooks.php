@@ -24,7 +24,7 @@ return [
 	        }
 	        else User::Notifications();	  
         },
-        'item.update.directus_files:after' => function ($collection, $item) 
+        'item.update.directus_files:after' => function ($collection, $item = NULL) 
         {
 	        if ($item) {
 		        $file = ArrayUtils::get($item, 'filename_disk');
