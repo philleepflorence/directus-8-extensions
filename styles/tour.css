@@ -1,0 +1,188 @@
+.directus-tour-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	border-radius: 50%;
+	height: 44px;
+	width: 44px;
+	top: 50%;
+	left: 50%;
+	margin: -22px 0 0 -22px;
+	cursor: pointer;
+	z-index: 123456789;
+	animation: zoomIn 1s ease-in-out;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+}
+
+.directus-tour-start {
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	height: 44px;
+	width: 44px;
+	bottom: 1.5rem;
+	right: 1.5rem;
+	cursor: pointer;
+	z-index: 123456789;
+	color: white;
+	background: var(--main-primary-color);
+	
+	animation: zoomIn 1s ease-in-out;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+}
+
+.directus-tour-button:before {
+	content: '';
+	position: absolute;
+	background: var(--main-primary-color);
+	border-radius: 50%;
+	height: 44px;
+	width: 44px;
+	top: 0;
+	left: 0;
+
+	box-shadow: 0 0 0 0 rgba(var(--main-primary-color-active-rgb), 1);
+	transform: scale(1);
+	animation: pulse 2s infinite;
+}
+
+.directus-tour-button span.d-icon {
+	position: relative;
+	color: white;
+	z-index: 10;
+	
+	animation: spin 2s infinite;
+}
+
+.directus-tour-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 12345678;
+	animation: fadeIn 0.5s ease-in-out;
+}
+
+.directus-tour-overlay .overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--blue-grey-900);
+	opacity: 0.5;
+}
+
+.directus-tour-overlay section.directus-tour-content {
+	position: relative;
+	background-color: var(--main-primary-color-active);
+	max-width: 540px;
+	margin: 1.5rem;
+	
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));	
+	animation: fadeInUp 0.45s ease-in-out;
+}
+
+.directus-tour-overlay section.directus-tour-content header.directus-tour-content {
+	color: var(--main-primary-color-text);
+	position: relative;
+	padding: 1.5rem;
+}
+
+.directus-tour-overlay section.directus-tour-content header.directus-tour-content .directus-tour-title {
+	font-family: var(--main-font-accent) !important;
+	font-size: 2rem;
+	margin-bottom: 0.5rem;
+}
+
+.directus-tour-overlay section.directus-tour-content header.directus-tour-content p.directus-tour-content {
+	font-weight: 500;
+	padding: 0.5rem 0;
+	line-height: 1.6;
+}
+
+.directus-tour-overlay section.directus-tour-content footer.directus-tour-content {
+	display: flex;
+	align-items: center;
+	margin-top: 0.5rem;
+	padding: 1rem 1.5rem;
+	background-color: var(--blue-grey-900);
+}
+
+.directus-tour-overlay section.directus-tour-content footer.directus-tour-content .d-count {
+	flex-grow: 1;
+	font-size: 1.25rem;
+}
+
+.directus-tour-overlay section.directus-tour-content footer.directus-tour-content .d-icon {
+	position: relative;
+	display: inline-block;
+	font-size: 0;
+	width: 24px;
+	height: 24px;
+	vertical-align: middle;
+	color: var(--main-primary-color);
+	cursor: pointer;
+}
+
+.directus-tour-overlay section.directus-tour-content footer.directus-tour-content .d-icon,
+.directus-tour-button span.d-icon,
+.directus-tour-start span.d-icon {
+	font-size: 24px;
+	font-family: Material Icons;
+	font-weight: 400;
+	font-style: normal;
+	display: inline-block;
+	line-height: 1;
+	text-transform: none;
+	letter-spacing: normal;
+	word-wrap: normal;
+	white-space: nowrap;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	vertical-align: middle;
+}
+
+.directus-tour-overlay section.directus-tour-content footer.directus-tour-content .d-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--main-primary-color);
+	color: var(--blue-grey-50);
+	border-radius: 50%;
+	height: 40px;
+	width: 40px;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(var(--main-primary-color-active-rgb), 0.9);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 25px rgba(var(--main-primary-color-active-rgb), 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(var(--main-primary-color-active-rgb), 0);
+	}
+}
+
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}

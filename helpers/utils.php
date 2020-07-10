@@ -124,6 +124,24 @@ class Utils
 	}
 	
 	/*
+		Capitalize each sentence in a string
+	*/
+	
+	public static function Capitalize ($string = '', $delimeters = ".?!")
+	{
+		$pattern = "/([{$delimeters}]+)/";
+		$sentences = preg_split($pattern, $string, -1, PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
+		$response = '';
+		
+		foreach ($sentences as $key => $sentence)
+		{
+			$response .= ($key & 1) == 0 ? ucfirst(strtolower(trim($sentence))) : $sentence . ' ';
+		}
+		
+		return trim($response);
+	}
+	
+	/*
 		Hash Utility Wrapper
 		ARGUMENTS:
 			$algorithm - @Boolean: True => sha256 or False => adler32

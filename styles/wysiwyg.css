@@ -20,3 +20,28 @@ h1, h2, h3, h4, h5, h6 {
 p, ul, ol, blockquote {
 	font-family: var(--main-font-body) !important;
 }
+
+img {
+	border-radius: 0 !important;
+}
+
+img.d-block-100 {
+	display: block !important;
+	width: 100% !important;
+	height: auto !important;
+}
+
+img.d-block-center {
+	display: block !important;
+	margin: auto !important;
+}
+
+img.d-block-right {
+	display: block !important;
+	margin-right: auto !important;
+}
+
+img.d-block-left {
+	display: block !important;
+	margin-left: auto !important;
+}

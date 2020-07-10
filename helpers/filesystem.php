@@ -366,7 +366,7 @@ class FileSystem
 				    "processed_files" => $imageslen,
 				    "loaded_files" => $fileslen,
 				    "memory_usage" => memory_get_usage(),
-					"memory_limit" => Utils::Bytes(ini_get('memory_limit')),
+					"memory_limit" => ini_get('memory_limit'),
 				    "time_limit" => ini_get('max_execution_time')
 			    ],
 			    "data" => $images

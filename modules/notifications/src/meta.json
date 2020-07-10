@@ -10,7 +10,7 @@
 		"en-US": {
 			"title": "Notifications",
 			"subtitle": "Notifications - Send Push, SMS, or Email Notifications or Messages to Application Users or Email Messages to Directus Users",
-			"description": "Send Push, SMS, or Email Notifications or Messages to Application Users or Email Messages to Directus Users",
+			"description": "Send Push, SMS, or Email Notifications or Messages to Application Users, Email Messages to Directus Users or Emails to a custom Email List",
 			"introduction": "You can send Push, SMS, or Email Notifications or Messages to Application Users. <br>You can also send Email Messages to other Directus Users or a custom Email List. <br>To begin select the Module in the Menu!",
 			"modes": {
 				"headline": "Select Module",
@@ -69,7 +69,7 @@
 						"headline": "Select Message Mode",
 						"mode": "list",
 						"title": "Custom Email List",
-						"icon": "list",
+						"icon": "contacts",
 						"inputs": {
 							"email": {
 								"label": "Email",
@@ -139,7 +139,7 @@
 				},
 				"list": {
 					"headline": "Send Email Message",
-					"processing": "Please wait...Processing Email List!",
+					"processing": "Please wait...Processing Email Lists and Emails!",
 					"description": [
 						"To get started, select the mode(s) of notification.",
 						"To add images to the email, you will need to have the full URL to the image. <br>Please use the Images Link Tool to search for an image and the correct size. <br>To use an image, click on the image to copy the URL!",

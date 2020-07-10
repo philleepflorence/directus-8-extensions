@@ -20,7 +20,7 @@
 	    tours: 0
     };
 
-    if (window.location.hash === "#/") window.location.hash = "#/app/ext/dashboard";
+    if (window.location.hash === "#/") window.location.hash = "#/app/ext/application";
 
     const get = function (url, params, done) {
         let request = new XMLHttpRequest();
@@ -64,10 +64,10 @@
     this.Public = function () {
 	    const logo = document.querySelector('.container .logo');
         const submit = document.querySelector('form button[type="submit"]');
-        
-        if (this.$hash && this.$hash !== window.location.hash) return window.location.reload();
 
         if (!logo || !submit) return false;
+        
+        if (this.$hash && this.$hash !== window.location.hash) return window.location.reload();
         
         clearInterval(timers.logo);
 
@@ -120,20 +120,29 @@
         
         let $menu = document.querySelector('.nav-bookmarks.menu-section');
         let $first = document.querySelector('.nav-menu.menu-section');
+        let $title = document.querySelector('.title.has-breadcrumb h1.type-title');
+        
+        if (!$menu) return false;
 
         window._.forEach(this.$bookmarks, (bookmark) => {
             let collection = this.$hash.split('/')[3];
             let Collection = bookmark.getAttribute('href').split('/')[3];
+            let textContent = bookmark.textContent.toLowerCase().split(' ');
+            
+            textContent.shift();
+            
+            textContent = textContent.join(' ');
+            textContent = textContent.trim();
 
             bookmark.classList.remove("router-link-active");
-
+            
             /*
             	Set Bookmark Icon - Where applicable!
-            */
+            */            
 
             if (this.$data.collections) {
                 let row = this.$data.collections.filter(function (currow) {
-                    return currow.collection === Collection;
+                    return currow.collection === textContent || currow.collection === Collection;
                 });
 
                 if (Array.isArray(row)) {
@@ -148,10 +157,9 @@
             	Set Active Bookmark!
             */
 
-            if (window.location.hash.indexOf('#/app/collections/') === 0) {
-
-                if (collection === Collection) bookmark.classList.add("router-link-active");
-            };
+            if (window.location.hash.indexOf('#/app/collections/') === 0 && collection === Collection) 
+            	if (textContent === $title.textContent) 
+            		bookmark.classList.add("router-link-active");
         });
         
         $menu.parentNode.insertBefore($menu, $first);
@@ -183,7 +191,7 @@
         if (this.$title.getAttribute('data-currpath') === this.$hash || !/\d/.test(ID)) return false;
 
         let input, fields = this.$page.querySelectorAll('.form [data-collection][data-field]');
-        let title, titles = ['title', 'name'];
+        let title, titles = ['name', 'title'];
 
         for (let field of fields) {
             if (field && field.getAttribute && titles.includes(field.getAttribute('data-field'))) {
@@ -397,7 +405,7 @@
 
         iframe.setAttribute('data-rendered', Date.now());
 
-        let StyleSheet = (window.location.origin + "/uploads/app/config/wysiwyg.css");
+        let StyleSheet = (window.location.origin + "/uploads/app/components/wysiwyg.css");
         let link = document.createElement("link");
 	        link.href = StyleSheet;
 	        link.rel = "stylesheet";
@@ -407,7 +415,7 @@
     };
 
     this.styles = function () {
-        let cellWidth = Math.floor((this.$page.offsetWidth - 140) * 0.2);
+        let cellWidth = Math.floor((this.$page.offsetWidth - 160) * 0.2);
         let style = document.createElement('style');
 	        style.id = 'v-table-toolbar-cell';
 	        style.innerHTML = `.v-table .toolbar .cell, .v-table .body .cell { flex-basis: ${ cellWidth }px !important; }`;
@@ -483,6 +491,8 @@
             this.$logo = document.querySelector('.module-bar .logo.v-logo');
             this.$profile = document.querySelector('.module-bar a.edit-user');
             this.$logout = document.querySelector('.module-bar button.sign-out');
+            
+            if (window.location.hash === "#/") window.location.hash = "#/app/ext/application";
 
             if (this.$menu && this.$page && this.$logo && this.$profile) this.loaded();
             

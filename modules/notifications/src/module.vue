@@ -353,6 +353,7 @@
 					iconMain: 'cloud_queue',
 					delay: 5000
 				});
+				return console.log("onSubmitMessage", this.form);
 				
 				this.$api.api.post(this.getContent(`form.${ this.module }.endpoint`), this.form).then((response) => {
 					

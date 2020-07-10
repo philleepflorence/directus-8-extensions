@@ -13,9 +13,9 @@ return [
     'actions' => [
         'file.save:after' => function ($file) 
         {
-	        if (stripos($_SERVER['REQUEST_URI'], '/app/files') === false) FileSystem::Thumbnailer();	 
+	        if (stripos($_SERVER['REQUEST_URI'], '/app/files') !== false) FileSystem::Thumbnailer();	
         },
-        'item.create.app_users:after' => function ($collection, $item) 
+        'item.create.app_users:after' => function ($item) 
         {
 	        if ($item) {
 		        $id = ArrayUtils::get($item, 'id');
@@ -24,7 +24,7 @@ return [
 	        }
 	        else User::Notifications();	  
         },
-        'item.update.directus_files:after' => function ($collection, $item = NULL) 
+        'item.update.directus_files:after' => function ($item) 
         {
 	        if ($item) {
 		        $file = ArrayUtils::get($item, 'filename_disk');

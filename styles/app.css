@@ -1,11 +1,35 @@
 /*
 	Project Specific Variables and Assets
-	Update the following variables with the values specific to the project!
 */
 
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Upright:wght@300;400;500;600;700&display=swap');
+
 :root {
-	--project-name: 'Directus Suite';
-	--project-tagline: 'An API, Content, and Database Manager';
+	--project-name: 'PhilleepEdit';
+	--project-tagline: 'API, Content, and Database Manager';
+
 	--main-primary-color: #BCA474 !important;
-	--main-primary-color-active: #8b7548 !important;
+	--main-primary-color-active: #8B7548 !important;
+	--main-primary-color-text: #FFFFFF !important;
+	--main-primary-color-rgb: 188, 164, 116 !important;
+	--main-primary-color-active-rgb: 139, 117, 72 !important;
+	
+	--main-font-accent: 'Cormorant Upright', sans-serif !important;
+	
+	--font-size-h1: 28px !important;
+	--font-size-h2: 24px !important;
+	--font-size-h3: 20px !important;
+	--font-size-h4: 18px !important;
+	--font-size-h5: 16px !important;
+	--font-size-h6: 14px !important;
+	
+	--font-size-logo: 22px;
+}
+
+@media (min-width: 1000px) {
+	body.public .art .public-note {
+		padding: 1.5rem;
+		min-width: 540px;
+		text-align: right;
+	}
 }
