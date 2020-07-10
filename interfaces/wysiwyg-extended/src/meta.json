@@ -1,0 +1,131 @@
+{
+	"name": "WYSIWYG Extended",
+	"version": "1.0.0",
+	"types": ["string"],
+	"icon": "format_quote",
+	"recommended": {
+		"length": 65534
+	},
+	"options": {
+		"cdn": {
+			"name": "CDN URL",
+			"comment": "The Root CDN URL to use for files - Defaults to Assets (Thumbnails) URL",
+			"interface": "text-input",
+			"length": 250
+		},
+		"cdn_template": {
+			"name": "CDN Thumbnail Template",
+			"comment": "The template to use when processing thumbnail paths - see settings.assets_whitelists for properties!",
+			"interface": "text-input",
+			"length": 250,
+			"default": "thumbnails/{{width}}/{{height}}/{{fit}}"
+		},
+		"toolbar": {
+			"name": "Toolbar Options",
+			"comment": "Show, hide, and reorder toolbar options",
+			"interface": "checkboxes",
+			"default": [
+				"undo", "redo", "bold", "italic", "underline", "bullist", "numlist", "blockquote", "h1", "h2", "h3", "h4", "h5", "h6", "link", "unlink", "image", "media", "hr", "strikethrough", "subscript", "superscript", "indent", "code", "table", "selectall", "copy", "cut", "paste", "removeformat", "remove", "fullscreen"
+			],
+			"options": {
+				"choices": {
+					"aligncenter": "Align Center",
+					"alignjustify": "Align Justify",
+					"alignleft": "Align Left",
+					"alignnone": "Align None",
+					"alignright": "Align Right",
+					"forecolor": "Foreground Color",
+					"backcolor": "Background Color",
+					"bold": "Bold",
+					"italic": "Italic",
+					"underline": "Underline",
+					"strikethrough": "Strikethrough",
+					"subscript": "Subscript",
+					"superscript": "Superscript",
+					"blockquote": "Blockquote",
+					"bullist": "Bullet List",
+					"numlist": "Numbered List",
+					"hr": "Horizontal Rule",
+					"link": "Add Link",
+					"unlink": "Remove Link",
+					"media": "Add Media",
+					"image": "Add Image",
+					"copy": "Copy",
+					"cut": "Cut",
+					"paste": "Paste",
+					"h1": "Heading 1",
+					"h2": "Heading 2",
+					"h3": "Heading 3",
+					"h4": "Heading 4",
+					"h5": "Heading 5",
+					"h6": "Heading 6",
+					"fontselect": "Select Font",
+					"fontsizeselect": "Select Font Size",
+					"indent": "Indent",
+					"outdent": "Outdent",
+					"undo": "Undo",
+					"redo": "Redo",
+					"remove": "Remove",
+					"removeformat": "Remove Format",
+					"selectall": "Select All",
+					"table": "Table",
+					"visualaid": "View invisible elements",
+					"code": "View Source",
+					"fullscreen": "Full Screen",
+					"ltr rtl": "Directionality"
+				}
+			}
+		},
+		"custom_formats": {
+			"name": "Custom Formats",
+			"comment": "Custom HTML wrappers for content",
+			"interface": "json",
+			"default": null,
+			"options": {
+				"template": [{
+					"title": "My Custom Format",
+					"inline": "span",
+					"classes": "custom-wrapper",
+					"styles": {
+						"color": "#00ff00",
+						"font-size": "20px"
+					},
+					"attributes": {
+						"title": "My Custom Wrapper"
+					}
+				}]
+			}
+		},
+		"tinymce_options": {
+			"name": "TinyMCE Options",
+			"comment": "Override any of [the TinyMCE init options](https://www.tiny.cloud/docs/configure/).",
+			"interface": "json",
+			"default": {
+				"image_caption": true,
+				"image_class_list": [{
+						"title": "None",
+						"value": ""
+					},
+					{
+						"title": "Full Width",
+						"value": "d-block-100"
+					},
+					{
+						"title": "Align Center",
+						"value": "d-block-center"
+					},
+					{
+						"title": "Align Right",
+						"value": "d-block-right"
+					},
+					{
+						"title": "Align Left",
+						"value": "d-block-left"
+					}
+				],
+				"image_dimensions": false
+			},
+			"advanced": true
+		}
+	}
+}

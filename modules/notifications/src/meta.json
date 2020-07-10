@@ -1,6 +1,6 @@
 {
 	"name": "notifications",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"icon": "notifications",
 	"types": [
 		"string"
@@ -11,7 +11,7 @@
 			"title": "Notifications",
 			"subtitle": "Notifications - Send Push, SMS, or Email Notifications or Messages to Application Users or Email Messages to Directus Users",
 			"description": "Send Push, SMS, or Email Notifications or Messages to Application Users or Email Messages to Directus Users",
-			"introduction": "You can send Push, SMS, or Email Notifications or Messages to Application Users. <br>You can also send Email Messages to other Directus Users. <br>To begin select the Module in the Menu!",
+			"introduction": "You can send Push, SMS, or Email Notifications or Messages to Application Users. <br>You can also send Email Messages to other Directus Users or a custom Email List. <br>To begin select the Module in the Menu!",
 			"modes": {
 				"headline": "Select Module",
 				"modes": [
@@ -64,6 +64,21 @@
 								"model": "form.notifications"
 							}
 						}
+					},
+					"custom": {
+						"headline": "Select Message Mode",
+						"mode": "list",
+						"title": "Custom Email List",
+						"icon": "list",
+						"inputs": {
+							"email": {
+								"label": "Email",
+								"value": "email",
+								"description": "Send Message via Email Address",
+								"icon": "email",
+								"model": "form.notifications"
+							}
+						}
 					}
 				},
 				"users": {
@@ -76,6 +91,7 @@
 					"processing": "Please wait...Processing Notifications!",
 					"description": [
 						"To get started, select the mode(s) of notification.",
+						"To add images to the email, you will need to have the full URL to the image. <br>Please use the image tool to search for an image and the correct size. <br>To use an image, click on the image to copy the URL!",
 						"By default, notifications are sent to all active users or active applications (push notifications only)!",
 						"SMS Notifications require a subscription to an SMS API such as <a href=\"https://www.twilio.com/sms\" target=\"_blank\">Twilio Programmable SMS</a>.",
 						"To send to a select users, please choose from the users displayed (useful for testing).",
@@ -99,6 +115,7 @@
 					"processing": "Please wait...Processing Email!",
 					"description": [
 						"To get started, select the mode(s) of notification.",
+						"To add images to the email, you will need to have the full URL to the image. <br>Please use the Images Link Tool to search for an image and the correct size. <br>To use an image, click on the image to copy the URL!",
 						"By default, email messages are sent to all active admin users!",
 						"To send to a select users, please choose from the users displayed (useful for testing).",
 						"You DO NOT need to enter the greeting - all messages are prefixed with: <br>'Hello {{ user.first_name }} {{ user.last_name }}'!",
@@ -119,6 +136,34 @@
 						"status": "active",
 						"fields": "id,first_name,last_name,email,role.name"
 					}
+				},
+				"list": {
+					"headline": "Send Email Message",
+					"processing": "Please wait...Processing Email List!",
+					"description": [
+						"To get started, select the mode(s) of notification.",
+						"To add images to the email, you will need to have the full URL to the image. <br>Please use the Images Link Tool to search for an image and the correct size. <br>To use an image, click on the image to copy the URL!",
+						"You will need to enter a CSV list of emails in the following format: <u>descriptive name &lt;email@example.com&gt;</u>!",
+						"To send to more than one email address, separate the list of emails by a comma (,) in the following format: <br><u>descriptive name &lt;email@example.com&gt;, descriptive name &lt;email@example.com&gt;, descriptive name &lt;email@example.com&gt;</u>",
+						"You DO NOT need to enter the greeting - all messages are prefixed with: <br>'Hello {{ descriptive name }}'!",
+						"You DO NOT need to enter the salutation - all messages are annexed with: <br>'Love, <br>{{ settings.project_name }} &mdash; {{ settings.project_tagline }}'!"
+					],
+					"message": {
+						"placeholder": "Enter Message - Raw HTML or Plaintext - Required!"
+					},
+					"subject": {
+						"placeholder": "Enter Subject - Required!"
+					},
+					"sender": {
+						"placeholder": "Enter Sender Email (Reply To Email) - Optional!"
+					},
+					"emails": {
+						"placeholder": "Enter Email CSV List - Required!"
+					},
+					"submit": {
+						"label": "Send Email"
+					},
+					"endpoint": "/custom/directus/mail"
 				}
 			}
 		}

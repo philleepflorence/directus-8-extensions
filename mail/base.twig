@@ -23,6 +23,11 @@
 			text-transform: uppercase;
 			margin-bottom: 10px;
 		}
+		img {
+			display: block;
+			max-width: 100%;
+			height: auto !important;
+		}
 	</style>
 </head>
 <body style="margin: 0; padding: 20px; background-color: #EAEAEA; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; -ms-text-size-adjust: none; font-weight: 400; font-size: 14px; color: #606060; font-family: 'Roboto', Helvetica, Helvetica, Arial, sans-serif; letter-spacing: 0;">
@@ -32,12 +37,12 @@
 			<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 0 solid #263238; border-collapse: collapse;">
 				<tr>
 					<td align="center" bgcolor="{{settings.project_color}}" style="padding: 30px 0 30px 0; border-radius: 4px 4px 0 0; color: #FFFFFF; font-size: 24px;">
-						<img src="{{settings.app_url}}/uploads/app/media/logo-white.png" alt="{{settings.project_name}}" style="display: block; max-width: 40%;" />
+						<img src="{{settings.project_url}}/uploads/app/media/logo-email.png" alt="{{settings.project_name}}" style="display: block; width: 200px; max-width: 40%;" />
 					</td>
 				</tr>
 				<tr>
 					<td bgcolor="#FAFAFA" style="padding: 20px 20px 20px 20px; border-radius: 0 0 4px 4px;">
-						<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<table border="0" cellpadding="0" cellspacing="0" width="100%" id="contents">
 							<tr>
 								<td style="color: #606060; font-family: Helvetica, Arial, sans-serif; padding: 0; line-height: 1.5; font-size: 14px;">
 									{% block content %}{{ body|raw }}{% endblock %}

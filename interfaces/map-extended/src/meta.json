@@ -80,15 +80,10 @@
 			"advanced": true,
 			"default": "https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png",
 			"options": {
-				"choices": [{
-						"label": "Grayscale",
-						"value": "https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png"
-					},
-					{
-						"label": "Color",
-						"value": "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
-					}
-				]
+				"choices": {
+					"https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png": "Grayscale",
+					"https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png": "Color"
+				}
 			}
 		}
 	}

@@ -1,0 +1,33 @@
+{
+	"name": "wysiwyg-extended",
+	"version": "1.0.0",
+	"description": "Renders a wysiwyg interface that allows the use of thumbnails",
+	"main": "",
+	"scripts": {
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/wysiwyg-extended",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/wysiwyg-extended",
+		"dist": "directus-extensions build --input ./src --output ./dist"
+	},
+	"keywords": [
+		"dropdown",
+		"collection",
+		"field",
+		"dynamic"
+	],
+	"author": "Philleep Florence",
+	"license": "GPL-3.0",
+	"dependencies": {
+		"@directus/extension-toolkit": "0.0.1",
+		"@tinymce/tinymce-vue": "^3.2.2",
+		"lodash": "^4.17.19",
+		"tinymce": "^5.4.1",
+		"vue": "^2.6.11",
+		"vue-hot-reload-api": "^2.3.4"
+	},
+	"devDependencies": {
+		"@vue/component-compiler-utils": "^2.6.0",
+		"cssnano": "^4.1.10",
+		"sass": "^1.26.10",
+		"vue-template-compiler": "^2.6.11"
+	}
+}

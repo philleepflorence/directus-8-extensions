@@ -48,7 +48,7 @@
 				</v-input>
 				
 				<v-ext-input 
-					id="wysiwyg" 
+					id="wysiwyg-extended" 
 					:placeholder="getContent('form.directus.subject.placeholder')"
 					@input="onInputMessage">
 				</v-ext-input>
@@ -57,13 +57,49 @@
 				
 			</div>
 			
+			<div class="modules-module-form" v-if="view.list">
+			
+				<header class="modules-divider">
+					<h2 class="modules-divider">{{ getContent('form.list.headline') }}</h2>
+					<hr />
+					<p class="modules-divider" v-for="html in getContent('form.list.description')" v-html="html"></p>
+				</header>
+				
+				<v-input
+					id="modules-module-content-input"
+					:placeholder="getContent('form.list.subject.placeholder')"
+					@input="onInputSubject">
+				</v-input>
+				
+				<v-input
+					id="modules-module-content-sender"
+					:placeholder="getContent('form.list.sender.placeholder')"
+					@input="onInputSender">
+				</v-input>
+				
+				<v-textarea
+					id="modules-module-content-textarea"
+					:placeholder="getContent('form.list.emails.placeholder')"
+					@input="onInputEmails">
+				</v-textarea>
+				
+				<v-ext-input 
+					id="wysiwyg-extended"
+					:placeholder="getContent('form.list.subject.placeholder')"
+					@input="onInputMessage">
+				</v-ext-input>
+				
+				<v-button block @click="onSubmitMessage" :loading="processing">{{ getContent('form.list.submit.label') }}</v-button>
+				
+			</div>
+			
 			<div class="modules-module-contents" v-if="view.introduction">
 				<div class="lead">
 					<p v-html="getContent('introduction')"></p>
 				</div>
-			</div>
+			</div>	
 			
-		</div>	
+		</div>
 
 		<v-info-sidebar wide itemDetail>
 			<section class="info-sidebar-section">
@@ -136,6 +172,7 @@
 		data () {
 			return {
 				contents: $meta.contents,
+				files: [],
 				icon: $meta.icon,
 				form: {
 					modes: [],
@@ -157,7 +194,12 @@
 				view: {
 					app: false,
 					directus: false,
-					introduction: true
+					introduction: true,
+					size: false,
+					file: false,
+					files: false,
+					empty: false,
+					overlay: false
 				}
 			};
 		},
@@ -207,6 +249,9 @@
 			loadUsers () {
 				this.loading = true;
 				
+				this.sizes = JSON.parse(this.$store.state.settings.values.asset_whitelist);
+				this.project = this.$store.state.currentProjectKey;
+												
 				this.$api.api.get('users', this.getContent('form.directus.params')).then((response) => {
 					
 					this.loading = false;
@@ -271,6 +316,7 @@
 				this.view.app = false;
 				this.view.directus = false;
 				this.view.introduction = false;
+				this.view.list = false;
 				
 				let $active = this.$el.querySelector(`a[data-module].active`);
 				
@@ -282,9 +328,18 @@
 				
 				set(this.view, input, true);
 			},
+			onCloseOverlay () {
+				this.view.overlay = false;
+			},
 			onInputMessage (input) {
 				if (this.module === 'app') this.form.message = input;
 				else this.form.body = input;
+			},
+			onInputEmails (input) {
+				this.form.emails = input;
+			},
+			onInputSender (input) {
+				this.form.sender = input;
 			},
 			onInputSubject (input) {
 				this.form.subject = input;
@@ -348,11 +403,13 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 	.modules-module {
 		padding: var(--page-padding);
 		
 		.modules-module-content {
+			position: relative;
+			z-index: 50;
 			
 			.modules-module-form {
 				.v-input, 
@@ -407,6 +464,90 @@
 					
 					.icon {
 						flex-shrink: 1;
+					}
+				}
+			}
+		}
+			
+		.modules-module-files {
+			background-color: var(--blue-grey-900);
+			padding: var(--page-padding);
+			
+			.modules-module-files-inputs {
+				margin-bottom: var(--page-padding);
+			}
+			
+			header.modules-divider {
+				
+				h2.modules-divider {
+					font-size: 1.5rem !important;
+				}
+				
+				p.modules-divider {
+					color: var(--blue-grey-400);
+					font-size: 1rem !important;
+					margin-top: 0.5rem;
+				}
+				
+			}
+			
+			.modules-module-files-cards {
+				display: grid;
+				grid-template-columns: repeat(auto-fill,var(--card-size));
+				grid-gap: var(--card-vertical-gap) var(--card-horizontal-gap);
+				justify-content: space-between;
+				width: 100%;
+				
+				article {
+					cursor: pointer;
+				}
+				
+				.modules-module-files-card {
+					width: var(--card-size);
+					overflow: hidden;
+					transition: box-shadow var(--fast) var(--transition);
+					position: relative;
+					
+					.header {
+						transition: all var(--fast) var(--transition);
+						height: var(--card-size);
+						border-radius: var(--border-radius);
+						background-color: var(--card-background-color);
+						overflow: hidden;
+						display: grid;
+						grid-template-columns: 1;
+						grid-template-rows: 1;
+						align-items: center;
+						justify-content: center;
+						position: relative;
+						
+						img {
+							grid-row: 1;
+							grid-column: 1;
+							width: 100%;
+							height: 100%;
+							object-fit: contain;
+						}
+					}
+					
+					.body {
+						padding-top: 8px;
+						position: relative;
+						display: flex;
+						align-items: center;	
+						
+						.main {
+							position: relative;
+							overflow: hidden;
+							flex-grow: 1;
+							
+							.title {
+								width: 100%;
+								white-space: nowrap;
+								text-overflow: ellipsis;
+								overflow: hidden;
+							}
+						}
 					}
 				}
 			}
