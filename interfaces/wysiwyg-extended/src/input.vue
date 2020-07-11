@@ -392,7 +392,7 @@
 					filepath = `${ this.options.cdn }/originals/${ this.selectedFile.filename_disk }`;
 				}
 				else if (this.options.cdn && size) {
-					let template = this.options.cdn_template || "thumbnails/{{width}}/{{height}}/{{fit}}";
+					let template = String(this.options.cdn_template || "app/thumbnails/{{width}}/{{height}}/{{fit}}").replace(/^\/+/, '');
 					let compiled = _.template(template);
 					let path = compiled(size);
 						

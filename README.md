@@ -2,15 +2,36 @@
 > The Philleep Florence extended version of Directus 8+ is still under development, more information to come in the near future.
 
 ### Getting Started
-You will first need to include the file that auto-loads the helpers.
+The following directories will need to be synced to your Directus installation:
+```
+├── admin
+├── core
+```
+Remember to include the `admin/lib` in your gitignore!
+
+To use the extensions, you will first need to include the file that auto-loads the helpers.
 ```
 helpers/functions.php
 ```
+
+This extension of Directus has a some pre-set schema definitions you might notice in the helpers.
+The SQL Schema Dumps should be coming soon.
+For now, use this repository as a guide on creating your own extensions.
 
 ### Folder Structure and Extensions
 
 ```
 .
+├── admin
+│   └── lib
+│       └── styles
+│           ├── animations.css
+│           ├── app.css
+│           ├── extensions.css
+│           ├── private.css
+│           ├── public.css
+│           ├── tour.css
+│           └── wysiwyg.css
 ├── components
 │   ├── charts
 │   │   ├── bar.vue
@@ -82,12 +103,20 @@ helpers/functions.php
 │   │   └── endpoints.php
 │   ├── files
 │   │   ├── controllers
+│   │   │   ├── Migrate.php
 │   │   │   └── Unlink.php
 │   │   └── endpoints.php
 │   ├── form
 │   │   ├── controllers
 │   │   │   ├── Mail.php
 │   │   │   └── Submit.php
+│   │   └── endpoints.php
+│   ├── mail
+│   │   ├── controllers
+│   │   │   ├── App.php
+│   │   │   ├── Browser.php
+│   │   │   ├── Mail.php
+│   │   │   └── Metadata.php
 │   │   └── endpoints.php
 │   ├── metadata
 │   │   ├── controllers
@@ -152,6 +181,7 @@ helpers/functions.php
 ├── interfaces
 │   ├── dropdown-extended
 │   │   ├── dist
+│   │   │   ├── display.css
 │   │   │   ├── display.js
 │   │   │   ├── display.js.map
 │   │   │   ├── input.css
@@ -181,6 +211,24 @@ helpers/functions.php
 │   │       ├── display.vue
 │   │       ├── input.vue
 │   │       └── meta.json
+│   ├── map-extended
+│   │   ├── dist
+│   │   │   ├── display.css
+│   │   │   ├── display.js
+│   │   │   ├── display.js.map
+│   │   │   ├── input.css
+│   │   │   ├── input.css.map
+│   │   │   ├── input.js
+│   │   │   ├── input.js.map
+│   │   │   └── meta.json
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── display.vue
+│   │       ├── input.vue
+│   │       ├── leaflet.css
+│   │       └── meta.json
 │   ├── text-input-html
 │   │   ├── dist
 │   │   │   ├── display.css
@@ -197,12 +245,34 @@ helpers/functions.php
 │   │       ├── display.vue
 │   │       ├── input.vue
 │   │       └── meta.json
-│   └── url
+│   ├── url
+│   │   ├── dist
+│   │   │   ├── display.css
+│   │   │   ├── display.js
+│   │   │   ├── display.js.map
+│   │   │   ├── input.css
+│   │   │   ├── input.js
+│   │   │   ├── input.js.map
+│   │   │   └── meta.json
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── display.vue
+│   │       ├── input.vue
+│   │       └── meta.json
+│   └── wysiwyg-extended
 │       ├── dist
 │       │   ├── display.css
 │       │   ├── display.js
 │       │   ├── display.js.map
+│       │   ├── icons
+│       │   │   └── default
+│       │   │       ├── icons.js
+│       │   │       ├── icons.min.js
+│       │   │       └── index.js
 │       │   ├── input.css
+│       │   ├── input.css.map
 │       │   ├── input.js
 │       │   ├── input.js.map
 │       │   └── meta.json
@@ -212,8 +282,20 @@ helpers/functions.php
 │       └── src
 │           ├── display.vue
 │           ├── input.vue
-│           └── meta.json
+│           ├── meta.json
+│           ├── skin.css
+│           └── wysiwyg.css
 ├── layouts
+├── mail
+│   ├── auth-fail.twig
+│   ├── auth-success.twig
+│   ├── base.twig
+│   ├── footer.twig
+│   ├── new-install.twig
+│   ├── plain.twig
+│   ├── reset-password.twig
+│   ├── user-invitation.twig
+│   └── user.twig
 ├── modules
 │   ├── analytics
 │   │   ├── dist
@@ -379,23 +461,9 @@ helpers/functions.php
 │           ├── meta.json
 │           └── module.vue
 ├── scripts
-│   ├── app.css
-│   ├── script.js
-│   └── wysiwyg.css
+│   └── script.js
 ├── styles
-│   ├── app.css
 │   └── style.css
-├── templates
-│   └── mail
-│       ├── auth-fail.twig
-│       ├── auth-success.twig
-│       ├── base.twig
-│       ├── footer.twig
-│       ├── new-install.twig
-│       ├── plain.twig
-│       ├── reset-password.twig
-│       ├── user-invitation.twig
-│       └── user.twig
 └── vendor
 ```
 

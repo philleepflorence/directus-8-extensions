@@ -7,6 +7,7 @@
 
 namespace Directus\Custom\Helpers;
 
+use Directus\Application\Application;
 use Directus\Mail\Mailer;
 use Directus\Mail\Message;
 	
@@ -14,6 +15,8 @@ use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 
 use function Directus\base_path;
+use function Directus\generate_uuid4;
+use function Directus\get_api_project_from_request;
 use function Directus\get_directus_setting;
 use function Directus\get_kv_directus_settings;
 use function Directus\parse_body;
@@ -122,7 +125,25 @@ class Directus
 		$template = ArrayUtils::get($params, 'template', 'user.twig');
 		$subject = ArrayUtils::get($params, 'subject');
 		$users = ArrayUtils::get($params, 'users');
+		$emails = ArrayUtils::get($params, 'emails');
+		$sender = ArrayUtils::get($params, 'sender');
 		$body = ArrayUtils::get($params, 'body');
+		
+		$container = Application::getInstance()->getContainer();
+		$config = $container->get('config');
+		
+		$maildir = base_path() . '/.cache/' . get_api_project_from_request() . '/mail';
+		$mailURL = Server::Host() . '/app/custom/mail/browser?uuid=';
+		
+		if (is_string($sender))
+		{
+			$sender = Mail::ParseAddress($sender);
+			
+			$from = [];
+			$from[ $sender['email'] ] = $sender['name'];
+			
+			$config->set('mail.default.from', $from);
+		}		
 		
 		$data = [
 	        "request" => Request::Properties(),
@@ -139,38 +160,77 @@ class Directus
 	        "data" => []	        
         ];
         
-        $tableGateway = Api::TableGateway('directus_users', false);
-        
-        foreach ($users as $user)
+        /*
+	        Parse Emails and Users and get a Users Array!
+        */
+                
+        if (is_string($emails))
         {
-	        if (is_numeric($user))
+	        $emails = explode(',', $emails);
+	        $users = [];
+	        
+	        foreach ($emails as $email)
+	        {		       
+		       array_push($users, Mail::ParseAddress($email));
+	        }
+        }
+        elseif ($users)
+        {        
+	        $tableGateway = Api::TableGateway('directus_users', false);
+	        
+	        foreach ($users as &$user)
 	        {
+		        if (!is_numeric($user)) continue;
+		        
 		        $user = $tableGateway->getItems([ 
 			        "filter" => [
 				        "id" => $user
 			        ] 
 		        ]);
 		        $user = ArrayUtils::get($user, 'data.0');
-	        }
+	        }	        
+        }
         
-			if (ArrayUtils::get($user, 'email')) 
-			{
-				ArrayUtils::set($data, 'user', $user);				
-				ArrayUtils::set($data, 'body', $body);
-				
-				$mailed = send_mail_with_template($template, $data, function (Message $message) use ($subject, $user) {
-			        $message->setSubject(
-			            sprintf($subject, get_directus_setting('project_name', ''))
-			        );
-			        $message->setTo($user['email']);
-			    }); 
-			    
-			    array_push($response['data'], [
-				    "first_name" => ArrayUtils::get($user, 'first_name'),
-				    "last_name" => ArrayUtils::get($user, 'last_name'),
-				    "email" => ArrayUtils::get($user, 'email')
-			    ]);
-			}
+        /*
+	        Send mail to each email address!
+        */
+                        
+        foreach ($users as $user)
+        {
+	        if (!ArrayUtils::get($user, 'email')) continue;
+	        
+	        $uuid = generate_uuid4();
+	        $mailpath = "{$maildir}/{$uuid}.html";
+	        
+	        ArrayUtils::set($data, 'form', $params);
+	        ArrayUtils::set($data, 'user', $user);				
+			ArrayUtils::set($data, 'body', $body);				
+			ArrayUtils::set($data, 'browser.url', $mailURL . $uuid);
+			
+			$mailed = send_mail_with_template($template, $data, function (Message $message) use ($subject, $user, $mailpath) {
+		        $message->setSubject(
+		            sprintf($subject, get_directus_setting('project_name', ''))
+		        );
+		        $message->setTo($user['email']);
+		        
+		        /*
+			        Save a copy of the outgoing mail.
+			        Allows a user to view the email in a browser.
+		        */
+		        
+		        $contents = $message->getBody();       
+		        
+		        FileSystem::set($mailpath, $contents);
+		    }); 
+		    
+		    array_push($response['data'], [
+			    "first_name" => ArrayUtils::get($user, 'first_name'),
+			    "last_name" => ArrayUtils::get($user, 'last_name'),
+			    "email" => ArrayUtils::get($user, 'email'),
+			    "uuid" => $uuid,
+			    "cache" => $mailpath,
+			    "url" => $mailURL . $uuid
+		    ]);
         }
         
         ArrayUtils::set($response, 'meta.message', Api::Responses('directus.email.success'));

@@ -56,6 +56,15 @@ class Server
 	}
 	
 	/*
+		Server Utility - Wrapper to get the current protocol + domain
+	*/
+	
+	public static function Host ()
+	{
+		return Server::Protocol() . Server::Domain();
+	}
+	
+	/*
 		Server Utility - Wrapper to get the current protocol
 	*/
 	

@@ -1,0 +1,107 @@
+/*
+	HTML Editor CSS Styles
+*/
+
+@import url('../../../uploads/app/vendors/material-design-icons/css/materialdesignicons.css');
+
+@import url('app.css');
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Condensed:wght@100;300;400;500;600;700&display=swap');
+
+:root {
+	--main-font-body: 'Encode Sans Condensed';
+}
+
+body {
+	font-family: var(--main-font-body) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--main-font-accent) !important;
+}
+
+p, ul, ol, blockquote {
+	font-family: var(--main-font-body) !important;	
+}
+
+figure.image {
+	margin: 0.5rem -20px;
+	width: calc(100% + 40px) !important;
+}
+
+figure.image figcaption {
+	margin: 0;
+	padding: 10px 20px;
+}
+
+img {
+	border-radius: 0 !important;
+}
+
+img.d-block-100 {
+	display: block !important;
+	width: 100% !important;
+	height: auto !important;
+}
+
+img.d-block-center {
+	display: block !important;
+	margin: auto !important;
+}
+
+img.d-block-right {
+	display: block !important;
+	margin-right: auto !important;
+}
+
+img.d-block-left {
+	display: block !important;
+	margin-left: auto !important;
+}
+
+blockquote {
+	position: relative;
+	border: 0 !important;
+	background-color: var(--main-primary-color) !important;
+	padding: 20px 10px 20px 20px !important;
+	margin: 0 -20px !important;	
+	font-style: normal;
+}
+
+blockquote p {
+	font-size: 1.5rem !important;
+	font-weight: 300 !important;
+	margin-top: 0 !important;
+	margin-bottom: 10px !important;
+}
+
+blockquote sub,
+blockquote sup,
+blockquote small {
+	font-size: 0.875rem !important;
+	font-weight: 500 !important;	
+}
+
+blockquote:after {
+	content: '\F27E';
+	display: block;
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	font: normal normal normal 48px/1 "Material Design Icons" !important;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transform: translate(0, 0);
+	height: 48px;
+	color: white;
+}
+
+blockquote p:last-child {
+	margin-bottom: 0 !important;
+}
+
+blockquote h6:last-child {
+	font-size:1rem !important;
+	font-weight: 500 !important;
+	margin: 0 !important;
+}

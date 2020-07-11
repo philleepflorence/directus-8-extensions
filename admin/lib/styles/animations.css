@@ -1,0 +1,371 @@
+/*
+	Animations - https://daneden.github.io/animate.css/
+*/
+	
+@-webkit-keyframes fadeInDownSmall {
+	from {
+		opacity:0;
+		-webkit-transform:translate3d(0,-25vw,0);
+		transform:translate3d(0,-25vw,0);
+	}
+	
+	to {
+		opacity:1;
+		-webkit-transform:none;
+		transform:none;
+	}
+}
+
+@keyframes fadeInDownSmall {
+	from {
+		opacity:0;
+		-webkit-transform:translate3d(0,-25vw,0);
+		transform:translate3d(0,-25vw,0);
+	}
+	
+	to {
+		opacity:1;
+		-webkit-transform:none;
+		transform:none;
+	}
+}
+
+.fadeInDownSmall {
+	-webkit-animation-name:fadeInDownSmall;
+	animation-name:fadeInDownSmall;
+}
+
+@-webkit-keyframes fadeInLeftSmall {
+	from {
+		opacity:0;
+		-webkit-transform:translate3d(-25vw,0,0);
+		transform:translate3d(-25vw,0,0);
+	}
+	
+	to {
+		opacity:1;
+		-webkit-transform:none;
+		transform:none;
+	}
+}
+
+@keyframes fadeInLeftSmall {
+	from {
+		opacity:0;
+		-webkit-transform:translate3d(-25vw,0,0);
+		transform:translate3d(-25vw,0,0);
+	}
+	
+	to {
+		opacity:1;
+		-webkit-transform:none;
+		transform:none;
+	}
+}
+
+.fadeInLeftSmall {
+	-webkit-animation-name:fadeInLeftSmall;
+	animation-name:fadeInLeftSmall;
+}
+
+@-webkit-keyframes fadeInRightSmall {
+	from {
+		opacity:0;
+		-webkit-transform:translate3d(25vw,0,0);
+		transform:translate3d(25vw,0,0);
+	}
+	
+	to {
+		opacity:1;
+		-webkit-transform:none;
+		transform:none;
+	}
+}
+
+@keyframes fadeInRightSmall {
+	from {
+		opacity:0;
+		-webkit-transform:translate3d(25vw,0,0);
+		transform:translate3d(25vw,0,0);
+	}
+	
+	to {
+		opacity:1;
+		-webkit-transform:none;
+		transform:none;
+	}
+}
+
+.fadeInRightSmall {
+	-webkit-animation-name:fadeInRightSmall;
+	animation-name:fadeInRightSmall;
+}
+
+@-webkit-keyframes fadeInUpSmall {
+	from {
+		opacity:0;
+		-webkit-transform:translate3d(0,25vw,0);
+		transform:translate3d(0,25vw,0);
+	}
+	
+	to {
+		opacity:1;
+		-webkit-transform:none;
+		transform:none;
+	}
+}
+
+@keyframes fadeInUpSmall {
+	from {
+		opacity:0;
+		-webkit-transform:translate3d(0,25vw,0);
+		transform:translate3d(0,25vw,0);
+	}
+	
+	to {
+		opacity:1;
+		-webkit-transform:none;
+		transform:none;
+	}
+}
+
+.fadeInUpSmall {
+	-webkit-animation-name:fadeInUpSmall;
+	animation-name:fadeInUpSmall;
+}
+
+@-webkit-keyframes fadeOutLeftSmall {
+	from {
+		opacity:1;
+	}
+	
+	to {
+		opacity:0;
+		-webkit-transform:translate3d(-25vw,0,0);
+		transform:translate3d(-25vw,0,0);
+	}
+}
+
+@keyframes fadeOutLeftSmall {
+	from {
+		opacity:1;
+	}
+	
+	to {
+		opacity:0;
+		-webkit-transform:translate3d(-25vw,0,0);
+		transform:translate3d(-25vw,0,0);
+	}
+}
+
+.fadeOutLeftSmall {
+	-webkit-animation-name:fadeOutLeftSmall;
+	animation-name:fadeOutLeftSmall;
+}
+
+@-webkit-keyframes fadeOutUpSmall {
+	from {
+		opacity:1;
+	}
+	
+	to {
+		opacity:0;
+		-webkit-transform:translate3d(0,-25vw,0);
+		transform:translate3d(0,-25vw,0);
+	}
+}
+
+@keyframes fadeOutUpSmall {
+	from {
+		opacity:1;
+	}
+	
+	to {
+		opacity:0;
+		-webkit-transform:translate3d(0,-25vw,0);
+		transform:translate3d(0,-25vw,0);
+	}
+}
+
+.fadeOutUpSmall {
+	-webkit-animation-name:fadeOutUpSmall;
+	animation-name:fadeOutUpSmall;
+}
+
+@-webkit-keyframes fadeOutRightSmall {
+	from {
+		opacity:1;
+	}
+	
+	to {
+		opacity:0;
+		-webkit-transform:translate3d(25vw,0,0);
+		transform:translate3d(25vw,0,0);
+	}
+}
+
+@keyframes fadeOutRightSmall {
+	from {
+		opacity:1;
+	}
+	
+	to {
+		opacity:0;
+		-webkit-transform:translate3d(25vw,0,0);
+		transform:translate3d(25vw,0,0);
+	}
+}
+
+.fadeOutRightSmall {
+	-webkit-animation-name:fadeOutRightSmall;
+	animation-name:fadeOutRightSmall;
+}
+
+@-webkit-keyframes fadeOutDownSmall {
+	from {
+		opacity:1;
+	}
+	
+	to {
+		opacity:0;
+		-webkit-transform:translate3d(0,25vw,0);
+		transform:translate3d(0,25vw,0);
+	}
+}
+
+@keyframes fadeOutDownSmall {
+	from {
+		opacity:1;
+	}
+	
+	to {
+		opacity:0;
+		-webkit-transform:translate3d(0,25vw,0);
+		transform:translate3d(0,25vw,0);
+	}
+}
+
+.fadeOutDownSmall {
+	-webkit-animation-name:fadeOutDownSmall;
+	animation-name:fadeOutDownSmall;
+}
+
+.a-delay-1,
+.a-delay:first-child {
+    -webkit-animation-delay: .13s!important;
+    animation-delay: .13s!important
+}
+
+.a-delay-2,
+.a-delay:nth-child(2) {
+    -webkit-animation-delay: .21s!important;
+    animation-delay: .21s!important
+}
+
+.a-delay-3,
+.a-delay:nth-child(3) {
+    -webkit-animation-delay: .29s!important;
+    animation-delay: .29s!important
+}
+
+.a-delay-4,
+.a-delay:nth-child(4) {
+    -webkit-animation-delay: .37s!important;
+    animation-delay: .37s!important
+}
+
+.a-delay-5,
+.a-delay:nth-child(5) {
+    -webkit-animation-delay: .45s!important;
+    animation-delay: .45s!important
+}
+
+.a-delay-6,
+.a-delay:nth-child(6) {
+    -webkit-animation-delay: .53s!important;
+    animation-delay: .53s!important
+}
+
+.a-delay-7,
+.a-delay:nth-child(7) {
+    -webkit-animation-delay: .61s!important;
+    animation-delay: .61s!important
+}
+
+.a-delay-8,
+.a-delay:nth-child(8) {
+    -webkit-animation-delay: .69s!important;
+    animation-delay: .69s!important
+}
+
+.a-delay-9,
+.a-delay:nth-child(9) {
+    -webkit-animation-delay: .77s!important;
+    animation-delay: .77s!important
+}
+
+.a-delay-10,
+.a-delay:nth-child(10) {
+    -webkit-animation-delay: .85s!important;
+    animation-delay: .85s!important
+}
+
+.a-delay-11,
+.a-delay:nth-child(11) {
+    -webkit-animation-delay: .93s!important;
+    animation-delay: .93s!important
+}
+
+.a-delay-12,
+.a-delay:nth-child(12) {
+    -webkit-animation-delay: 1.01s!important;
+    animation-delay: 1.01s!important
+}
+
+.a-delay-13,
+.a-delay:nth-child(13) {
+    -webkit-animation-delay: 1.09s!important;
+    animation-delay: 1.09s!important
+}
+
+.a-delay-14,
+.a-delay:nth-child(14) {
+    -webkit-animation-delay: 1.17s!important;
+    animation-delay: 1.17s!important
+}
+
+.a-delay-15,
+.a-delay:nth-child(15) {
+    -webkit-animation-delay: 1.25s!important;
+    animation-delay: 1.25s!important
+}
+
+.a-delay-16,
+.a-delay:nth-child(16) {
+    -webkit-animation-delay: 1.33s!important;
+    animation-delay: 1.33s!important
+}
+
+.a-delay-17,
+.a-delay:nth-child(17) {
+    -webkit-animation-delay: 1.41s!important;
+    animation-delay: 1.41s!important
+}
+
+.a-delay-18,
+.a-delay:nth-child(18) {
+    -webkit-animation-delay: 1.49s!important;
+    animation-delay: 1.49s!important
+}
+
+.a-delay-19,
+.a-delay:nth-child(19) {
+    -webkit-animation-delay: 1.57s!important;
+    animation-delay: 1.57s!important
+}
+
+.a-delay-20,
+.a-delay:nth-child(20) {
+    -webkit-animation-delay: 1.65s!important;
+    animation-delay: 1.65s!important
+}

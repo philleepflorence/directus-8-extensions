@@ -23,10 +23,28 @@ use PHPMailer\PHPMailer\Exception;
 
 use Handlebars\Handlebars;
 
+use function Directus\base_path;
+use function Directus\generate_uuid4;
+use function Directus\get_api_project_from_request;
 use function Directus\get_directus_setting;
+use function Directus\get_kv_directus_settings;
+use function Directus\parse_body;
+use function Directus\send_mail_with_template;
 
 class Mail 
 {
+	public static function Browser ($input = [])
+	{
+		$uuid = ArrayUtils::Get($input, 'uuid');
+		$maildir = base_path() . '/.cache/' . get_api_project_from_request() . '/mail';
+		$filename = "{$maildir}/{$uuid}.html";
+		
+		if (file_exists($filename)) die(FileSystem::get($filename));
+		
+		http_response_code(404);
+		
+		die();
+	}
 	/*
 		Compile Email Template
 		ARGUMENTS:
@@ -146,6 +164,39 @@ class Mail
 	    $tableGateway->createRecord($insert);
 	    
 	    return $insert;
+	}
+	
+	/*
+		Parse RFC Email String
+		ARGUMENTS:
+			$input - the RFC email string to parse
+		
+		@return array
+	*/
+	
+	public static function ParseAddress ($input = '')
+	{
+		$response = [];
+		
+		# match all words and whitespace, will be terminated by '<'
+		
+		$name = preg_match('/[\w\s]+/', $input, $matches);
+		$response['name'] = trim($matches[0]);
+		
+		if (is_string($response['name']))
+		{
+			$fullname = explode(' ', $response['name']);
+			
+			$response['first_name'] = $fullname[0];
+			$response['last_name'] = $fullname[1];
+		}
+		
+		# extract parts between the two parentheses
+		
+		$mailAddress = preg_match('/(?:<)(.+)(?:>)$/', $input, $matches);
+		$response['email'] = trim($matches[1]);
+		
+		return $response;
 	}
 	
 	/*

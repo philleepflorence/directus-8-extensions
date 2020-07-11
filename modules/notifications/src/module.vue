@@ -49,6 +49,7 @@
 				
 				<v-ext-input 
 					id="wysiwyg-extended" 
+					:options="wysiwygOptions"
 					:placeholder="getContent('form.directus.subject.placeholder')"
 					@input="onInputMessage">
 				</v-ext-input>
@@ -85,6 +86,7 @@
 				
 				<v-ext-input 
 					id="wysiwyg-extended"
+					:options="wysiwygOptions"
 					:placeholder="getContent('form.list.subject.placeholder')"
 					@input="onInputMessage">
 				</v-ext-input>
@@ -200,7 +202,8 @@
 					files: false,
 					empty: false,
 					overlay: false
-				}
+				},
+				wysiwygOptions: {}
 			};
 		},
 		computed: {
@@ -353,7 +356,6 @@
 					iconMain: 'cloud_queue',
 					delay: 5000
 				});
-				return console.log("onSubmitMessage", this.form);
 				
 				this.$api.api.post(this.getContent(`form.${ this.module }.endpoint`), this.form).then((response) => {
 					
@@ -399,6 +401,10 @@
 			};
 		},
 		mounted () {
+			let wysiwygOptions = get(this.$store.state, 'settings.values.wysiwyg_options');
+			
+			if (typeof wysiwygOptions === "string") this.wysiwygOptions = JSON.parse(wysiwygOptions);
+			
 			this.loadUsers();
 		}
 	}

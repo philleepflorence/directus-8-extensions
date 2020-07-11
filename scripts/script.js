@@ -405,7 +405,7 @@
 
         iframe.setAttribute('data-rendered', Date.now());
 
-        let StyleSheet = (window.location.origin + "/uploads/app/components/wysiwyg.css");
+        let StyleSheet = (window.location.origin + "/admin/lib/styles/wysiwyg.css");
         let link = document.createElement("link");
 	        link.href = StyleSheet;
 	        link.rel = "stylesheet";

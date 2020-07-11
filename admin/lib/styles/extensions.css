@@ -1,0 +1,80 @@
+/*
+	Extensions Components
+*/
+
+.modules-module-form {
+	max-width: 960px;
+}
+
+header.modules-divider {
+	padding-top: 1rem;
+	margin-bottom: 2rem;
+	max-width: 960px;
+}
+
+header.modules-divider h2.modules-divider,
+header.modules-divider h3.modules-divider,
+header.modules-divider h4.modules-divider {
+	color: var(--heading-text-color);
+	font-size: 2.5rem;
+	line-height: 2.75rem;
+	font-weight: 300;
+	margin-bottom: 1rem;
+	padding-right: 120px;
+}
+
+header.modules-divider h3.modules-divider {
+	font-size: 2rem;
+	line-height: 2.25rem;
+}
+
+header.modules-divider h4.modules-divider {
+	font-size: 1.75rem;
+	line-height: 2rem;
+}
+
+header.modules-divider p.modules-divider {
+	color: var(--note-text-color);
+	font-size: 1.25rem;
+	line-height: 1.75rem;
+	margin-top: 1rem;
+}
+
+header.modules-divider hr {
+	border: 0;
+	background: none;
+	border-bottom: 2px solid var(--input-border-color);
+}
+
+nav.modules-divider {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-top: 1.5rem;
+}
+
+nav.modules-divider a.modules-divider {
+	color: var(--blue-grey-700);
+	margin-left: 1rem;
+}
+
+nav.modules-divider a.modules-divider.active {
+	color: var(--blue-grey-300);
+}
+
+section.modules-section {
+	position: relative;
+	margin-bottom: 5rem;
+}
+
+section.modules-section .v-table {
+	min-width: 100% !important;
+	max-width: 100% !important;
+}
+
+header.modules-divider section.modules-section {
+	margin-top: 3rem;
+}

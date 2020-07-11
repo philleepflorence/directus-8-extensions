@@ -9,16 +9,17 @@
 	"options": {
 		"cdn": {
 			"name": "CDN URL",
-			"comment": "The Root CDN URL to use for files - Defaults to Assets (Thumbnails) URL",
+			"comment": "The CDN Host to use for files - Defaults to Assets (Thumbnails) Module",
+			"placeholder": "https://cdn.domain.com",
 			"interface": "text-input",
-			"length": 250
+			"length": 100
 		},
 		"cdn_template": {
 			"name": "CDN Thumbnail Template",
-			"comment": "The template to use when processing thumbnail paths - see settings.assets_whitelists for properties!",
+			"comment": "The template to use when processing thumbnail paths - see 'settings.assetsWhitelists' for available properties!",
 			"interface": "text-input",
-			"length": 250,
-			"default": "thumbnails/{{width}}/{{height}}/{{fit}}"
+			"length": 100,
+			"placeholder": "app/thumbnails/{{width}}/{{height}}/{{fit}}"
 		},
 		"toolbar": {
 			"name": "Toolbar Options",
@@ -107,23 +108,23 @@
 						"value": ""
 					},
 					{
-						"title": "Full Width",
+						"title": "Image Full Width",
 						"value": "d-block-100"
 					},
 					{
-						"title": "Align Center",
+						"title": "Align Image Center",
 						"value": "d-block-center"
 					},
 					{
-						"title": "Align Right",
+						"title": "Align Image Right",
 						"value": "d-block-right"
 					},
 					{
-						"title": "Align Left",
+						"title": "Align Image Left",
 						"value": "d-block-left"
 					}
 				],
-				"image_dimensions": false
+				"image_dimensions": true
 			},
 			"advanced": true
 		}
