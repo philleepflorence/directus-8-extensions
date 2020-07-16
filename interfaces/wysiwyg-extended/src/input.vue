@@ -62,7 +62,7 @@
 				<div class="form">
 					<v-simple-select
 						class="interface-wysiwyg-whitelist-select interface-wysiwyg-input"
-						placeholder="Select Image Size and Property..." 
+						:placeholder="placeholders.size" 
 						@input="onSelectSize">
 						<option value="original">Original - Use the original image size and do not resize!</option>
 						<option 
@@ -71,6 +71,13 @@
 							{{ `${ option.width } - ${ fitFormat(option.fit, option.width, option.height) }` }}
 						</option>
 					</v-simple-select>
+					<v-input
+						v-if="!options.cdn_template"
+						class="interface-wysiwyg-files-url animated fadeIn interface-wysiwyg-input"
+						:placeholder="placeholders.cdn"
+						:value="cdnTemplate"
+						@input="onInputCDN">
+					</v-input>
 					<v-input
 						v-if="fileURL"
 						class="interface-wysiwyg-files-url animated fadeIn interface-wysiwyg-input"
@@ -144,6 +151,10 @@
 						text: "Get Image URL"
 					}
 				},
+				placeholders: {
+					cdn: "Enter CDN URL and Template - https://cdn.domain.com/app/thumbnails/{{width}}/{{height}}/{{fit}}...",
+					size: "Select Image Size and Property..."
+				},
 				fileSizes: false,
 				fileURL: null,
 				imageSize: null,
@@ -151,7 +162,8 @@
 				selectedFile: null,
 				selectedName: null,
 				callbackSelect: () => {},
-				sizes: JSON.parse(this.$store.state.settings.values.asset_whitelist)
+				sizes: JSON.parse(this.$store.state.settings.values.asset_whitelist),
+				cdnTemplate: null
 			};
 		},
 		computed: {
@@ -362,12 +374,17 @@
 			},
 			onCloseFilesModal () {
 				this.fileSizes = false;
+				this.fileURL = null;
+				this.selectedFile = null;
 				
 				/*
 					restore tinymce dialog display
 				*/ 
 				
 				document.querySelector('.tox.tox-tinymce-aux').style.display = 'block';
+			},
+			onInputCDN (input) {
+				this.cdnTemplate = input.replace(/^\/|\/$/g, '');
 			},
 			async onInputFile (input) {
 				
@@ -388,7 +405,14 @@
 				let size = this.sizes.filter(size => size.key === this.imageSize);
 					size = size ? size[0] : size;			
 				
-				if (this.options.cdn && !size) {
+				if (this.cdnTemplate && size) {
+					filepath = `${ this.cdnTemplate }/${ this.selectedFile.filename_disk }`;
+					
+					let compiled = _.template(filepath);
+					
+					filepath = compiled(size);
+				}
+				else if (this.options.cdn && !size) {
 					filepath = `${ this.options.cdn }/originals/${ this.selectedFile.filename_disk }`;
 				}
 				else if (this.options.cdn && size) {
@@ -402,7 +426,7 @@
 					filepath = `${ window.location.origin }${ this.selectedFile.data.asset_url }`;
 				}
 				else if (!this.options.cdn && size) {
-					filepath = this.selectedFile.data.thumbnails.filter(thumbnail => thumbnail.key === this.imageSize);											
+					filepath = this.selectedFile.data.thumbnails.filter(thumbnail => thumbnail.width == size.width && thumbnail.height == size.height);											
 					filepath = filepath[0].url;
 				}
 				

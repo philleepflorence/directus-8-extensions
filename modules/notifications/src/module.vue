@@ -47,12 +47,23 @@
 					@input="onInputSubject">
 				</v-input>
 				
+				<v-input
+					id="modules-module-content-sender"
+					:placeholder="getContent('form.directus.sender.placeholder')"
+					@input="onInputSender">
+				</v-input>
+				
 				<v-ext-input 
 					id="wysiwyg-extended" 
 					:options="wysiwygOptions"
-					:placeholder="getContent('form.directus.subject.placeholder')"
 					@input="onInputMessage">
 				</v-ext-input>
+				
+				<v-textarea
+					id="modules-module-content-attachments"
+					:placeholder="getContent('form.list.attachments.placeholder')"
+					@input="onInputAttachments">
+				</v-textarea>
 				
 				<v-button block @click="onSubmitMessage" :loading="processing">{{ getContent('form.directus.submit.label') }}</v-button>
 				
@@ -79,7 +90,7 @@
 				</v-input>
 				
 				<v-textarea
-					id="modules-module-content-textarea"
+					id="modules-module-content-emails"
 					:placeholder="getContent('form.list.emails.placeholder')"
 					@input="onInputEmails">
 				</v-textarea>
@@ -90,6 +101,12 @@
 					:placeholder="getContent('form.list.subject.placeholder')"
 					@input="onInputMessage">
 				</v-ext-input>
+				
+				<v-textarea
+					id="modules-module-content-attachments"
+					:placeholder="getContent('form.list.attachments.placeholder')"
+					@input="onInputAttachments">
+				</v-textarea>
 				
 				<v-button block @click="onSubmitMessage" :loading="processing">{{ getContent('form.list.submit.label') }}</v-button>
 				
@@ -109,6 +126,8 @@
 				<p class="p">{{ getContent('description') }}</p>
 			</section>
 			
+			<!-- Modes - Menu -->
+			
 			<nav class="info-sidebar-section info-sidebar-nav">
 				<h2 class="font-accent">{{ getContent('modes.headline') }}</h2>
 				<a class="info-sidebar-nav" href="#" :data-module="row.mode" v-for="row in getContent('sections.mode')" @click.stop.prevent="onClickMode(row.mode)">
@@ -116,6 +135,8 @@
 					<span class="info-sidebar-nav-text">{{ row.title }}</span>
 				</a>
 			</nav>
+			
+			<!-- Application Mode - Menu and Options -->
 			
 			<section class="info-sidebar-section" v-if="view.app">
 				<h2 class="font-accent">{{ getContent('sections.mode.app.headline') }}</h2>
@@ -132,11 +153,13 @@
 				<div class="info-sidebar-inputs" v-if="users.app">
 					<div class="info-sidebar-input" v-for="user in users.app">
 						<div class="input">
-							<v-checkbox v-model="form.users" :label="`${ user.first_name } ${ user.last_name }`" :value="user.id" :inputValue="form.users"  @change="onChangeMode(user.id)">
+							<v-checkbox v-model="form.users" :label="`${ user.first_name } ${ user.last_name }`" :value="user.id" :inputValue="form.users">
 						</div>
 					</div>
 				</div>
 			</section>
+			
+			<!-- Directus Mode - Menu and Options -->
 			
 			<section class="info-sidebar-section" v-if="view.directus">
 				<h2 class="font-accent">{{ getContent('sections.mode.directus.headline') }}</h2>
@@ -153,7 +176,20 @@
 				<div class="info-sidebar-inputs" v-if="users.app">
 					<div class="info-sidebar-input" v-for="user in users.directus">
 						<div class="input">
-							<v-checkbox v-model="form.users" :label="`${ user.first_name } ${ user.last_name }`" :value="user.id" :inputValue="form.users"  @change="onChangeMode(user.id)">
+							<v-checkbox v-model="form.users" :label="`${ user.first_name } ${ user.last_name }`" :value="user.id" :inputValue="form.users">
+						</div>
+					</div>
+				</div>
+			</section>
+			
+			<!-- Application Mode - Menu and Options -->
+			
+			<section class="info-sidebar-section" v-if="view.list">
+				<h2 class="font-accent">{{ getContent('sections.mode.list.headline') }}</h2>
+				<div class="info-sidebar-inputs">
+					<div class="info-sidebar-input" v-for="input in getContent('sections.mode.list.inputs')">
+						<div class="input">
+							<v-checkbox :label="input.label" :value="input.value" :inputValue="form.modes" @change="onChangeMode(input.value)">
 						</div>
 					</div>
 				</div>
@@ -174,9 +210,11 @@
 		data () {
 			return {
 				contents: $meta.contents,
+				module: null,
 				files: [],
 				icon: $meta.icon,
 				form: {
+					attachments: [],
 					modes: [],
 					users: [],
 					body: '',
@@ -234,12 +272,6 @@
 				forEach(inputs, input => modes.push(input.value));
 				
 				return modes;
-			},
-			module () {
-				if (this.view.app) return 'app';
-				else if (this.view.directus) return 'directus';
-				
-				return null;
 			}
 		},
 		methods: {
@@ -311,10 +343,6 @@
 				if (this.form.modes.includes(input)) this.form.modes.splice(this.form.modes.indexOf(input), 1);
 				else this.form.modes.push(input);				
 			},
-			onChangeUser (input) {
-				if (this.form.users.includes(input)) this.form.users.splice(this.form.users.indexOf(input), 1);
-				else this.form.users.push(input);
-			},
 			onClickMode (input) {
 				this.view.app = false;
 				this.view.directus = false;
@@ -329,6 +357,8 @@
 				
 				if ($active) $active.classList.add('active');
 				
+				this.module = input;
+				
 				set(this.view, input, true);
 			},
 			onCloseOverlay () {
@@ -341,6 +371,11 @@
 			onInputEmails (input) {
 				this.form.emails = input;
 			},
+			onInputAttachments (input) {
+				this.form.attachments = input.split(',');
+				
+				if (Array.isArray(this.form.attachments)) this.form.attachments.map(s => s.trim());
+			},
 			onInputSender (input) {
 				this.form.sender = input;
 			},
@@ -349,6 +384,8 @@
 			},
 			onSubmitMessage () {
 				this.processing = true;
+				
+				if (!this.module) this.module = "list";
 				
 				this.$notify({
 					title: this.getContent(`form.${ this.module }.processing`),

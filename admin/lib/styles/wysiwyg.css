@@ -62,7 +62,7 @@ blockquote {
 	position: relative;
 	border: 0 !important;
 	background-color: var(--main-primary-color) !important;
-	padding: 20px 10px 20px 20px !important;
+	padding: 40px 30px 40px 20px !important;
 	margin: 0 -20px !important;	
 	font-style: normal;
 }
@@ -93,7 +93,7 @@ blockquote:after {
 	-moz-osx-font-smoothing: grayscale;
 	transform: translate(0, 0);
 	height: 48px;
-	color: white;
+	color: rgba(255, 255, 255, 0.5);
 }
 
 blockquote p:last-child {

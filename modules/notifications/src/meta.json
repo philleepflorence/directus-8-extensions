@@ -16,7 +16,8 @@
 				"headline": "Select Module",
 				"modes": [
 					"Application",
-					"Directus"
+					"Directus",
+					"List"
 				]
 			},
 			"sections": {
@@ -65,7 +66,7 @@
 							}
 						}
 					},
-					"custom": {
+					"list": {
 						"headline": "Select Message Mode",
 						"mode": "list",
 						"title": "Custom Email List",
@@ -127,6 +128,12 @@
 					"subject": {
 						"placeholder": "Enter Subject - Required!"
 					},
+					"attachments": {
+						"placeholder": "Enter CSV List of attachments (must be valid URLs) - Optional!"
+					},
+					"sender": {
+						"placeholder": "Enter Sender Email (Reply To Email) - Optional!"
+					},
 					"submit": {
 						"label": "Send Email"
 					},
@@ -153,6 +160,9 @@
 					},
 					"subject": {
 						"placeholder": "Enter Subject - Required!"
+					},
+					"attachments": {
+						"placeholder": "Enter CSV List of attachments (must be valid URLs) - Optional!"
 					},
 					"sender": {
 						"placeholder": "Enter Sender Email (Reply To Email) - Optional!"

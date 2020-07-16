@@ -87,14 +87,26 @@
 			blockquote {
 				background-color: {{ settings.project_color }};
 				color: white;
-				font-size: 20px;
+				font-size: 22px;
 				font-style: normal;
-				padding: 20px 0 20px 0 !important;
+				font-weight: 300;
+				padding: 40px 0 40px 0 !important;
 				margin: 0 0 20px 0 !important;	
+			}
+			blockquote p {
+				font-size: 22px;
 			}
 			blockquote h6 {
 				color: white;
 				font-weight: 500;
+				text-transform: none;
+			}
+			hr {
+				display: block;
+				margin: 0.75rem 20%;
+				border: none;
+				height: 1px;
+				background: {{ settings.project_color }};
 			}
 		</style>	
 	</head>	

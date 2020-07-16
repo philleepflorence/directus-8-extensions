@@ -128,6 +128,8 @@ class Directus
 		$emails = ArrayUtils::get($params, 'emails');
 		$sender = ArrayUtils::get($params, 'sender');
 		$body = ArrayUtils::get($params, 'body');
+		$attachment = ArrayUtils::get($params, 'attachments');
+		$from = [];
 		
 		$container = Application::getInstance()->getContainer();
 		$config = $container->get('config');
@@ -137,13 +139,18 @@ class Directus
 		
 		if (is_string($sender))
 		{
-			$sender = Mail::ParseAddress($sender);
+			$sender = Mail::ParseAddress($sender);			
 			
-			$from = [];
 			$from[ $sender['email'] ] = $sender['name'];
 			
 			$config->set('mail.default.from', $from);
-		}		
+		}
+		
+		if (is_string($attachment))		
+		{
+			$attachment = explode(',', $attachment);
+			$attachment = array_map('trim', $attachment);
+		}
 		
 		$data = [
 	        "request" => Request::Properties(),
@@ -207,7 +214,8 @@ class Directus
 			ArrayUtils::set($data, 'body', $body);				
 			ArrayUtils::set($data, 'browser.url', $mailURL . $uuid);
 			
-			$mailed = send_mail_with_template($template, $data, function (Message $message) use ($subject, $user, $mailpath) {
+			$mailed = send_mail_with_template($template, $data, function (Message $message) use ($subject, $user, $mailpath) 
+			{
 		        $message->setSubject(
 		            sprintf($subject, get_directus_setting('project_name', ''))
 		        );
@@ -221,7 +229,11 @@ class Directus
 		        $contents = $message->getBody();       
 		        
 		        FileSystem::set($mailpath, $contents);
-		    }); 
+		    }, 
+		    [
+			    "attachment" => $attachment,
+			    "from" => $from
+		    ]); 
 		    
 		    array_push($response['data'], [
 			    "first_name" => ArrayUtils::get($user, 'first_name'),

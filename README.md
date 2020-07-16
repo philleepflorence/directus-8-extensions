@@ -5,13 +5,33 @@
 The following directories will need to be synced to your Directus installation:
 ```
 ├── admin
-├── core
+├── scripts
+│   └── script.js
+├── styles
+│   └── style.css
+└── src
 ```
-Remember to include the `admin/lib` in your gitignore!
+Remember to include the `admin/lib` in your `gitignore` if you pulled from Directus Suite!
 
 To use the extensions, you will first need to include the file that auto-loads the helpers.
 ```
 helpers/functions.php
+```
+In the function.php file you should see the following snippet that should auto load all helper files!
+If you move the snippet to another file, be sire to change the `__DIR__` variable!
+```
+/*
+	AutoLoad - Helper Files - Should Run at application.boot!
+*/
+
+$helpers = scandir(__DIR__);
+	
+foreach( $helpers as $file ) 
+{
+    if ('.' === $file || '..' === $file || __FILE__ === $file) continue;
+    
+    include_once($file);
+}
 ```
 
 This extension of Directus has a some pre-set schema definitions you might notice in the helpers.
@@ -42,13 +62,6 @@ For now, use this repository as a guide on creating your own extensions.
 │   │   └── tree.vue
 │   └── tables
 │       └── table.vue
-├── core
-│   └── Directus
-│       ├── Authentication
-│       │   └── Provider.php
-│       └── Database
-│           └── TableGateway
-│               └── RelationalTableGateway.php
 ├── endpoints
 │   ├── analytics
 │   │   ├── controllers
@@ -462,6 +475,18 @@ For now, use this repository as a guide on creating your own extensions.
 │           └── module.vue
 ├── scripts
 │   └── script.js
+├── src
+│   ├── core
+│   │   └── Directus
+│   │       ├── Authentication
+│   │       │   └── Provider.php
+│   │       ├── Database
+│   │       │   └── TableGateway
+│   │       │       └── RelationalTableGateway.php
+│   │       └── Mail
+│   │           └── Mailer.php
+│   └── helpers
+│       └── mail.php
 ├── styles
 │   └── style.css
 └── vendor
@@ -482,16 +507,18 @@ Directus provides event hooks for all actions performed within the App or API. Y
 #### Interfaces
 Interfaces allow for different ways of viewing and interacting with field data. These interfaces are primarily used on the edit form of the Item Detail page, but also render readonly data on the Item Browse page.
 > An interface is made up out of three required core files. You can create a layout from scratch or use the [extension toolkit](https://github.com/directus/extension-toolkit) to generate boilerplate code.
+When syncing Interfaces, be sure to only sync the `dist` directories!
 
 #### Layouts
 Layouts are different ways to view or even interact with data on the Item Browse page. Directus includes List and Card layouts out-of-the-box, but others can easily be created to fit specific needs.
 
+#### Mail
+Custom Mail Twig templates.
+
 #### Modules
 Modules are a way to add full-featured modules to Directus. You can build page modules for custom dashboards, reporting, point-of-sale systems, or anything else. 
 Each page is protected within the auth gateway and can easily access project data and global variables.
-
-#### Modules
-View templates that have been edited. API Twig Templates.
+When syncing Modules, be sure to only sync the `dist` directories!
 
 #### Vendor
 Vendor dependents of the custom endpoints or helpers.
