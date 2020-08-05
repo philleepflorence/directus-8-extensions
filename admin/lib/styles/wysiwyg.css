@@ -19,8 +19,9 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: var(--main-font-accent) !important;
 }
 
-p, ul, ol, blockquote {
+p, ul, ol, blockquote, li {
 	font-family: var(--main-font-body) !important;	
+	font-size: 1rem !important;
 }
 
 figure.image {
@@ -65,6 +66,10 @@ blockquote {
 	padding: 40px 30px 40px 20px !important;
 	margin: 0 -20px !important;	
 	font-style: normal;
+}
+
+code, pre {
+	background-color: var(--blue-grey-800) !important;
 }
 
 blockquote p {

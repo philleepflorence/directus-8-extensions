@@ -20,7 +20,7 @@
 	    tours: 0
     };
 
-    if (window.location.hash === "#/") window.location.hash = "#/app/ext/application";
+    if (window.location.hash === "#/") window.location.hash = "#/app/ext/dashboard";
 
     const get = function (url, params, done) {
         let request = new XMLHttpRequest();
@@ -220,6 +220,8 @@
 
     this.mutation = (mutations) => {
         let hash = window.location.hash.split('?').shift();
+        
+        if (this.$hash !== hash) this.document.body.setAttribute('data-path', hash);
 
         if (this.$hash !== hash) setTimeout(this.bookmarks, 650);
 
@@ -227,6 +229,14 @@
 
         this.$hash = hash;
         this.$title = this.$page.querySelector('.page-root header.v-header .title .type-title');
+        
+        let $page = this.$page.querySelector('.page-root');
+        
+        if ($page) {
+	        let classList = [...$page.classList].join(" ");
+	        
+	        if (this.document.body.getAttribute('data-page-root') !== classList) this.document.body.setAttribute('data-page-root', classList);
+        }
 
         for (mutation of mutations) {
             let input = mutation.target.querySelector('.field input');
@@ -415,7 +425,10 @@
     };
 
     this.styles = function () {
-        let cellWidth = Math.floor((this.$page.offsetWidth - 160) * 0.2);
+	    let padding = String(getComputedStyle(document.documentElement).getPropertyValue('--page-padding')).replace(/"/g, '');
+	    let page = document.querySelector('.page-root');
+	    let offset = page ? page.offsetWidth : 1280;
+        let cellWidth = Math.floor((offset - ( padding * 2 )) * 0.2);
         let style = document.createElement('style');
 	        style.id = 'v-table-toolbar-cell';
 	        style.innerHTML = `.v-table .toolbar .cell, .v-table .body .cell { flex-basis: ${ cellWidth }px !important; }`;
@@ -429,6 +442,10 @@
 
     this.loaded = function () {
         clearInterval(timers.loaded);
+        
+        let hash = window.location.hash.split('?').shift(); 
+        
+        this.document.body.setAttribute('data-path', hash.replace('/#', ''));
         
         this.$container = this.$page.parentElement;
 
@@ -463,7 +480,7 @@
 
         let isScrolling;
         let scrollEnd = new Event('scrollend');
-
+        
         window.addEventListener('scroll', function (event) {
 
             /*
@@ -490,9 +507,9 @@
             this.$page = document.querySelector('.directus');
             this.$logo = document.querySelector('.module-bar .logo.v-logo');
             this.$profile = document.querySelector('.module-bar a.edit-user');
-            this.$logout = document.querySelector('.module-bar button.sign-out');
-            
-            if (window.location.hash === "#/") window.location.hash = "#/app/ext/application";
+            this.$logout = document.querySelector('.module-bar button.sign-out');           
+                        
+            if (window.location.hash === "#/") window.location.hash = "#/app/ext/dashboard";
 
             if (this.$menu && this.$page && this.$logo && this.$profile) this.loaded();
             

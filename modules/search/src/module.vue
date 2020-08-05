@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-search">
+	<div class="modules-search module-page-root">
 		
 		<v-header 
 			:title="content('title')" 

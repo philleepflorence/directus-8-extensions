@@ -106,7 +106,7 @@
 				</div>
 			</div>
 		</v-modal>
-		
+				
 	</div>
 </template>
 

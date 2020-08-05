@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-dashboard">
+	<div class="modules-dashboard module-page-root">
 		
 		<v-header 
 			:title="getContent('title')" 
@@ -12,15 +12,15 @@
 			<v-progress-linear background-color="--main-primary-color" color="--blue-grey-700" indeterminate>
 		</div>
 		
-		<div class="modules-dashboard-content">
+		<div class="modules-dashboard-content modules-content">
 			
 			<div v-for="(row, index) in getContent('modules')"
 				:class="`modules-dashboard-grid modules-dashboard-${index} animated fadeInUpSmall a-delay`" 				 
 				@click="onClick(row.path)">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
-					<h3 class="font-accent" v-html="row.title"></h3>
-					<p class="lead" v-html="row.description"></p>
+					<h3 class="font-accent modules-grid-title" v-html="row.title"></h3>
+					<p class="lead modules-grid-description" v-html="row.description"></p>
 					<div class="modules-dashboard-analytics">
 						<v-spinner
 							v-show="loading"
@@ -28,12 +28,14 @@
 							line-bg-color="var(--blue-grey-200)"
 							class="spinner">
 						</v-spinner>
-						<p class="lead animated fadeIn font-accent" v-if="analytics[index]"><span>{{ analytics[index].total }}</span> <span>{{ row.analytics }}</span></p>
+						<p class="lead animated fadeIn" v-if="analytics[index]"><span class="font-accent">{{ analytics[index].total }}</span><span>{{ row.analytics }}</span></p>
 					</div>
 				</div>
 			</div>
 			
 		</div>
+		
+		<v-info-sidebar></v-info-sidebar>
 		
 	</div>
 </template>
@@ -101,14 +103,12 @@
 
 <style lang="scss" scoped>
 	.modules-dashboard {
-		padding: var(--page-padding);
-		margin-right: -64px;
+		padding: 1rem;
 		
 		.modules-dashboard-content {
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
 			grid-gap: 1rem;
-			min-height: calc(100vh - 120px) !important;
 			
 			.modules-dashboard-grid {
 				background-color: rgba(white, 0.1);
@@ -156,20 +156,20 @@
 						border-radius: 50%;						
 					}
 					
-					.modules-modules-analytics {
+					.modules-dashboard-analytics {
 						position: relative;
-						padding: 1rem;
+						padding: 0.5rem 1rem;
 						
 						p.lead {
-							color: var(--page-text-color);
-							font-size: 2.5rem !important;
-							font-weight: 300 !important;
+							color: var(--blue-grey-500);
+							font-size: 1.5rem !important;
+							font-weight: 400 !important;
 							text-align: center;
 						
 							span + span {
-								color: rgba(white, 0.5);
-								font-size: 1.25rem;
-								font-weight: 400 !important;
+								color: var(--blue-grey-600);
+								font-size: 0.875rem;
+								font-weight: 500 !important;
 								text-transform: lowercase;
 								display: block;
 							}

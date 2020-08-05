@@ -1,6 +1,6 @@
 {
 	"name": "guides",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "book",
 	"types": [
 		"string"
@@ -13,7 +13,20 @@
 			"description": "Directus App Guides and Documentation",
 			"navigation": "Guides",
 			"disclaimer": "To navigate between guides, click on any guide below or use the forward and back buttons on the left.",
-			"exit": "To exit Guides, click on any navigation item!"
+			"exit": "To exit Guides, click on any navigation item!",
+			"form": {
+				"search": {
+					"headline": "Search Guides and Docs",
+					"placeholder": "Enter Search Query...",
+					"results": "View Search Results",
+					"submit": "Search",
+					"empty": "<p>No Guides or Documentation contained the search query... <br>Please try again!</p>",
+					"processing": "<p>Please wait...Searching Directus App Guides and Documentation!</p>",
+					"loading": "Loading docs from Directus...",
+					"rendering": "Rendering search results...",
+					"caching": "Loading Directus App Guides and Documentation..."
+				}
+			}
 		}
 	},
 	"links": [{
@@ -35,12 +48,34 @@
 		"navigation": {
 			"getting-started": {
 				"headline": "Getting Started",
+				"icons": {
+					"introduction": "short_text"
+				},
 				"nav": {
 					"introduction": "/getting-started/introduction.md"
 				}
 			},
 			"guides": {
 				"headline": "Guides",
+				"icons": {
+					"user-guide": "account_circle",
+					"admin-guide": "supervised_user_circle",
+					"accountability": "security",
+					"authentication": "lock",
+					"collections": "apps",
+					"database": "storage",
+					"fields": "horizontal_split",
+					"field-types": "build",
+					"files": "cloud_done",
+					"interfaces": "extension",
+					"layouts": "view_compact",
+					"modules": "view_module",
+					"permissions": "vpn_key",
+					"relationships": "account_tree",
+					"roles": "verified_user",
+					"status": "radio_button_checked",
+					"users": "group"
+				},
 				"nav": {
 					"user-guide": "/guides/user-guide.md",
 					"admin-guide": "/guides/admin-guide.md",

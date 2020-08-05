@@ -1,6 +1,6 @@
 {
 	"name": "cdn",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "cloud",
 	"types": [
 		"string"
@@ -11,6 +11,7 @@
 			"title": "CDN",
 			"subtitle": 'CDN - Publicly accessible assets and files',
 			"description": 'Publicly accessible assets and files',
+			"loading": "Please wait loading dtata from CDN and processing report...",
 			"headlines": {
 				"analytics": "CDN Dashboard",						
 				"assets": "Folders and Files",
@@ -28,6 +29,12 @@
 					"headline": "Search",
 					"placeholder": "Search Assets and Files",
 					"submit": "Search"
+				},
+				"thumbnailer": {
+					"headline": "Generate Image Thumbnails",
+					"submit": "Process Sizes",
+					"success": "Thumbnails successfully created!",
+					"error": "No Thumbnails were created!"
 				}
 			}
 		}						

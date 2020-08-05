@@ -54,7 +54,7 @@ class Mailer
         
         $config = new Collection($this->transports->getDefaultConfig());
         
-        if (isset($params['from']) && is_array($params['from'])) {
+        if (isset($params['from']) && is_array($params['from']) && count($params['from'])) {
 	        $message->setFrom($params['from']);
         }
         elseif ($config->has('from')) {
@@ -80,7 +80,7 @@ class Mailer
 	        Full URL Only via Directus Files or External.
         */
         
-        if (isset($params['attachment']) && is_array($params['attachment'])) {
+        if (isset($params['attachment']) && is_array($params['attachment']) && count($params['attachment'])) {
 	        foreach ($params['attachment'] as $attachment) {
 		        if (filter_var($attachment, FILTER_VALIDATE_URL)) {
 			        $message->attach(\Swift_Attachment::fromPath($attachment));

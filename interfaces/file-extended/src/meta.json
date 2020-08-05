@@ -1,0 +1,82 @@
+{
+	"name": "File Extended",
+	"version": "1.1.0",
+	"types": ["file"],
+	"icon": "insert_drive_file",
+	"relation": "file",
+	"recommended": {
+		"length": 10
+	},
+	"options": {
+		"crop": {
+			"name": "Crop Preview Images",
+			"comment": "Crop the preview image to fit into a square",
+			"default": true,
+			"interface": "switch"
+		},
+		"previewWidth": {
+			"name": "Preview Image Width",
+			"comment": "Enter the width size of the preview image - half|full",
+			"default": "full",
+			"interface": "text-input"
+		},
+		"viewType": {
+			"name": "View Type",
+			"comment": "The layout in what way you want to view the files - see available layouts for options",
+			"default": "cards",
+			"interface": "text-input"
+		},
+		"viewOptions": {
+			"name": "View Options",
+			"comment": "Set the view options to use for the files",
+			"interface": "json",
+			"options": {
+				"language": "application/json"
+			},
+			"default": {
+				"title": "title",
+				"subtitle": "type",
+				"content": "description",
+				"src": "data"
+			}
+		},
+		"viewQuery": {
+			"name": "View Query",
+			"comment": "Set the view query to use for the existing files",
+			"interface": "json",
+			"options": {
+				"language": "application/json"
+			},
+			"default": {}
+		},
+		"filters": {
+			"name": "Filters",
+			"comment": "What filters to use - filter the images pulled from Directus Files",
+			"interface": "json",
+			"options": {
+				"language": "application/json"
+			},
+			"default": []
+		},
+		"defaultValues": {
+			"name": "Default Values",
+			"comment": "Set the default values for any field in Directus Files... <br>Array of objects with **field** and **value** properties.",
+			"interface": "json",
+			"options": {
+				"language": "application/json"
+			},
+			"default": []
+		},
+		"accept": {
+			"name": "Accept File Types",
+			"comment": "Set a CSV list of MIME types that can be picked",
+			"interface": "text-input"
+		},
+		"allowDelete": {
+			"name": "Allow Delete",
+			"comment": "Allows the user to permanently delete the related file through the file interface... <br>NOTE: Related collections with the File ID will not be updated!",
+			"interface": "switch",
+			"default": false
+		}
+	}
+}

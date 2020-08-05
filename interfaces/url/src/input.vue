@@ -10,15 +10,60 @@
 			v-bind:maxlength="length"
 			v-bind:icon-left="options.iconLeft"
 			v-bind:charactercount="options.showCharacterCount"
-			v-on:input="input">
+			v-on:input="input"
+			v-on:keyup.enter="load">
 		</v-input>
 		
 		<span class="interface-url-upload" v-on:click.prevent.stop="load">
-			<v-icon name="import_export"></v-icon>
+			<v-icon name="error" color="--danger-dark" v-if="!value"></v-icon>
+			<v-icon name="open_in_new" color="--main-primary-color" v-else-if="existing"></v-icon>
+			<v-icon name="cloud_download" color="--main-primary-color" v-else-if="!existing"></v-icon>
 		</span>
 		
-		<div class="interface-url-content" ref="content"></div>
-		
+		<v-modal 
+			v-if="modal" 
+			:title="`URL Importer Preview - ${ content.sitename }`"
+			:buttons="buttons"
+			@close="onCloseModal"
+			@done="onCloseModal">
+			<div class="interface-url-modal" v-if="content">
+				<header class="modules-divider">
+					<h2 class="modules-divider">{{ content.title }}</h2>
+					<hr />
+					<p class="modules-divider">{{ content.description }}</p>
+				</header>
+				
+				<header class="modules-divider" v-if="content.image">
+					<h4 class="modules-divider">Main Image</h4>
+					<hr />
+					<p class="modules-divider">This image should be uploaded automatically depending on the interface settings. Check the existing files if the file was upload.</p>
+				</header>
+				<figure class="interface-url-figure bg-pattern" v-if="content.content">
+					<img class="interface-url-image" :src="content.image" :alt="content.image">
+					<figcaption>{{ content.image }}<br><small>If the image above is not shown in the existing Files, copy the Image URL and use the File Uploader to upload the image...</small></figcaption>
+				</figure>
+				
+				<header class="modules-divider" v-if="content.image">
+					<h4 class="modules-divider">Available Text Content</h4>
+					<hr />
+					<p class="modules-divider">You may copy any part or all of the text in the content below and place in the content interface.</p>
+				</header>
+				<aside class="interface-url-html body" v-if="content.content">
+					<p v-for="paragraph in content.content" v-html="paragraph"></p>
+				</aside>
+				
+				<header class="modules-divider" v-if="content.image">
+					<h4 class="modules-divider">Additional Images</h4>
+					<hr />
+					<p class="modules-divider">These images are not uploaded automatically, instead you will have to use the URL to (download and) upload the image.</p>
+				</header>
+				<figure class="interface-url-figure sm bg-pattern" v-if="content.images" v-for="image in content.images">
+					<img class="interface-url-image" :src="image" :alt="image">
+					<figcaption>{{ image }}<br><small>Copy the Image URL and use the File Uploader to upload the image...</small></figcaption>
+				</figure>
+			</div>
+		</v-modal>
+				
 		<v-spinner
 			v-show="loading"
 			line-fg-color="var(--blue-grey-300)"
@@ -36,7 +81,18 @@
 		mixins: [mixin],
 		data() {
 			return {
-				loading: false
+				buttons: {
+					done: {
+						text: "Close Preview"
+					}
+				},
+				currentValue: null,
+				content: null,
+				existing: false,
+				loading: false,
+				modal: false,
+				url: null,
+				value: null
 			};
 		},
 		computed: {
@@ -50,23 +106,38 @@
 		methods: {
 			input (value) {
 				if (value && value.length) this.value = value;
+				else this.value = null;
+				
+				if (this.value) this.existing = this.currentValue === this.value;
 			},
 			load (value) {
 				if (this.readonly === true || !this.value) return;
 				
+				if (this.url === this.value) return this.modal = true;
+				
 				this.loading = true;
 												
 				this.$api.api.get('/custom/metadata/import', {
-					url: this.value
+					url: this.value,
+					encode: false,
+					params: {
+						images: this.options.images || 3,
+						backgrounds: this.options.backgroundImages || 3
+					}
 				})
 				.then((response) => {
 					
+					this.url = this.value;
+					
 					this.loading = false;
 					
-					response.title = response.title || response.title;
 					response.description = response.description || response.sitename;
+										
+					this.content = {...response};
 					
-					this.$events.emit("warning", {
+					this.modal = true;
+					
+					this.$events.emit("success", {
 						notify: `Resource Downloaded!`
 					});
 					
@@ -74,21 +145,19 @@
 						this.$emit('input', response.url);
 					}
 					
-					if (response.content) {
-						this.$refs.content.innerHTML = response.content;
-					}
-					
-					if (this.options.mirroredTitle && response.title) {
+					if (!this.existing && this.options.mirroredTitle && response.title) {
 						this.$emit('setfield', { field: this.options.mirroredTitle, value: response.title });
 					}
-					if (this.options.mirroredDescription && response.description) {
+					
+					if (!this.existing && this.options.mirroredDescription && response.description) {
 						this.$emit('setfield', { field: this.options.mirroredDescription, value: response.description });
 					}
-					if (this.options.mirroredContent && response.content) {
+					
+					if (!this.existing && this.options.mirroredContent && response.content) {
 						this.$emit('setfield', { field: this.options.mirroredContent, value: response.content });
-					}			
-										
-					if (this.options.mirroredImage && this.options.uploadImage && response.image) {
+					}
+															
+					if (!this.existing && this.options.mirroredImage && this.options.uploadImage && response.image) {
 						this.upload(response);
 					}
 				})
@@ -98,27 +167,52 @@
 					this.loading = false;
 				});
 			},
+			onCloseModal () {
+				this.modal = false;
+			},
 			preview () {
 				let element = document.querySelector(`[data-field="${ this.options.mirroredImage }"]`).querySelector('.uploader');
 				
 				element.innerHTML = `<img src="${ response.image }" alt="custom-interface-url-image" class="custom-interface-url-image">`;
 			},
 			upload (response) {	
-				this.$api.api.post('/files', {
+				let params = {
 					data: response.image,
 					title: response.title,
 					description: response.description,
 					filename_download: response.imageinfo.basename
-				})
+				};
+				
+				if (this.options.mirroredImageSettings) params = {...this.options.mirroredImageSettings, ...params};
+				
+				if (response.sitename && Array.isArray(params.tags)) params.tags.push(response.sitename);
+				
+				this.$api.api.post('/files', params)
 				.then((e) => {					
 					this.$events.emit("warning", {
-						notify: `Image Resource Uploaded! <br>Select the image with the title -${ response.title }- from existing files to add!`
+						notify: `Image Resource Uploaded... Select the image with the title -${ response.title }- from the existing files!`
 					});
 				})
 				.catch((error) => {
 					this.error = error;
 				});
 			},
+			stripHTML (html) {
+				html = html.replace(/></g, '> <');
+				
+				let div = document.createElement("div");
+				
+				div.innerHTML = html.replace(/<img .*?>/g, "").replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+				
+				let text = div.textContent || div.innerText || "";
+				
+				return text.trim().replace(/\n\s*\n/g, '<br>');
+			}
+		},
+		mounted () {
+			if (this.value) this.currentValue = this.value;
+			
+			if (this.value) this.existing = this.currentValue === this.value;
 		}
 	};
 </script>
@@ -126,6 +220,12 @@
 <style lang="scss">	
 	.interface-url {
 		position: relative;
+	}
+	.interface-url .v-input input {
+		padding-right: 70px;
+	}
+	.interface-url .v-input .char-count {
+		right: 50px;
 	}
 	.custom-interface-url {
 		color: var(--blue-grey-200);
@@ -150,12 +250,45 @@
 		margin: 0 auto;
 		top: 12px;
 	}
-	.interface-url-content:not(:empty) {
-		background-color: var(--blue-grey-800);
-		color: var(--blue-grey-400);
-		padding: 1rem;
+	.interface-url-modal {
+		padding: 2rem;
+		line-height: 1.6;
+	}
+	.interface-url-image {
+		display: block !important;
+		max-width: 100% !important;
+		max-height: 480px !important;
+		margin: 0 auto;
+		background-color: white;
+	}
+	.interface-url-figure {
 		margin: 1rem 0;
-		max-height: 480px;
-		overflow: auto;
+	}
+	.interface-url-figure figcaption {
+		padding: 1rem;
+		background-color: var(--blue-grey-800);
+		text-align: center;
+	}
+	.v-modal {
+		animation: fadeIn 650ms ease;
+	}
+	aside.interface-url-html {
+		border: 2px solid var(--input-border-color);
+		display: block;
+		width: 100%;
+		max-height: 600px;
+		margin: 1rem 0;
+		padding: 1rem;
+		overflow: scroll;
+	}
+	aside.interface-url-html p {
+		margin-bottom: 1rem;
+	}
+	aside.interface-url-html p:last-child {
+		margin-bottom: 0;
+	}
+	.modules-divider:not(:first-child) {
+		margin-top: 3.5rem;
+		margin-bottom: 0.5rem;
 	}
 </style>

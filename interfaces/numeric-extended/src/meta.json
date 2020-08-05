@@ -1,28 +1,48 @@
 {
-	"name": "Text Input Extended",
-	"description": "Renders a Text Field for displaying HTML Snippets",
+	"name": "$t:numeric",
 	"version": "1.0.0",
-	"icon": "code",
-	"types": ["string"],
+	"types": [
+		"integer",
+		"decimal"
+	],
+	"icon": "dialpad",
 	"recommended": {
-		"length": 200
+		"length": 10
 	},
 	"options": {
 		"placeholder": {
 			"name": "$t:placeholder",
 			"comment": "$t:placeholder_comment",
 			"interface": "text-input",
-			"length": 200
+			"length": 100
 		},
-		"trim": {
-			"name": "$t:trim",
-			"comment": "$t:trim_comment",
-			"interface": "switch",
-			"default": true
+		"step": {
+			"name": "$t:step",
+			"comment": "$t:step_comment",
+			"interface": "numeric",
+			"length": 11
 		},
-		"showCharacterCount": {
-			"name": "$t:char_count",
-			"comment": "$t:char_count_comment",
+		"min": {
+			"name": "$t:min",
+			"comment": "$t:min_comment",
+			"interface": "numeric",
+			"length": 11
+		},
+		"max": {
+			"name": "$t:max",
+			"comment": "$t:max_comment",
+			"interface": "numeric",
+			"length": 11
+		},
+		"maxlength": {
+			"name": "$t:maxlength",
+			"comment": "$t:maxlength_comment",
+			"interface": "numeric",
+			"length": 11
+		},
+		"localized": {
+			"name": "$t:localized",
+			"comment": "$t:localized_comment",
 			"interface": "switch",
 			"default": true
 		},
@@ -47,11 +67,19 @@
 	},
 	"translation": {
 		"en-US": {
-			"input": "Text Input HTML",
+			"numeric": "Numeric Extended",
 			"placeholder": "Placeholder",
 			"placeholder_comment": "Enter placeholder text",
-			"trim": "Trim",
-			"trim_comment": "Trim surrounding whitespace from the value before saving",
+			"step": "Step Value",
+			"step_comment": "The numeric increment value allowed in the input",
+			"min": "Minimum Value",
+			"min_comment": "The minimum numeric value allowed in the input",
+			"max": "Maximum Value",
+			"max_comment": "The maximum numeric value allowed in the input",
+			"maxlength": "Max Length",
+			"maxlength_comment": "The maximum number of characters allowed in the input",
+			"localized": "Localized",
+			"localized_comment": "Localize the number based on the region of the user",
 			"char_count": "Show Character Count",
 			"char_count_comment": "Show the remaining characters available",
 			"icon_left": "Icon Left",

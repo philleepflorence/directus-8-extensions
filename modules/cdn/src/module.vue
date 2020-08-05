@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-cdn">
+	<div class="modules-cdn module-page-root">
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
@@ -39,7 +39,7 @@
 							<div class="flex-item" :style="`color: ${ row.color };`">
 								<span class="v-icon icon"><i>{{ row.icon }}</i></span>
 								<p class="lead">{{ row.total }}</p>
-								<p class="font-accent">{{ row.text }}</p>
+								<p>{{ row.text }}</p>
 							</div>
 						</div>
 					</div>
@@ -70,7 +70,7 @@
 					</nav>
 					
 					<div class="modules-cdn-tree" v-if="tree">
-						<app-files-tree :tree="tree" :open="true" :mode="mode"></app-files-tree>
+						<app-files-tree :tree="tree" :open="true" :mode="mode" link="cdn"></app-files-tree>
 					</div>
 					
 					<section 
@@ -113,6 +113,7 @@
 			<section class="info-sidebar-section">
 				<h2 class="font-accent">{{ content('title') }}</h2>
 				<p class="p">{{ content('description') }}</p>
+				<p class="p dark" v-if="!loaded">{{ content('loading') }}</p>
 			</section>
 			<nav class="info-sidebar-section info-sidebar-nav" v-if="!loading">
 				<a class="info-sidebar-nav" href="#" :data-section="kebabCase(content('headlines.analytics'))" @click.stop.prevent="onClickScroll(kebabCase(content('headlines.analytics')))">
@@ -143,6 +144,19 @@
 						@click="onSubmitSearch"
 						block>
 						{{ content('form.search.submit') }}
+					</v-button>
+				</div>
+			</section>
+			<section class="info-sidebar-section" v-if="loaded">
+				<h2 class="font-accent">{{ this.content('form.thumbnailer.headline') }}</h2>
+				<div class="info-sidebar-row">
+					<v-button
+						id="modules-help-info-sidebar-thumbnailer-button"
+						type="button"
+						:loading="processing" 
+						@click="onSubmitThumbnailer"
+						block>
+						{{ content('form.thumbnailer.submit') }}
 					</v-button>
 				</div>
 			</section>	
@@ -216,7 +230,9 @@
 						"md"
 					]
 				},
+				loaded: false,
 				loading: false,
+				processing: false,
 				query: null,
 				tree: null,
 				mode: 'list'
@@ -318,8 +334,10 @@
 												
 				this.$api.api.get('/custom/cdn/files')
 				.then((response) => {
+					console.log(response);
 					
 					this.loading = false;
+					this.loaded = true;
 					
 					forEach (response.meta, (value, index) => {
 						if (typeof value === "number") set(analytics, index, value);
@@ -420,6 +438,29 @@
 				this.loading = true;
 				
 				this.items();
+			},
+			onSubmitThumbnailer (e) {
+				this.processing = true;
+				
+				this.$api.api.get('/custom/thumbnailer/sizes')
+				.then((response) => {
+					
+					this.processing = false;
+					
+					let message = get(response, 'meta.processed_files') ? this.content('form.thumbnailer.success') : this.content('form.thumbnailer.error');
+					
+					this.$notify({
+						title: message,				
+						color: 'green',				
+						iconMain: 'build',				
+						delay: 5000				
+					});				
+				})
+				.catch((error) => {
+					this.error = error;
+					
+					this.loading = processing;
+				});
 			},
 			onScrollEnd () {
 				this.$sections = this.$sections || this.$el.querySelectorAll('.modules-cdn-row');

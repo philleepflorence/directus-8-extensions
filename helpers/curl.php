@@ -101,7 +101,7 @@ class Curl
 			$useragent - @String: User Agent String to send with request
 	*/
 	
-	public static function Load ($url, $POST = NULL, $referer = NULL, $useragent = NULL)
+	public static function Load ($url, $POST = NULL, $referer = NULL, $useragent = NULL, $raw = false)
 	{
 		$ch = curl_init();
 		
@@ -129,7 +129,7 @@ class Curl
 		$error = curl_error($ch);
 
 		curl_close($ch);
-
+		
 		if (!$POST || is_array($POST)) return $status == 200 ? $data : $status;
 
 		$html = [];
@@ -142,6 +142,11 @@ class Curl
 		@$doc->loadHTML($data);
 		
 		libxml_clear_errors();
+		
+		if ($raw === true) return [
+			"dom" => $doc,
+			"data" => $data
+		];
 
 		return $doc;
 	}
@@ -158,7 +163,9 @@ class Curl
 	{
 		$options = $options ?: self::$metadata['options'];
 		
-		$dom = Self::Load($url, true);
+		$response = Self::Load($url, true, null, null, true);
+		$dom = $response['dom'];
+		$data = $response['data'];
 		$parsed = parse_url($url);
 		$extensions = ['jpg', 'png', 'gif'];
 		
@@ -167,45 +174,13 @@ class Curl
 			"message" => Api::Responses('curl.metadata.url')
 		];
 		
-		#$body = $dom->getElementsByTagName('body')->item(0);
+		$body = $dom->getElementsByTagName('body')->item(0);
 
 		$return = [
-			'url' => $url,
-			'content' => []
+			'url' => $url
 		];
 		$return = array_merge($return, $parsed);
-		
-		# Parse all text nodes!
-		
-		$xpath = new DOMXPath($dom);
-		
-		$textnodes = $xpath->query('//text()');
-		
-		if ($textnodes) 
-		{
-			$texts = [];
-			
-			foreach ($textnodes as $textnode) 
-			{
-				$string = trim($textnode->wholeText);
 				
-				preg_match('/(var+\s)[_a-zA-Z][_a-zA-Z0-9]{0,30}/', $string, $matches, PREG_OFFSET_CAPTURE);
-				
-				if (count($matches) || stripos($string, 'window.') === 0) continue;
-				
-				$string = str_replace(["\r\n", "\n"], '<br>', $string);
-				$string = Utils::JSON($string);
-				
-				if (is_string($string) && strlen($string)) array_push($texts, $string);
-				elseif (is_array($string)) array_push($texts, Utils::ToString($string));
-			}
-			
-			$texts = array_unique($texts);
-			$texts = array_filter($texts);
-			
-			$return['content'] = implode("<br>", $texts);
-		}
-
 		# Parse Title
 
 		$title = $dom->getElementsByTagName('title');
@@ -242,7 +217,12 @@ class Curl
 		
 		$domain = ArrayUtils::get($parsed, 'scheme') ? ArrayUtils::get($parsed, 'scheme') . '://' . ArrayUtils::get($parsed, 'host') : NULL;
 		
-		if (!is_array($params)) return $return;
+		if (!is_array($params)) 
+		{
+			$return['html'] = $dom->savehtml($body);
+			
+			return $return;
+		}
 		
 		$return['images'] = [];
 		$added = [];
@@ -354,6 +334,8 @@ class Curl
 			endforeach;
 		
 		endif;
+		
+		$return['html'] = $dom->savehtml($body);
 
 		return $return;
 	}

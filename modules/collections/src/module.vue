@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-module">
+	<div class="modules-module module-page-root">
 		<v-header 
 			:title="getContent('title')" 
 			:breadcrumb="breadcrumb" 
@@ -381,6 +381,10 @@
 			section.modules-module-collection {
 				width: calc((100vw - 300px) * 0.3);
 				
+				@media (min-width: 2010px) {
+					width: 480px;
+				}
+				
 				header.modules-module-collection {
 					background-color: var(--blue-grey-700);
 					border-bottom: 1px solid var(--blue-grey-900);
@@ -440,12 +444,20 @@
 						height: 2px;
 						left: 100%;
 						top: 50%;
+						
+						@media (min-width: 2010px) {
+							width: 240px;
+						}
 					}
 					
 					aside.modules-module-collection {
 						position: relative;
 						left: calc(100% + ((100vw - 300px) * 0.15));
 						top: -65px;
+						
+						@media (min-width: 2010px) {
+							left: 720px;
+						}
 						
 						p {
 							text-transform: uppercase;

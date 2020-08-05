@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-reports">
+	<div class="modules-reports module-page-root">
 		
 		<v-header 
 			:title="content('title')" 
@@ -653,6 +653,30 @@
 				overflow: hidden;
 				animation-duration: 600ms;
 				padding: 1.5rem 1rem;
+				
+				&:nth-child(1) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.2);
+				}
+				
+				&:nth-child(2) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.1);
+				}
+				
+				&:nth-child(3) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.05);
+				}
+				
+				&:nth-child(4) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.025);
+				}
+				
+				&:nth-child(5) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.0125);
+				}
+				
+				&:nth-child(6) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.00625);
+				}
 								
 				div.modules-reports-chart {
 					position: relative;

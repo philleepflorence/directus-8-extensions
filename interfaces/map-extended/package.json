@@ -1,6 +1,6 @@
 {
 	"name": "map-extended",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Extend the Map Interface to allow for more options",
 	"main": "",
 	"scripts": {

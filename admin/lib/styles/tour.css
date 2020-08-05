@@ -82,7 +82,7 @@
 
 .directus-tour-overlay section.directus-tour-content {
 	position: relative;
-	background-color: var(--main-primary-color-active);
+	background-color: var(--blue-grey-800);
 	max-width: 540px;
 	margin: 1.5rem;
 	

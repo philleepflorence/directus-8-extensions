@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-help">
+	<div class="modules-help module-page-root">
 		
 		<v-header 
 			:title="content('title')" 
@@ -19,7 +19,7 @@
 			</div>
 		</div>
 		
-		<div class="modules-help-content animated fadeIn" v-else-if="loaded && rows">
+		<div class="modules-help-content modules-content animated fadeIn" v-else-if="loaded && rows">
 			
 			<section class="modules-section" :data-section="content(`sections.${ index }.headline`)" v-for="(section, index) in rows">
 				<header class="modules-divider">
@@ -65,14 +65,14 @@
 						:placeholder="content('form.search.placeholder')"
 						:model="query"
 						@input="onInputSearch"
-						@keyup.enter.stop.prevent="onSubmitSearch">
+						@keyup.enter="onSubmitSearch">
 					</v-input>
 				</div>
 				<div class="info-sidebar-row">
 					<v-button
 						id="modules-help-info-sidebar-button"
 						type="button" 
-						@click.stop.prevent="onSubmitSearch"
+						@click="onSubmitSearch"
 						block>
 						{{ content('form.search.submit') }}
 					</v-button>
@@ -163,7 +163,7 @@
 				this.$nav.classList.add('active');
 				
 				let props = $row.getBoundingClientRect();
-				let top = props.y - 70;
+				let top = props.y - 70 + window.scrollY;
 				
 				if (top < 0) top = 0;
 				
@@ -200,6 +200,8 @@
 			},
 			onSubmitSearch (input) {
 				this.loading = true;
+				
+				window.scrollTo(0, 0);
 				
 				this.render();
 			},
@@ -252,6 +254,10 @@
 		padding: var(--page-padding);
 		
 		.modules-help-content {
+			border: 1px solid var(--blue-grey-800);
+			max-width: 960px;
+			margin: 0 auto;
+			padding: var(--page-padding);
 		
 			.modules-help-ol {
 				color: var(--main-primary-color);

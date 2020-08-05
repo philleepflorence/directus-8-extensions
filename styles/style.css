@@ -121,6 +121,8 @@ body {
 	--module-background-color-active: var(--blue-grey-800) !important;
 	
 	--link-active-background: rgba(0, 0, 0, 0.5);
+	
+	--page-root-max-width: 1440px;
 }
 
 @media (min-width: 1440px) {

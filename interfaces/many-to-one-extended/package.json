@@ -1,6 +1,6 @@
 {
 	"name": "many-to-one-extended",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"description": "Renders a Many to One Interface that allows for displaying HTML and Filtering",
 	"main": "",
 	"scripts": {

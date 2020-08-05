@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-module">
+	<div class="modules-module module-page-root">
 		
 		<v-header 
 			:title="content('title')" 
@@ -11,6 +11,16 @@
 				<v-button v-if="buttons.forward" @click="onClickRoute(+1)" background-color="--main-primary-color" icon rounded><v-icon name="arrow_forward"></v-button>
 			</template>
 		</v-header>
+			
+		<v-progress-linear 
+			v-if="processing"
+			color="var(--main-primary-color)" 
+			background-color="var(--blue-grey-900)"
+			:value="processing"
+			:top="true"
+			:absolute="true"
+			height="5">
+		</v-progress-linear>
 		
 		<div class="modules-module-loading" v-if="loading">
 			<div class="flex-item">
@@ -23,9 +33,18 @@
 			</div>
 		</div>
 		
-		<div class="modules-module-content animated fadeIn" v-else-if="loaded">
+		<div class="modules-module-content modules-content animated fadeIn" v-else-if="loaded">
 			
-			<div class="modules-module-markdown" :ref="`markdown`" v-html="html" @click.stop.prevent="onClickContentLink"></div>
+			<div class="modules-module-markdown" :ref="`markdown`" v-html="html" @click.stop.prevent="onClickContentLink" v-if="html"></div>
+			
+			<div class="modules-module-markdown" v-else-if="results">
+				<ol class="modules-module-results">
+					<li v-for="row in search">
+						<p v-html="row.text"></p>
+						<a href="#" @click.stop.prevent="onClickNavigation($event, row.path)">{{ formatStartCase(row.slug) }}</a>
+					</li>
+				</ol>
+			</div>
 			
 		</div>
 
@@ -35,10 +54,43 @@
 				<p class="p">{{ content('description') }}</p>
 				<p class="p">{{ content('disclaimer') }}</p>
 			</section>
-			<nav class="info-sidebar-section info-sidebar-nav" v-for="section in navigation">
+			<section class="info-sidebar-section">
+				<h2 class="font-accent">{{ content('form.search.headline') }}</h2>								
+				<div class="info-sidebar-row">
+					<v-input
+						id="modules-help-info-sidebar-input"
+						type="search"
+						:placeholder="content('form.search.placeholder')"
+						:model="query"
+						@input="onInputSearch"
+						@keyup.enter="onSubmitSearch">
+					</v-input>
+				</div>
+				<div class="info-sidebar-row">
+					<v-button
+						id="modules-help-info-sidebar-button"
+						type="button" 
+						@click="onSubmitSearch"
+						block>
+						{{ content('form.search.submit') }}
+					</v-button>
+				</div>
+			</section>
+			<section class="info-sidebar-section info-sidebar-nav" v-if="viewresults">
+				<div class="info-sidebar-row">
+					<v-button
+						id="modules-help-info-sidebar-results"
+						type="button" 
+						@click="onClickResults"
+						block>
+						{{ content('form.search.results') }}
+					</v-button>
+				</div>
+			</section>
+			<nav class="info-sidebar-section info-sidebar-nav" v-for="(section, group) in navigation">
 				<h2 class="font-accent">{{ section.headline }}</h2>
 				<a class="info-sidebar-nav" href="#" :data-href="link" v-for="(link, slug) in section.nav" @click.stop.prevent="onClickNavigation($event, link)">
-					<span class="info-sidebar-nav-icon"><v-icon name="bookmark_border" left></span>
+					<span class="info-sidebar-nav-icon"><v-icon :name="getIcon(slug, group)" left></span>
 					<span class="info-sidebar-nav-text">{{ formatStartCase(slug) }}</span>
 				</a>
 			</nav>			
@@ -50,6 +102,7 @@
 <script>
 	import { forEach, get, set, size, startCase, trimStart } from 'lodash';
 	import marked from 'marked';
+	import sbd from 'sbd';
 	
 	import $meta from './meta.json';
 	
@@ -57,12 +110,18 @@
 		name: 'ModulesGuides',
 		data () {
 			return {
+				cache: {},
 				contents: $meta.contents,
 				html: null,
+				query: null,
 				icon: $meta.icon,
 				navigation: $meta.github.navigation,
+				menu: {},
 				loading: false,
 				loaded: false,
+				processing: 0,
+				search: [],
+				results: null,
 				markdown: {
 					patterns: [
 						{
@@ -87,7 +146,7 @@
 						},
 						{
 							pattern: /src="\.\.\/img/gm,
-							text: 'src="../uploads/app/directus'
+							text: `src="${ $meta.github.baseURL }/img`
 						},
 						{
 							pattern: /^<p>\﻿#\s/gm,
@@ -136,9 +195,49 @@
 			},
 			locale () {
 				return get(this.$store.state, 'settings.values.default_locale');
+			},
+			viewresults () {
+				return this.results && this.query && this.html;
 			}			
 		},
 		methods: {
+			get (path, params, callback) {
+				this.loading = true;
+				
+				let cache = get(this.cache, path.split('.').shift());
+				
+				if (cache) {
+					this.loading = false;
+					
+					return callback(cache);
+				}
+				
+				this.$api.api.get('/custom/curl/content', params).then((response) => {
+					
+					let html = marked(response.content, this.markdown.options);
+						html = this.render(html);
+						
+					set(this.cache, path.split('.').shift(), html);
+					
+					this.loading = false;
+					
+					return callback(html);
+					
+				}).catch((error) => {
+					
+					this.error = error;
+
+					this.loading = false;
+					
+				});
+			},
+			getIcon (slug, group) {
+				let icon = get($meta.github.navigation, `${ group }.icons.${ slug }`);
+				
+				if (icon) return icon;
+				
+				return "book";
+			},
 			content (input) {
 				let translation = get(this.contents, this.locale);
 					translation = translation || get(this.contents, 'en-US');
@@ -148,35 +247,26 @@
 			formatStartCase (input) {
 				return startCase(input);
 			},
-			load (path, element) {
-				this.loading = true;
-				
+			load (path, element, cache) {				
 				let route = {
 					path: path,
 					element: element
 				};
 				
+				window.scrollTo(0, 0);
+				
 				if (!this.$back && !this.$forward) this.routes.push(route);
 				
-				if (this.$nav) this.$nav.classList.remove('active');
-				
-				this.$nav = this.$el.querySelector(`[data-href="${ path }"]`);
-				
-				if (this.$nav) this.$nav.classList.add('active');
+				this.processMenu(path);
 				
 				let url = $meta.github.baseURL + path;
-				let params = {
+								
+				this.get(path, {
 					url: url
-				};
-				
-				this.$api.api.get('/custom/curl/content', params).then((response) => {
+				}, 
+				(html) => {
+					this.html = html;				
 					
-					let html = marked(response.content, this.markdown.options);
-						html = this.render(html);
-					
-					this.html = html;
-					
-					this.loading = false;
 					this.loaded = true;
 					
 					this.element = element;
@@ -191,13 +281,33 @@
 					
 					this.renderButtons();
 					
-				}).catch((error) => {
-					
-					this.error = error;
-
-					this.loading = false;
-					
+					if (cache) this.loadPages(1);
 				});
+			},
+			loadPages (loaded) {			
+				this.$notify({
+					title: this.content('form.search.caching'),				
+					color: 'orange',				
+					iconMain: 'cloud_download',				
+					delay: 2000				
+				});
+				
+				let len = size(this.menu);
+												
+				forEach(this.menu, (path) => {
+					let url = $meta.github.baseURL + path;
+					
+					this.get(path, {
+						url: url
+					}, 
+					(html) => {
+						loaded = loaded + 1;
+						
+						this.processing = Math.round((loaded / len) * 100);
+						
+						if (loaded >= len) this.processing = 0;
+					});
+				});					
 			},
 			onClickNavigation (e, link) {				
 				if (this.$back) this.routes = this.routes.splice(0, this.$index);
@@ -222,6 +332,9 @@
 				}
 				else window.open(e.target.href);				
 			},
+			onClickResults () {
+				this.html = null;
+			},
 			onClickRoute (direction) {
 				if (direction < 0) this.$back = true;
 				else if (direction > 0) this.$forward = true;
@@ -233,6 +346,55 @@
 				if (!route || !route.path) return false;			
 												
 				this.load(route.path, route.element);
+			},	
+			onInputSearch (input) {
+				this.query = input;
+				
+				if (input === '') {
+					this.query = null;
+					
+					this.load($meta.github.index);
+				}
+			},		
+			onSubmitSearch (input) {			
+				this.$notify({
+					title: this.content('form.search.loading'),				
+					color: 'orange',				
+					iconMain: 'search',				
+					delay: 2000				
+				});	
+				
+				let loaded = 0;
+				let len = size(this.menu);
+				
+				this.html = this.content('form.search.processing');
+				
+				this.processMenu(false);
+				
+				forEach(this.menu, (path) => {
+					let url = $meta.github.baseURL + path;
+					
+					this.get(path, {
+						url: url
+					}, 
+					(html) => {
+						loaded = loaded + 1;
+						
+						this.processing = Math.round((loaded / len) * 100);
+						
+						if (loaded >= len) this.renderSearch();
+					});
+				});					
+			},
+			processMenu (path) {
+				if (path) {
+					if (this.$nav) this.$nav.classList.remove('active');
+				
+					this.$nav = this.$el.querySelector(`[data-href="${ path }"]`);
+					
+					if (this.$nav) this.$nav.classList.add('active');
+				}
+				else if (!path && this.$nav) this.$nav.classList.remove('active');
 			},			
 			render (input) {
 				this.markdown.patterns.forEach((pattern) => {
@@ -259,6 +421,37 @@
 				
 				return `<h${ level } id="${ id }">${ text }</h${ level }>`;
 			},
+			renderSearch () {
+				
+				this.search = [];
+				let closingTag = new RegExp("(</.*?>)", "gi");
+				let pattern = new RegExp('(' + this.query + ')', 'gi');
+				
+				forEach(this.cache, (html, path) => {
+					let plaintext = this.stripHtml(html.replace(closingTag, " $1").replace(/\s\s+/g, ' '));
+					let sentences = sbd.sentences(plaintext, {
+						newline_boundaries: true,
+						html_boundaries: true,
+						sanitize: true
+					});
+					
+					forEach(sentences, (sentence) => {
+						if (sentence.search(pattern) > 0) this.search.push({
+							path: `${ path }.md`,
+							text: sentence.trim(),
+							slug: path.split('/').pop().replace('.md', '')
+						});
+					});				
+				});
+				
+				this.processing = 0;
+				this.loading = false;
+				
+				this.results = this.search.length;
+				
+				if (!this.results) this.html = this.content('form.search.empty');
+				else this.html = null;
+			},
 			scrollElement () {
 				let element = document.getElementById(`modules-guides-${ this.element }`);
 				
@@ -270,6 +463,13 @@
 						behavior: 'smooth'
 					});
 				}, 300);
+			},
+			stripHtml (html) {
+				let div = document.createElement("div");
+				
+				div.innerHTML = html;
+				
+				return div.textContent || div.innerText || "";
 			}
 		},
 		metaInfo () {
@@ -280,7 +480,13 @@
 		mounted () {
 			this.markdown.options.renderer.heading = this.renderHeading;
 			
-			this.load($meta.github.index);
+			forEach(this.navigation, (section) => {
+				forEach(section.nav, (value, key) => {
+					set(this.menu, key, value);
+				});
+			});
+			
+			this.load($meta.github.index, null, true);
 		},
 		updated () {
 			if (this.element) this.scrollElement();
@@ -290,7 +496,16 @@
 
 <style lang="scss">
 	.modules-module {
+		position: relative;
 		padding: var(--page-padding);
+		
+		.v-progress-linear.absolute.top {
+			left: 0;
+			
+			.inner {
+				transition: width 300ms linear;
+			}
+		}
 			
 		header.v-header {
 			.v-button.rounded.icon {
@@ -300,10 +515,17 @@
 		}
 		
 		.modules-module-content {
+			display: flex;
+			align-items: center;
+			padding-top: 0 !important;
 		
 			.modules-module-markdown {
+				border: 1px solid var(--blue-grey-800);
 				font-size: 1rem;
-				max-width: 768px;
+				width: 100%;
+				max-width: 960px;
+				margin: 0 auto;
+				padding: var(--page-padding);
 				
 				h1, .h1 {
 					font-size: 2.5rem;
@@ -349,6 +571,13 @@
 						display: none !important;
 						margin: 0;
 					}
+					
+					&:only-child {
+						color: var(--blue-grey-500);
+						font-size: 2rem;
+						font-weight: 300;
+						line-height: 2.5rem;
+					}
 				}
 				
 				a {
@@ -364,6 +593,10 @@
 					display: block;
 					max-width: 100%;
 					margin-bottom: 1rem;
+					
+					&[width="100"] {
+						width: 100%;
+					}
 				}
 				
 				hr {
@@ -449,6 +682,23 @@
 							text-align: left;
 					    }
 				    }
+				}
+				
+				.module-search-query {
+					display: inline-block;
+					background-color: var(--blue-grey-800);
+					padding: 0 3px;
+				}
+				
+				.modules-module-results {
+					li {
+						padding-bottom: 1rem;
+						
+						p {
+							line-height: 1.2rem;
+							margin-bottom: 0;
+						}
+					}
 				}
 			}
 		}

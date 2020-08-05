@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-modules">
+	<div class="modules-modules module-page-root">
 		
 		<v-header 
 			:title="getContent('subtitle')" 
@@ -12,7 +12,7 @@
 			<v-progress-linear background-color="--main-primary-color" color="--blue-grey-700" indeterminate>
 		</div>
 		
-		<div class="modules-modules-content animated fadeIn" v-if="loaded">
+		<div class="modules-modules-content modules-content animated fadeIn" v-if="loaded">
 			
 			<div v-for="(row, index) in rows"
 				:class="`modules-modules-grid modules-modules-${index} animated fadeInUpSmall a-delay`" 
@@ -20,15 +20,17 @@
 				@click="onClick(row.path)">
 				<div class="flex-item">
 					<span class="v-icon icon"><v-icon :name="row.icon"></span>
-					<h3 class="font-accent">{{ row.title }}</h3>
-					<p class="lead" v-html="processContent(row.note)"></p>
+					<h3 class="font-accent modules-grid-title">{{ row.title }}</h3>
+					<p class="lead modules-grid-description" v-html="processContent(row.note)"></p>
 					<div class="modules-modules-analytics">
-						<p class="lead animated fadeIn font-accent" v-if="row.analytics"><span>{{ row.analytics.total }}</span><span>{{ row.analytics.text }}</span></p>
+						<p class="lead animated fadeIn" v-if="row.analytics"><span class="font-accent">{{ row.analytics.total }}</span><span>{{ row.analytics.text }}</span></p>
 					</div>
 				</div>
 			</div>
 			
 		</div>
+		
+		<v-info-sidebar></v-info-sidebar>
 		
 	</div>
 </template>
@@ -126,15 +128,13 @@
 
 <style lang="scss" scoped>
 	.modules-modules {
-		padding: var(--page-padding);
-		margin-right: -64px;
+		padding: 1rem;
 		
 		.modules-modules-content {
 			display: grid;
 			grid-template-columns: repeat(4, 1fr);
 			grid-gap: 1rem;
-			min-height: calc(100vh - 120px) !important;
-			
+						
 			.modules-modules-grid {
 				background-color: rgba(white, 0.1);
 				cursor: pointer;
@@ -174,18 +174,18 @@
 					
 					.modules-modules-analytics {
 						position: relative;
-						padding: 1rem;
+						padding: 0.5rem 1rem;
 						
 						p.lead {
-							color: var(--page-text-color);
-							font-size: 2.5rem !important;
-							font-weight: 300 !important;
+							color: var(--blue-grey-500);
+							font-size: 1.5rem !important;
+							font-weight: 400 !important;
 							text-align: center;
 						
 							span + span {
-								color: rgba(white, 0.5);
-								font-size: 1.25rem;
-								font-weight: 400 !important;
+								color: var(--blue-grey-600);
+								font-size: 0.875rem;
+								font-weight: 500 !important;
 								text-transform: lowercase;
 								display: block;
 							}

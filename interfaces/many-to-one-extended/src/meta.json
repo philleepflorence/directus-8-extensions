@@ -1,6 +1,6 @@
 {
 	"name": "Many to One Extended",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"types": ["m2o"],
 	"relation": "m2o",
 	"icon": "call_merge",

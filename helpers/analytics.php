@@ -250,7 +250,22 @@ class Analytics
 		
 		$response = [];
 		
-		# Get Number of Modules Installed!
+		# Get Number of Project Collections
+		
+		# Get Number of Modules Installed - sans the grids!
+		
+		$tableGateway = Api::TableGateway('app_collections_configuration');
+		$item = $tableGateway->getItems([
+			"filter" => [
+				'slug' => 'project',
+				'type' => 'module'
+			],
+			"single" => 1
+		]);
+		$options = ArrayUtils::get($item, 'data.options');
+		$options = Utils::ToArray($options);
+		
+		ArrayUtils::set($response, 'project.total', count($options));
 		
 	    $basepath = base_path();
 	    
@@ -266,7 +281,7 @@ class Analytics
 				if (strrpos($module, '.') === false) $count++;
 			}
 			
-			ArrayUtils::set($response, 'modules.total', $count);
+			ArrayUtils::set($response, 'modules.total', $count - 3);
 		}
 		
 		# Get Number of Directus Activity Items	

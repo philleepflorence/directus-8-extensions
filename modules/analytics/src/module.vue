@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-analytics">
+	<div class="modules-analytics module-page-root">
 		
 		<v-header 
 			:title="content('title')" 
@@ -92,9 +92,9 @@
 						
 					<!-- Performance - Overview -->
 				
-					<div class="modules-analytics-content modules-analytics-performance animated fadeIn" v-for="(section, index) in content('sections.performance')">
+					<div class="modules-analytics-content modules-analytics-performance animated fadeIn" :data-section="index" v-for="(section, index) in content('sections.performance')">
 						
-						<div class="modules-analytics-grid animated fadeIn a-delay" v-for="(description, name) in section">
+						<div class="modules-analytics-grid animated fadeIn a-delay" :data-analytics="name" v-for="(description, name) in section">
 							<div class="flex-item">
 								<h3 class="font-accent text-capitalize">{{ index }} &mdash; {{ name }}</h3>
 								<p class="lead">{{ description }}</p>
@@ -626,6 +626,30 @@
 				animation-duration: 600ms;
 				padding: 1.5rem 1rem;
 				
+				&:nth-child(1) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.2);
+				}
+				
+				&:nth-child(2) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.1);
+				}
+				
+				&:nth-child(3) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.05);
+				}
+				
+				&:nth-child(4) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.025);
+				}
+				
+				&:nth-child(5) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.0125);
+				}
+				
+				&:nth-child(6) {
+					background-color: rgba(var(--main-primary-color-rgb), 0.00625);
+				}
+				
 				&[data-chart="sessions"] {
 					grid-column: 3/5 !important;
 					grid-row: 1/3 !important;
@@ -727,7 +751,7 @@
 				.flex-item {
 					flex-grow: 1;
 					text-align: center;
-					color: var(--main-primary-color);
+					color: var(--blue-grey-100);
 					padding: 1rem;
 					
 					h3 {
@@ -737,6 +761,7 @@
 					
 					.lead {
 						font-size: 1rem;
+						margin-bottom: 0.5rem;
 					}
 					
 					.icon {
@@ -752,13 +777,43 @@
 					
 					.modules-analytics-analytics {
 						position: relative;
-						padding: 1rem;
+						padding: 0.5rem;
 						
 						p.lead {
-							color: rgba(white, 0.3);
+							color: rgba(white, 0.5);
 							font-size: 2.5rem !important;
 							font-weight: 300 !important;
+							line-height: 2rem !important;
 						}
+					}
+				}
+			}
+			
+			&.modules-analytics-performance:nth-of-type(2),
+			&.modules-analytics-views {
+				.modules-analytics-grid {
+					&:nth-child(6) {
+						background-color: rgba(var(--main-primary-color-rgb), 0.2);
+					}
+					
+					&:nth-child(5) {
+						background-color: rgba(var(--main-primary-color-rgb), 0.1);
+					}
+					
+					&:nth-child(4) {
+						background-color: rgba(var(--main-primary-color-rgb), 0.05);
+					}
+					
+					&:nth-child(3) {
+						background-color: rgba(var(--main-primary-color-rgb), 0.025);
+					}
+					
+					&:nth-child(2) {
+						background-color: rgba(var(--main-primary-color-rgb), 0.0125);
+					}
+					
+					&:nth-child(1) {
+						background-color: rgba(var(--main-primary-color-rgb), 0.00625);
 					}
 				}
 			}

@@ -2,6 +2,67 @@
 	Extensions Components
 */
 
+body[data-page-root="modules-dashboard page-root"],
+body[data-page-root="modules-modules page-root"] {
+	padding-right: 0 !important;
+}
+
+.module-page-root,
+.module-page-root .modules-content {
+	min-height: calc(100vh - 110px) !important;
+}
+
+@media (min-width: 1919px) {
+	body:not(.info-active):not(.info-wide-active) .module-page-root {
+		min-height: calc(100vh - 140px) !important;
+	}
+	
+	body:not(.info-active):not(.info-wide-active) .module-page-root .modules-content {
+		min-height: calc(100vh - 140px - 2rem) !important;
+	}
+}
+
+@media (min-width: 2010px) {
+	.module-page-root {
+		min-height: calc(100vh - 140px) !important;
+	}
+	
+	.module-page-root .modules-content {
+		min-height: calc(100vh - 140px - 2rem) !important;
+	}
+}
+
+.module-page-root h1, 
+.module-page-root h2, 
+.module-page-root h3, 
+.module-page-root h4, 
+.module-page-root h5, 
+.module-page-root h6 {
+	color: var(--main-primary-color);
+	font-family: var(--main-font-accent);
+}
+
+.modules-grid-title {
+	color: var(--blue-grey-50) !important;
+	margin-bottom: 0.5rem !important;
+}
+
+.modules-grid-description {
+	color: var(--blue-grey-400) !important;
+}
+
+div[class^="modules-"] h4 {
+	font-size: 1.5rem;
+}
+
+div[class^="modules-"] h5 {
+	font-size: 1.25rem;
+}
+
+div[class^="modules-"] h6 {
+	font-size: 1rem;
+}
+
 .modules-module-form {
 	max-width: 960px;
 }
@@ -77,4 +138,102 @@ section.modules-section .v-table {
 
 header.modules-divider section.modules-section {
 	margin-top: 3rem;
+}
+
+div.modules-module.page-root div.modules-module-content {
+	padding-top: 32px;
+}
+
+body .sidebar-button {
+	background-color: var(--main-primary-color) !important;
+}
+
+body .info-sidebar-section {
+	animation: fadeIn 450ms ease-in-out;
+}
+
+body .info-sidebar-section + .info-sidebar-section {
+	border-top: 2px solid var(--input-border-color);
+	margin-top: 1.5rem;
+	padding-top: 1.5rem;
+}
+
+body .info-sidebar-section .info-sidebar-section-text {
+	margin-bottom: 1.5rem;
+}
+
+body .info-sidebar-section .info-sidebar-section-row {
+	margin-bottom: 1.5rem;
+}
+
+body .info-sidebar-section .info-sidebar-section-row .value .v-icon {
+	color: var(--blue-grey-600) !important;
+}
+
+body .info-sidebar-section .info-sidebar-row  + .info-sidebar-row {
+	margin-top: 1rem;
+}
+
+body .info-sidebar-section h2 {
+	color: var(--blue-grey-500) !important;
+    font-family: var(--main-font-accent) !important;
+    font-size: var(--font-size-h3) !important;
+	margin-bottom: 0.75rem;
+}
+
+body .info-sidebar-section .p.dark {
+	color: var(--blue-grey-400) !important;
+}
+
+body .info-sidebar-section p + p {
+	margin-top: 0.75rem;
+}
+
+body .info-sidebar-count {
+	color: var(--main-primary-color);
+	font-family: var(--main-font-accent);
+	font-size: 1.5rem;	
+}
+
+body .info-sidebar-count:after {
+	content: ' Downloaded...';
+}
+
+body nav.info-sidebar-nav {
+	padding-top: 1.3rem !important;
+}
+
+body .info-sidebar-section a.info-sidebar-nav {
+	display: flex; 
+	align-items: center;
+	text-decoration: none;
+	margin: 1px -20px;
+	padding: 8px 20px 8px 20px;
+}
+
+body .info-sidebar-section a.info-sidebar-nav span.info-sidebar-nav-icon {
+	color: var(--blue-grey-500) !important;
+}
+
+body .info-sidebar-section a.info-sidebar-nav span.info-sidebar-nav-text {
+	flex-grow: 1;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+body .info-sidebar-section a.info-sidebar-nav:hover,
+body .info-sidebar-section a.info-sidebar-nav:active {
+	background-color: var(--sidebar-background-color-alt);
+    border-radius: var(--border-radius);
+}
+
+body .info-sidebar-section a.info-sidebar-nav.active {
+	background-color: var(--blue-grey-900) !important;
+    border-radius: var(--border-radius);
+    border-left-color: var(--main-primary-color) !important;
+}
+
+body .info-sidebar-section a.info-sidebar-nav.active span {
+	color: white !important;
 }
