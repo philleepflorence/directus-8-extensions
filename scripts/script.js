@@ -138,14 +138,16 @@
             
             /*
             	Set Bookmark Icon - Where applicable!
-            */            
+            */ 
 
             if (this.$data.collections) {
                 let row = this.$data.collections.filter(function (currow) {
+	                if (currow.title) return currow.title.toLowerCase() === textContent;
+                    
                     return currow.collection === textContent || currow.collection === Collection;
                 });
 
-                if (Array.isArray(row)) {
+                if (Array.isArray(row) && row.length) {
                     let icon = bookmark.querySelector('span.v-icon i');
                     	row = row.shift();
 
@@ -157,7 +159,7 @@
             	Set Active Bookmark!
             */
 
-            if (window.location.hash.indexOf('#/app/collections/') === 0 && collection === Collection) 
+            if ($title && window.location.hash.indexOf('#/app/collections/') === 0 && collection === Collection) 
             	if (textContent === $title.textContent) 
             		bookmark.classList.add("router-link-active");
         });
@@ -174,7 +176,8 @@
 	                $collections.push({
 	                    collection: row.collection,
 	                    note: row.note,
-	                    icon: row.icon
+	                    icon: row.icon,
+	                    title: row.title
 	                });		                
                 }
             });
@@ -425,10 +428,8 @@
     };
 
     this.styles = function () {
-	    let padding = String(getComputedStyle(document.documentElement).getPropertyValue('--page-padding')).replace(/"/g, '');
-	    let page = document.querySelector('.page-root');
-	    let offset = page ? page.offsetWidth : 1280;
-        let cellWidth = Math.floor((offset - ( padding * 2 )) * 0.2);
+	    let offset = window.innerWidth >= 1801 ? 1440 : (this.$page.offsetWidth || 1280);
+        let cellWidth = Math.floor((offset - ( 32 * 2 ) - 86) * 0.2);
         let style = document.createElement('style');
 	        style.id = 'v-table-toolbar-cell';
 	        style.innerHTML = `.v-table .toolbar .cell, .v-table .body .cell { flex-basis: ${ cellWidth }px !important; }`;
@@ -464,6 +465,12 @@
         $logout.addEventListener('click', () => {
 	        timers.logo = window.setInterval(this.Public, 1000);
         });
+        
+        this.$menu.addEventListener('mouseover', this.scrollbar);
+        this.$menu.addEventListener('mouseout', this.scrollbar);
+        
+        this.$page.addEventListener('mouseover', this.scrollbar);
+        this.$page.addEventListener('mouseout', this.scrollbar);
 
         this.load();
 
@@ -474,7 +481,30 @@
 
     /*
 	   Custom Window Events and Authenticated Events
-   */
+	*/
+   
+	this.scrollbar = function (e) {	
+		if (this.scrolling) return false;
+			
+		if (e.currentTarget.classList.contains('main-bar')) {
+			if (e.type === 'mouseover') return e.currentTarget.classList.add('scrollbar-active');
+			else if (e.type === 'mouseout') return e.currentTarget.classList.remove('scrollbar-active');
+		}
+		
+		let content;
+		
+		if (e.currentTarget.classList.contains('body') && e.currentTarget.scrollHeight > e.currentTarget.offsetHeight) content = e.currentTarget;
+		
+		if (!content) content = e.target.closest('.layout-cards') || e.target.closest('.body') || e.target.closest('.content') || e.target.closest('.interface-icon');
+		
+		if (content && e.type === 'mouseover' && content.scrollHeight > content.offsetHeight) return content.classList.add('scrollbar-active');
+		else if (content && e.type === 'mouseout' && content.scrollHeight > content.offsetHeight) return content.classList.remove('scrollbar-active');
+		
+		let page = e.target.closest('.edit.page-root') || e.target.closest('.settings.page-root') || e.target.closest('.settings-fields.page-root') || e.target.closest('.module-page-root.page-root') || e.target.closest('.collections.page-root');
+		
+		if (page && e.type === 'mouseover') return document.body.classList.add('scrollbar-active');
+		else if (page && e.type === 'mouseout') return document.body.classList.remove('scrollbar-active');
+	};
 
     this.run = function () {
 
@@ -488,6 +518,10 @@
             */
 
             window.clearTimeout(isScrolling);
+            
+            if (!this.scrolling) document.body.classList.add('scrolling');
+            
+            this.scrolling = true;
 
             /*
             	Set a timeout to run after scrolling ends
@@ -496,6 +530,10 @@
             isScrolling = setTimeout(function () {
 
                 document.dispatchEvent(scrollEnd);
+                
+                document.body.classList.remove('scrolling');
+                
+                this.scrolling = false;
 
             }, 300);
 

@@ -1,0 +1,55 @@
+/*
+	Attempt to override the scrollbar
+*/
+
+body.scrolling * {
+	pointer-events: none !important;
+}
+
+.scrollbar-active {
+	overflow: auto !important;
+}
+
+* {
+	scrollbar-height: thin;
+	scrollbar-width: thin;
+	scrollbar-color: var(--blue-grey-700) var(--blue-grey-900);
+}
+
+*::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+*::-webkit-scrollbar-corner, 
+*::-webkit-scrollbar-track-piece, 
+*::-webkit-scrollbar-track {
+	background: var(--blue-grey-900);
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: var(--blue-grey-700);
+	border-radius: 0;
+	border: 1px solid var(--blue-grey-900);
+}
+
+/*
+	Active States
+*/
+
+.scrollbar-active::-webkit-scrollbar-thumb, 
+*::-webkit-scrollbar-thumb:hover {
+	background: var(--main-primary-color);
+}
+
+.scrolling::-webkit-scrollbar-thumb {
+	background: var(--main-primary-color-active);
+}
+
+.scrollbar-active {
+	scrollbar-color: var(--main-primary-color) var(--blue-grey-900);
+}
+
+.scrolling {
+	scrollbar-color: var(--main-primary-color-active) var(--blue-grey-900);
+}

@@ -21,10 +21,11 @@
 				text-background
 				color="black"
 				:options="cardOptions"
-				:medium-image="options.previewWidth === 'half'"
-				:big-image="options.previewWidth === 'full'"
-				:only-show-on-hover="isImage"
+				:medium-image="previewWidth('half')"
+				:big-image="previewWidth('full')"
+				:only-show-on-hover="false"
 				@download="downloadFile"
+				@edit="editFile"
 				@deselect="$emit('input', null)">
 			</v-card>
 			
@@ -48,7 +49,7 @@
 			<portal v-if="existing" to="modal">
 				<v-modal
 					title="Choose One"
-					:buttons="contents.buttons"
+					:buttons="contents.select.buttons"
 					@cancel="existing = false"
 					@close="existing = false"
 					@done="existing = false">
@@ -76,6 +77,7 @@
 					</div>
 				</v-modal>
 			</portal>
+			
 		</template>
 	</div>
 </template>
@@ -100,9 +102,19 @@
 				image: null,
 				noFileAccess: false,
 				contents: {
-					buttons: {
-						done: {
-							text: "Done"
+					edit: {
+						buttons: {
+							save: {
+								text: "Save",
+								color: "accent"
+							}
+						}
+					},
+					select: {
+						buttons: {
+							done: {
+								text: "Done"
+							}
 						}
 					}
 				}
@@ -113,12 +125,16 @@
 			cardOptions () {
 				const options = {
 					download: {
-						text: "Download",
+						text: "Download Image",
 						icon: 'file_download'
 					},
 					deselect: {
-						text: "Deselect",
+						text: "Clear Image",
 						icon: 'clear'
+					},
+					edit: {
+						text: "Edit Image",
+						icon: 'edit'
 					}
 				};
 	
@@ -133,23 +149,20 @@
 			},
 			subtitle () {
 				if (!this.image) return '';
+				
+				if (this.options.viewOptions && this.options.viewOptions.subtitle) return this.image[this.options.viewOptions.subtitle];
 	
-				return (
-					this.image.filename_disk
-						.split('.')
-						.pop()
-						.toUpperCase() +
-					' • ' +
-					this.$d(new Date(this.image.uploaded_on.replace(/-/g, '/')), 'short')
-				);
+				return this.image.uploaded_on;
 			},
 			subtitleExtra() {
 				/*
 					Image ? -> display dimensions and formatted filesize
 				*/ 
-				return this.image.type && this.image.type.startsWith('image')
-					? ' • ' + formatSize(this.image.filesize)
-					: '';
+				const content = this.image[ this.options.viewOptions.content ] || this.image.type;
+				const size = this.image.filesize ? formatSize(this.image.filesize) : '--';
+				
+				if (this.image.type && this.image.type.startsWith('image')) return ` • ${ content } • ${ size }`;
+				else return ` • ${ content }`;
 			},
 			src () {
 				if (!this.image.type || !this.image.type.startsWith('image')) {
@@ -160,7 +173,7 @@
 					return this.image.data.asset_url;
 				}
 	
-				const size = this.width === 'full' ? 'large' : 'medium';
+				const size = this.options.previewWidth === 'full' ? 'large' : 'medium';
 				const fit = this.options.crop ? 'crop' : 'contain';
 	
 				return this.image.data?.thumbnails.find(
@@ -232,6 +245,11 @@
 			}
 		},
 		methods: {
+			previewWidth (input) {
+				if (this.options.previewWidth) return this.options.previewWidth === input;
+				
+				return input === "full";
+			},
 			async fetchImage () {
 				this.noFileAccess = false;
 				this.image = null;
@@ -258,6 +276,12 @@
 			downloadFile () {
 				window.open(this.image.data.full_url);
 			},
+			editFile () {
+				/*
+					Allow the user to go to the file to make edits
+				*/
+				if (this.image) this.$router.push(`/app/files/${ this.image.id }`);
+			},
 			saveUpload (response) {
 				/*
 					Add default values if applicable and update the file!
@@ -269,12 +293,13 @@
 					
 					for (const row of this.options.defaultValues) {
 						const currvalue = get(file, row.field);
+						const value = row.interface ? this.values[row.value] : row.value;
 						
-						if (!currvalue || isEmpty(currvalue)) set(update, row.field, row.value);
+						if (!currvalue || isEmpty(currvalue)) set(update, row.field, value);
 					}
 					
 					file = {...file, ...update};
-										
+															
 					if (size(update)) this.$api.updateItem("directus_files", file.id, update);
 				}
 				

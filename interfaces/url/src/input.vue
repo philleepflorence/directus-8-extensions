@@ -86,8 +86,8 @@
 						text: "Close Preview"
 					}
 				},
-				currentValue: null,
 				content: null,
+				currentValue: null,
 				existing: false,
 				loading: false,
 				modal: false,
@@ -107,13 +107,11 @@
 			input (value) {
 				if (value && value.length) this.value = value;
 				else this.value = null;
-				
-				if (this.value) this.existing = this.currentValue === this.value;
 			},
 			load (value) {
 				if (this.readonly === true || !this.value) return;
 				
-				if (this.url === this.value) return this.modal = true;
+				if (this.existing) return this.modal = true;
 				
 				this.loading = true;
 												
@@ -141,25 +139,33 @@
 						notify: `Resource Downloaded!`
 					});
 					
-					if (response.url) {
-						this.$emit('input', response.url);
-					}
+					if (response.url) this.$emit('input', response.url);
 					
-					if (!this.existing && this.options.mirroredTitle && response.title) {
-						this.$emit('setfield', { field: this.options.mirroredTitle, value: response.title });
-					}
+					let $title = document.querySelector(`[data-field="${ this.options.mirroredTitle }"]`);
+					let title = this.values[this.options.mirroredTitle];
+					let isTitle = $title && !title && !this.existing && this.options.mirroredTitle && response.title;
 					
-					if (!this.existing && this.options.mirroredDescription && response.description) {
-						this.$emit('setfield', { field: this.options.mirroredDescription, value: response.description });
-					}
+					let $description = document.querySelector(`[data-field="${ this.options.mirroredDescription }"]`);
+					let description = this.values[this.options.mirroredDescription];
+					let isDescription = $description && !description && !this.existing && this.options.mirroredDescription && response.description;
 					
-					if (!this.existing && this.options.mirroredContent && response.content) {
-						this.$emit('setfield', { field: this.options.mirroredContent, value: response.content });
-					}
+					let $content = document.querySelector(`[data-field="${ this.options.mirroredContent }"]`);
+					let content = this.values[this.options.mirroredContent];
+					let isContent = $content && !content && !this.existing && this.options.mirroredContent && response.content;
+					
+					let $image = document.querySelector(`[data-field="${ this.options.mirroredImage }"]`);
+					let image = this.values[this.options.mirroredImage];
+					let isImage = $image && !image && !this.existing && this.options.uploadImage && response.image;
 															
-					if (!this.existing && this.options.mirroredImage && this.options.uploadImage && response.image) {
-						this.upload(response);
-					}
+					if (isTitle) this.$emit('setfield', { field: this.options.mirroredTitle, value: response.title });
+					
+					if (isDescription) this.$emit('setfield', { field: this.options.mirroredDescription, value: response.description });
+					
+					if (isContent) this.$emit('setfield', { field: this.options.mirroredContent, value: response.content });
+															
+					if (isImage) this.upload(response, image, $image);
+					
+					this.existing = true;
 				})
 				.catch((error) => {
 					this.error = error;
@@ -175,7 +181,7 @@
 				
 				element.innerHTML = `<img src="${ response.image }" alt="custom-interface-url-image" class="custom-interface-url-image">`;
 			},
-			upload (response) {	
+			upload (response, image, $image) {	
 				let params = {
 					data: response.image,
 					title: response.title,
@@ -188,10 +194,13 @@
 				if (response.sitename && Array.isArray(params.tags)) params.tags.push(response.sitename);
 				
 				this.$api.api.post('/files', params)
-				.then((e) => {					
+				.then((file) => {
+										
 					this.$events.emit("warning", {
-						notify: `Image Resource Uploaded... Select the image with the title -${ response.title }- from the existing files!`
+						notify: `Image Resource Uploaded... Select the image with the id and title -${ file.data.id }: ${ response.title }- from the existing files!`
 					});
+										
+					if (file.data.id && !image && this.options.mirroredImage) this.$emit('setfield', { field: this.options.mirroredImage, value: file.data.id });
 				})
 				.catch((error) => {
 					this.error = error;
@@ -209,10 +218,10 @@
 				return text.trim().replace(/\n\s*\n/g, '<br>');
 			}
 		},
-		mounted () {
-			if (this.value) this.currentValue = this.value;
+		mounted () {			
+			if (this.value) this.existing = this.url === this.value;
 			
-			if (this.value) this.existing = this.currentValue === this.value;
+			if (this.value) this.currentValue = this.value;
 		}
 	};
 </script>

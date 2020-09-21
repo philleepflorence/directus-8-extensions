@@ -1,0 +1,60 @@
+{
+	"name": "Many to Many Extended",
+	"version": "1.0.0",
+	"types": ["o2m"],
+	"relation": "o2m",
+	"icon": "compare_arrows",
+	"options": {
+		"item_count": {
+			"name": "Items Template",
+			"comment": "How to format the item count",
+			"interface": "text-input",
+			"default": "Items — {{count}}",
+			"options": {
+				"placeholder": "Items — {{count}}"
+			}
+		},
+		"template": {
+			"name": "List Template",
+			"comment": "How to format the items",
+			"interface": "text-input",
+			"options": {
+				"placeholder": "{{title}} — {{author}}"
+			}
+		},
+		"fields": {
+			"name": "Visible Fields",
+			"comment": "CSV of fields visible when selecting an item in the modal",
+			"interface": "text-input",
+			"options": {
+				"placeholder": "title,author"
+			}
+		},
+		"allow_create": {
+			"name": "Allow Create",
+			"comment": "Allow users to create items via the interface",
+			"interface": "switch",
+			"default": true
+		},
+		"allow_select": {
+			"name": "Allow Select",
+			"comment": "Allow users to create items via the interface",
+			"interface": "switch",
+			"default": true
+		},
+		"filters": {
+			"name": "Filters",
+			"comment": "The filters to use when loading from the related collection",
+			"interface": "json",
+			"advanced": true,
+			"options": {
+				"language": "application/json"
+			},
+			"default": [{
+				"field": "field",
+				"operator": "operator",
+				"value": "value"
+			}]
+		}
+	}
+}

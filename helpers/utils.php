@@ -207,6 +207,50 @@ class Utils
 	}
 	
 	/*
+		Convert a string to Title Case
+		ARGUMENTS:
+			$input - input string
+	*/
+	
+	public static function TitleCase ($input = '')
+	{
+		# The most commonly non-capitalized words in title casing
+		
+		$minorWords = ['a','an','and','as','at','but','by','for','in','nor','of','on','or','per','the','to','with','but', 'is', 'if', 'then', 'else', 'when', 'from', 'off', 'out', 'over', 'into'];
+		
+		# Trim all whitespace
+		
+		$input = preg_replace('/[ ]+/', ' ', trim($input));
+		
+		# Explode string into array of words
+		
+		$pieces = explode(' ', $input);
+		
+		for($p = 0; $p <= (count($pieces) - 1); $p++)
+		{
+			# check if the whole word is capitalized (as in acronyms), if it is not...
+			
+			if(strtoupper($pieces[$p]) != $pieces[$p])
+			{
+				# reduce all characters to lower case
+				
+				$pieces[$p] = strtolower($pieces[$p]);
+				
+				# if the value of the element doesn't match any of the elements in the minor words array, and the index is not equal to zero, or the numeric key of the last element...
+				
+				if(!in_array($pieces[$p], $minorWords) || ($p === 0 || $p === (count($pieces) - 1)))
+				{					
+					$pieces[$p] = ucfirst($pieces[$p]);
+				}
+			}
+		}
+		
+		$input = implode(' ', $pieces);
+		
+		return $input;
+	}
+	
+	/*
 		Convert Standard Objects to Array
 	*/
 	

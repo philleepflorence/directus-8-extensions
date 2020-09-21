@@ -65,7 +65,7 @@ body .main-bar {
 }
 
 body .page-root {
-	min-height: calc(100vh - 76px) !important;
+	min-height: calc(100vh - var(--header-height-expanded)) !important;
 }
 
 .body .row button.remove {
@@ -81,6 +81,45 @@ body .page-root {
 .tooltip-inner .ctx-menu button .v-icon {
 	margin-right: 0.75rem !important;
 	opacity: 0.5;
+}
+
+.v-input .char-count {
+	opacity: 1 !important;
+}
+
+.v-upload.uploader .dropzone .buttons {
+	width: calc(60% - 40px);
+	height: 36px;
+	top: 14px;
+	justify-content: flex-end;
+}
+
+.v-upload.uploader .dropzone .buttons .embed-input {
+	width: 100%;
+	height: 36px;
+}
+
+.v-upload.uploader .dropzone .buttons .embed-input input {
+	width: 100%;
+	height: 100%;
+	border: none;
+    background-color: var(--blue-grey-700);
+    color: var(--blue-grey-300);
+    padding: 4px 60px 4px 1rem;
+}
+
+.v-upload.uploader .dropzone .buttons .embed-input button {
+	background-color: var(--main-primary-color);
+	width: 60px;
+}
+
+.v-input .char-count:empty,
+.v-input input[readonly="readonly"] .char-count {
+	opacity: 0 !important;
+}
+
+.v-input.icon-right .char-count {
+	right: 40px;
 }
 
 .v-header .v-header-button:last-of-type {
@@ -154,7 +193,6 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 
 div.directus {
 	animation: fadeIn 500ms ease-in-out;
-	padding-top: 32px;
 }
 
 div.directus:before {
@@ -186,28 +224,19 @@ div.page-root  {
 	animation: fadeIn 500ms ease-in-out;
 }
 
+div.route-item-listing.page-root .timeline.v-layout, 
 div.route-item-listing.page-root .layout.v-layout {
 	margin-top: 0 !important;
 }
 
-@media (min-width: 1801px) {
-	div.page-root {
-		max-width: var(--page-root-max-width) !important;
-	}
+div.page-root .v-header + .v-error {
+	margin: 0 !important;
+	min-height: calc(100vh - var(--header-height-expanded) - 30px) !important;
 }
 
-@media (min-width: 1919px) {
-	body:not(.info-active):not(.info-wide-active) div.directus {
-		padding-top: 47px !important;
-		padding-bottom: 15px !important;
-	}
-}
-
-@media (min-width: 2010px) {
-	div.directus {
-		padding-top: 47px !important;
-		padding-bottom: 15px !important;
-	}
+div.table div.body .row.subdue:last-child, 
+div.layout.v-layout .v-table .link.row:last-child {
+	margin-bottom: var(--page-padding);
 }
 
 div.settings.page-root header.v-header div.v-header-button.back button.button span.v-icon:after,
@@ -485,6 +514,21 @@ body .tox .tox-selectfield select:focus {
 	position: relative;
 }
 
+div.directus div.interfaces.page-root div.v-table, 
+div.directus div.route-item-listing.page-root div.layout.v-layout .v-table {
+	min-width: calc(100vw - 64px - 340px) !important;
+	max-height: calc(100vh - var(--header-height-expanded)) !important;
+	overflow: hidden !important;
+}
+
+div.directus div.interfaces.page-root div.v-table .body, 
+div.directus div.route-item-listing.page-root div.layout.v-layout .v-table .body {
+	height: calc(100vh - var(--header-height-expanded) - var(--header-height)) !important;
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
+	padding-bottom: var(--page-padding) !important;
+}
+
 .v-table .toolbar .cell, 
 .v-table .body .cell {
 	font-size: 0.933rem;
@@ -507,6 +551,23 @@ body .tox .tox-selectfield select:focus {
 .v-table .toolbar .cell.select,
 .v-table .body .cell.select {
 	flex-basis: 30px !important;
+}
+
+.collections.page-root {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+.collections.page-root .padding, 
+.collections.page-root .v-table {
+	max-height: calc(100vh - var(--header-height-expanded)) !important;
+	overflow: hidden !important;
+}
+
+.collections.page-root .v-table .body {
+	max-height: calc(100vh - var(--header-height-expanded) - var(--header-height)) !important;
+	overflow: auto !important;
+	padding-bottom: var(--page-padding) !important;
 }
 
 .collections.page-root .v-table .toolbar .cell,
@@ -541,14 +602,46 @@ body .tox .tox-selectfield select:focus {
 	font-style: normal !important;
 	padding-top: var(--input-note-margin) !important;
 	line-height: 1.75em !important;
+	user-select: text !important;
 }
 
 .form div[data-field^="divider"] .field h2 {
 	color: var(--blue-grey-500) !important;
+	user-select: text !important;
+}
+
+.form div[data-field^="divider"] .field p {
+	max-width: 960px !important;
+}
+
+.form div[data-field^="divider"] .type-note a {
+	color: var(--main-primary-color) !important;
+	border-bottom: 1px solid var(--main-primary-color);
+	font-weight: 500 !important;
+	text-decoration: none;
+}
+
+.form div[data-field^="divider"] .type-note strong {
+	color: var(--main-primary-color) !important;
+	font-weight: 600 !important;
+}
+
+.form div[data-field^="divider"] *, 
+body div.body * {
+	user-select: text !important;
 }
 
 .form .field .selectable .notice {
 	min-width: 100% !important;
+}
+
+.form .type-note {
+	font-style: normal;
+}
+
+.form .type-note strong {
+	color: var(--main-primary-color) !important;
+	font-weight: 600 !important;
 }
 
 @media (min-width: 1280px) {
@@ -582,8 +675,8 @@ body .tox .tox-selectfield select:focus {
 .table .row,
 .table .body .monospace {
 	font-family: var(--family-sans-serif) !important;
-	text-overflow: ellipsis !important;;
-	overflow-x: hidden !important;;
+	text-overflow: ellipsis !important;
+	overflow: hidden !important;
 }
 
 .settings-fields .table .header .row div:not(.drag),
@@ -591,6 +684,21 @@ body .tox .tox-selectfield select:focus {
 	flex-basis: 50% !important;
 }
 
+.v-ext-input[input-name="file-preview"] .embed {
+	background: black;
+}
+
+.v-ext-input[input-name="file-preview"] .embed iframe {
+	display: block;
+	margin: 0 auto;
+}
+
+.v-ext-input.input-single-file .v-card .header img {
+	background-color: white;
+	object-fit: cover;
+}
+
+body .v-ext-input[input-name="file-preview"] .image,
 body .input-single-file .v-card .header,
 body figure.bg-pattern {
 	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyVpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDAyIDc5LjE2NDQ2MCwgMjAyMC8wNS8xMi0xNjowNDoxNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIxLjIgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6M0RBOUE4NzBCQTI3MTFFQUIzRTJEQjRFOTlCQkE2MDIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6M0RBOUE4NzFCQTI3MTFFQUIzRTJEQjRFOTlCQkE2MDIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGMjAxODRGRkI5OEIxMUVBQjNFMkRCNEU5OUJCQTYwMiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpGMjAxODUwMEI5OEIxMUVBQjNFMkRCNEU5OUJCQTYwMiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PmEIfW0AAAAtSURBVHjaYjxz5gwDNmBsbIxVnImBRDCqgRjA+P//f6wSZ8+eHQ0l+mkACDAAQrUIgLA0RfsAAAAASUVORK5CYII=) !important;
@@ -685,4 +793,66 @@ body .v-modal #modal-title {
 
 body .v-modal .buttons .v-button:only-child {
 	max-width: 100% !important;
+}
+
+@media (min-width: 1801px) {
+	div.page-root {
+		max-width: var(--page-root-max-width) !important;
+	}
+	div.directus div.interfaces.page-root div.v-table, 
+	div.directus div.route-item-listing.page-root div.layout.v-layout .v-table {
+		min-width: calc(1440px - 64px - 340px) !important;
+	}
+}
+
+@media (min-width: 1919px) {
+	body:not(.info-active):not(.info-wide-active) div.directus {
+		padding-top: 15px !important;
+		padding-bottom: 15px !important;
+	}
+	body:not(.info-active):not(.info-wide-active) div.directus div.route-item-listing.page-root div.layout.v-layout .v-table {
+		min-width: calc(var(--page-root-max-width) - 64px) !important;
+	}
+	body:not(.info-active):not(.info-wide-active) .page-root:not(.interfaces) {
+		min-height: calc(100vh - var(--header-height-expanded) - 30px) !important;
+	}
+	body:not(.info-active):not(.info-wide-active):not([data-path="#/app/settings/collections"]):not([data-path="#/app/activity"]) .directus .route-file-library.page-root, 
+	body:not(.info-active):not(.info-wide-active):not([data-path="#/app/settings/collections"]):not([data-path="#/app/activity"]) .directus .interfaces.page-root,
+	body:not(.info-active):not(.info-wide-active):not([data-path="#/app/settings/collections"]):not([data-path="#/app/activity"]) .directus .collections.page-root,
+	body:not(.info-active):not(.info-wide-active):not([data-path="#/app/settings/collections"]):not([data-path="#/app/activity"]) .directus .route-item-listing.page-root {
+		max-height: calc(100vh - var(--header-height-expanded) - 30px) !important;
+		min-height: calc(100vh - var(--header-height-expanded) - 30px) !important;
+		padding-bottom: 15px !important;
+		overflow: hidden !important;
+		
+	}
+	body .collections.page-root .v-table .body {
+		max-height: calc(100vh - var(--header-height-expanded) - var(--header-height) - 30px) !important;
+	}
+	div.directus div.interfaces.page-root div.v-table .body, 
+	div.directus div.route-item-listing.page-root div.layout.v-layout .v-table .body {
+		height: calc(100vh - var(--header-height-expanded) - var(--header-height) - 30px) !important;
+	}
+}
+
+@media (min-width: 2010px) {
+	div.directus {
+		padding-top: 15px !important;
+		padding-bottom: 15px !important;
+	}
+	body:not(.info-active):not(.info-wide-active) div.directus div.route-item-listing.page-root div.layout.v-layout .v-table {
+		min-width: calc(var(--page-root-max-width) - 64px) !important;
+	}
+	body .page-root:not(.interfaces) {
+		min-height: calc(100vh - var(--header-height-expanded) - 30px) !important;
+	}
+	body:not([data-path="#/app/settings/collections"]):not([data-path="#/app/activity"]) .directus .interfaces.page-root, 
+	body:not([data-path="#/app/settings/collections"]):not([data-path="#/app/activity"]) .directus .collections.page-root,
+	body:not([data-path="#/app/settings/collections"]):not([data-path="#/app/activity"]) .directus .route-item-listing.page-root {
+		max-height: calc(100vh - var(--header-height-expanded) - 30px) !important;
+		min-height: calc(100vh - var(--header-height-expanded) - 30px) !important;
+		padding-bottom: 15px !important;
+		overflow: hidden !important;
+		
+	}
 }

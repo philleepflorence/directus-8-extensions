@@ -43,7 +43,23 @@
 			"options": {
 				"language": "application/json"
 			},
-			"default": {}
+			"default": [{
+				"field": "field",
+				"operator": "operator",
+				"value": "value"
+			}]
+		},
+		"parameters": {
+			"name": "Additional Parameters",
+			"comment": "The parameters to send when loading from the related collection",
+			"interface": "json",
+			"advanced": true,
+			"options": {
+				"language": "application/json"
+			},
+			"default": {
+				"sort": "-id"
+			}
 		},
 		"html": {
 			"name": "Display HTML String",

@@ -177,9 +177,29 @@ class Curl
 		$body = $dom->getElementsByTagName('body')->item(0);
 
 		$return = [
-			'url' => $url
+			'url' => $url,
+			'content' => []
 		];
 		$return = array_merge($return, $parsed);
+		
+		# Get all paragraphs where applicable
+		
+		$paragraphs = $dom->getElementsByTagName('p');
+		$limit = ArrayUtils::get($params, 'paragraph') ?: 5;
+		
+		foreach ($paragraphs as $paragraph) 
+		{
+			# Remove non HTML line breaks
+			$text = str_replace(PHP_EOL, '', $paragraph->nodeValue);
+			# Remove `{{cite}}` tags
+			$text = preg_replace('/\s*\{\{[^}{]*+\}\}\s*/', '', $text);
+			# Remove links--including rollover text--leaving link text
+			$text = preg_replace('/\[\[(?:[^][|]*+\|)?+([^][]*+)\]\]/', '', $text);
+			# Remove numeric references to links
+			$text = preg_replace('/\[[0-9]+\]/', '', $text);
+			
+			if (strlen($text) >= $limit) array_push($return['content'], $text);
+		}
 				
 		# Parse Title
 
@@ -216,13 +236,6 @@ class Curl
 		# Parse Background Images - If applicable
 		
 		$domain = ArrayUtils::get($parsed, 'scheme') ? ArrayUtils::get($parsed, 'scheme') . '://' . ArrayUtils::get($parsed, 'host') : NULL;
-		
-		if (!is_array($params)) 
-		{
-			$return['html'] = $dom->savehtml($body);
-			
-			return $return;
-		}
 		
 		$return['images'] = [];
 		$added = [];
@@ -334,8 +347,6 @@ class Curl
 			endforeach;
 		
 		endif;
-		
-		$return['html'] = $dom->savehtml($body);
 
 		return $return;
 	}

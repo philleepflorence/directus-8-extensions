@@ -34,6 +34,12 @@
 			"interface": "text-input",
 			"default": "content"
 		},
+		"mirroredImage": {
+			"name": "Mirrored Image Field",
+			"comment": "The Image field to place the Resource Content Image.",
+			"interface": "text-input",
+			"default": "image"
+		},
 		"images": {
 			"name": "Images",
 			"comment": "Number of images to download.",

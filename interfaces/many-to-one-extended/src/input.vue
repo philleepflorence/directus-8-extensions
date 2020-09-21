@@ -88,10 +88,32 @@
 				return null;
 			},
 			/*
+				The parameters to use when loading items from the related collections
+			*/
+			parameters() {
+				let parameters = this.options.parameters || {};
+				
+				/*
+					Remove Default Example
+				*/
+				
+				if (parameters.sort === "-id" && Object.keys(parameters).length === 1) return {};
+								
+				return parameters;
+			},
+			/*
 				The filters to use when loading items from the related collections
 			*/
 			filters() {
-				return this.options.filters || [];
+				let filters = this.options.filters || [];
+				
+				/*
+					Remove Default Example
+				*/
+				
+				if (Array.isArray(filters)) for (const filter of filters) if (filter.operator === "operator") return [];
+				
+				return filters;
 			},
 			/*
 				If the relationship is fully setup. 
@@ -200,12 +222,14 @@
 	
 				this.loading = true;
 	
-				const params = {
+				let params = {
 					fields: "*.*",
 					meta: "total_count",
 					limit: 0,
 					filter: this.formatFilters(this.filters)
 				};
+				
+				if (this.options.parameters) params = {...params, ...this.options.parameters};
 	
 				return Promise.all([
 					this.$api.getItems(collection, params),

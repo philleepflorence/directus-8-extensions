@@ -9,7 +9,7 @@ body[data-page-root="modules-modules page-root"] {
 
 .module-page-root,
 .module-page-root .modules-content {
-	min-height: calc(100vh - 110px) !important;
+	min-height: calc(100vh - 140px) !important;
 }
 
 @media (min-width: 1919px) {
@@ -51,16 +51,61 @@ body[data-page-root="modules-modules page-root"] {
 	color: var(--blue-grey-400) !important;
 }
 
-div[class^="modules-"] h4 {
-	font-size: 1.5rem;
+div[class^="modules-"] h3,
+div.p h3 {
+	font-size: 1.75rem !important;
+	margin: 0.5em 0 1em 0;
 }
 
-div[class^="modules-"] h5 {
-	font-size: 1.25rem;
+div[class^="modules-"] h4,
+div.p h4 {
+	font-size: 1.5rem !important;
+	margin: 0.5em 0 1em 0;
 }
 
-div[class^="modules-"] h6 {
-	font-size: 1rem;
+div[class^="modules-"] h5,
+div.p h5 {
+	font-size: 1.25rem !important;
+	margin: 0.5em 0 1em 0;
+}
+
+div[class^="modules-"] h6,
+div.p h6 {
+	font-size: 1rem !important;
+	margin: 0.5em 0 1em 0;
+}
+
+div.p > ol,
+div.p > ul {
+	padding-left: 1.5rem !important;
+}
+
+div.p > ol {
+	list-style-type: decimal;
+}
+
+div.p > ul {
+	list-style-type: disc;
+}
+
+div.p > ul ul {
+	list-style-type: circle;
+}
+
+div.p > ul ul ul {
+	list-style-type: square;
+}
+
+div.p blockquote {
+	margin: 1rem 0 !important;
+}
+
+div.p p, div.p li {
+	font-size: 1rem !important;
+}
+
+div.p blockquote p {
+	font-size: 1.25rem !important;
 }
 
 .modules-module-form {
@@ -71,6 +116,7 @@ header.modules-divider {
 	padding-top: 1rem;
 	margin-bottom: 2rem;
 	max-width: 960px;
+	user-select: text !important;
 }
 
 header.modules-divider h2.modules-divider,
@@ -82,6 +128,7 @@ header.modules-divider h4.modules-divider {
 	font-weight: 300;
 	margin-bottom: 1rem;
 	padding-right: 120px;
+	user-select: text !important;
 }
 
 header.modules-divider h3.modules-divider {
@@ -99,6 +146,7 @@ header.modules-divider p.modules-divider {
 	font-size: 1.25rem;
 	line-height: 1.75rem;
 	margin-top: 1rem;
+	user-select: text !important;
 }
 
 header.modules-divider hr {
@@ -140,8 +188,14 @@ header.modules-divider section.modules-section {
 	margin-top: 3rem;
 }
 
-div.modules-module.page-root div.modules-module-content {
+div.page-root div.modules-module-content {
 	padding-top: 32px;
+	overflow: hidden;
+}
+
+.modules-modules-grid.animated,
+.modules-dashboard-grid.animated {
+	animation-name: fadeIn !important;
 }
 
 body .sidebar-button {

@@ -40,6 +40,12 @@
 @import url('./lib/styles/app.css');
 
 /*
+	ScrollBar Styles
+*/
+
+@import url('./lib/styles/scrollbar.css');
+
+/*
 	Tour Styles
 */
 
@@ -120,9 +126,10 @@ body {
 	
 	--module-background-color-active: var(--blue-grey-800) !important;
 	
-	--link-active-background: rgba(0, 0, 0, 0.5);
+	--link-active-background: rgba(0, 0, 0, 0.5) !important;
 	
-	--page-root-max-width: 1440px;
+	--page-root-max-width: 1440px !important;
+	--header-height-expanded: 108px !important;
 }
 
 @media (min-width: 1440px) {

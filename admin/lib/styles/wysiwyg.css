@@ -5,6 +5,7 @@
 @import url('../../../uploads/app/vendors/material-design-icons/css/materialdesignicons.css');
 
 @import url('app.css');
+@import url('scrollbar.css');
 @import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Condensed:wght@100;300;400;500;600;700&display=swap');
 
 :root {

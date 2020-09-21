@@ -21,7 +21,10 @@
 		
 		<div class="modules-help-content modules-content animated fadeIn" v-else-if="loaded && rows">
 			
-			<section class="modules-section" :data-section="content(`sections.${ index }.headline`)" v-for="(section, index) in rows">
+			<section 
+				class="modules-section" 
+				:data-section="content(`sections.${ index }.headline`)" 
+				v-for="(section, index) in rows">
 				<header class="modules-divider">
 					<h4 class="modules-divider" v-html="content(`sections.${ index }.headline`)"></h4>
 					<hr />
@@ -29,9 +32,9 @@
 						<p class="lead modules-divider" v-html="content(`sections.${ index }.description`)"></p>
 					</div>
 				</header>
-				<div class="modules-cdn-content">
+				<div class="modules-help-content">
 					<ol class="modules-help-ol">
-						<li class="modules-help-li" v-for="(row, key) in section">
+						<li :data-scroll-section="row.slug" class="modules-help-li" v-for="(row, key) in section">
 							<section class="modules-help-section" :data-href="`${ index }-${ row.slug }`">
 								<h3 class="lead font-accent">{{ row.question }}</h3>
 								<div class="p" v-html="row.answer"></div>
@@ -118,6 +121,9 @@
 			},
 			locale () {
 				return get(this.$store.state, 'settings.values.default_locale');
+			},
+			section () {
+				return this.$router.currentRoute.query.id;
 			}			
 		},
 		methods: {
@@ -197,6 +203,21 @@
 				if (this.$section) this.$nav = this.$el.querySelector(`a.info-sidebar-nav[data-section="${ this.$section.getAttribute('data-section') }"]`);
 				
 				if (this.$nav) this.$nav.classList.add('active');
+				
+				this.onScrollSection();
+			},
+			onScrollSection () {
+				let $section = document.querySelector(`[data-scroll-section="${ this.$router.currentRoute.query.id }"]`);
+				
+				if (!$section) return false;
+				
+				let props = $section.getBoundingClientRect();
+				let top = props.y - 70 + window.scrollY;
+				
+				window.scrollTo({
+					top: top,
+					behavior: 'smooth'
+				});
 			},
 			onSubmitSearch (input) {
 				this.loading = true;
@@ -240,7 +261,7 @@
 		},
 		mounted () {
 			this.load();
-			
+									
 			document.addEventListener('scrollend', this.onScrollEnd);
 		},
 		beforeDestroy () {
