@@ -100,7 +100,8 @@
 				items: null,
 				loaded: false,
 				query: null,
-				rows: null
+				rows: null,
+				scrolled: false
 			};
 		},
 		computed: {
@@ -209,7 +210,9 @@
 			onScrollSection () {
 				let $section = document.querySelector(`[data-scroll-section="${ this.$router.currentRoute.query.id }"]`);
 				
-				if (!$section) return false;
+				if (!$section || this.scrolled === $section) return false;
+				
+				this.scrolled = $section;
 				
 				let props = $section.getBoundingClientRect();
 				let top = props.y - 70 + window.scrollY;

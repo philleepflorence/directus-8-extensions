@@ -1,6 +1,6 @@
 {
 	"name": "help",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"icon": "question_answer",
 	"types": [
 		"string"
