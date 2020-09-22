@@ -311,7 +311,8 @@
 		async created() {
 			if (this.sortable) {
 				this.sort.field = '$manual';
-			} else {
+			} 
+			else {
 				/*
 					Set the default sort column
 				*/ 
@@ -351,10 +352,10 @@
 				let parameters = {
 					fields,
 					filter: {
-						[this.relation.field_many.field]: this.primaryKey
+						[this.relation.field_many.field]: this.$route.params.primaryKey
 					}
 				};
-							
+				
 				const response = await this.$api.getItems(this.relation.collection_many.collection, parameters);
 	
 				this.initialValue = response.data;
