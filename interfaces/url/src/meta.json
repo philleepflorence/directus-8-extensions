@@ -1,6 +1,6 @@
 {
 	"name": "URL Extended",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"types": [
 		"string"
 	],
@@ -30,9 +30,9 @@
 		},
 		"mirroredContent": {
 			"name": "Mirrored Content Field",
-			"comment": "The Content field to place the Resource Content Details.",
+			"comment": "The Content field to place the Resource Content Plain Text.",
 			"interface": "text-input",
-			"default": "content"
+			"default": "plaintext"
 		},
 		"mirroredImage": {
 			"name": "Mirrored Image Field",

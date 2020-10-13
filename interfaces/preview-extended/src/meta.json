@@ -1,0 +1,38 @@
+{
+	"name": "Preview Extended",
+	"version": "1.1.0",
+	"types": [
+		"string"
+	],
+	"icon": "link",
+	"recommended": {
+		"length": 250
+	},
+	"options": {
+		"url_template": {
+			"name": "URL Template",
+			"comment": "Enter a template string using the mustache format",
+			"interface": "text-input",
+			"length": 200,
+			"default": "https://app.example.com/collection/{{ id }}/{{ slug }}"
+		},
+		"mirroredFields": {
+			"name": "Mirrored Fields",
+			"comment": "The fields to use to generate the URL if saving in the DB.",
+			"interface": "tags",
+			"length": 200
+		},
+		"forceLowercase": {
+			"name": "Force Lowercase",
+			"comment": "Force the URL to lowercase.",
+			"interface": "switch",
+			"default": true
+		},
+		"icon": {
+			"name": "Icon",
+			"comment": "Material Icon to display on the left side.",
+			"interface": "icon",
+			"default": "link"
+		}
+	}
+}

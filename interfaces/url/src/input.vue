@@ -107,6 +107,8 @@
 			input (value) {
 				if (value && value.length) this.value = value;
 				else this.value = null;
+				
+				this.$emit('input', this.value);
 			},
 			load (value) {
 				if (this.readonly === true || !this.value) return;
@@ -130,7 +132,7 @@
 					this.loading = false;
 					
 					response.description = response.description || response.sitename;
-										
+															
 					this.content = {...response};
 					
 					this.modal = true;
@@ -140,7 +142,9 @@
 					});
 					
 					if (response.url) this.$emit('input', response.url);
-					
+										
+					let plaintext = typeof this.content.content === "string" ? this.content.content : this.content.content.join("\n\n");
+										
 					let $title = document.querySelector(`[data-field="${ this.options.mirroredTitle }"]`);
 					let title = this.values[this.options.mirroredTitle];
 					let isTitle = $title && !title && !this.existing && this.options.mirroredTitle && response.title;
@@ -161,10 +165,10 @@
 					
 					if (isDescription) this.$emit('setfield', { field: this.options.mirroredDescription, value: response.description });
 					
-					if (isContent) this.$emit('setfield', { field: this.options.mirroredContent, value: response.content });
+					if (isContent) this.$emit('setfield', { field: this.options.mirroredContent, value: plaintext });
 															
 					if (isImage) this.upload(response, image, $image);
-					
+										
 					this.existing = true;
 				})
 				.catch((error) => {
