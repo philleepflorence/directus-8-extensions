@@ -1,0 +1,40 @@
+{
+	"name": "XHR",
+	"version": "1.0.0",
+	"types": [
+		"alias"
+	],
+	"icon": "cloud",
+	"options": {
+		"url": {
+			"name": "URL Endpoint",
+			"comment": "Enter the absolute path or the relative path",
+			"interface": "text-input",
+			"length": 250,
+			"default": "/activity"
+		},
+		"method": {
+			"name": "HTTP Method",
+			"comment": "The HTTP method to use when sending the request.",
+			"interface": "dropdown",
+			"default": "get",
+			"options": {
+				"get": "GET",
+				"patch": "PATCH",
+				"post": "POST"
+			}
+		},
+		"button": {
+			"name": "Button Text",
+			"comment": "The text to place in the button.",
+			"interface": "text-input",
+			"default": "Load Server Information"
+		},
+		"fields": {
+			"name": "Fields",
+			"comment": "The fields to send as parameters with the request",
+			"interface": "tags",
+			"length": 250
+		}
+	}
+}
