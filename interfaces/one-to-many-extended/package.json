@@ -1,0 +1,32 @@
+{
+	"name": "one-to-many-extended",
+	"version": "1.0.0",
+	"description": "Renders a One to Many Interface that allows for Filtering by Collection",
+	"main": "",
+	"scripts": {
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/one-to-many-extended",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/one-to-many-extended",
+		"dist": "directus-extensions build --input ./src --output ./dist"
+	},
+	"keywords": [
+		"many-to-many",
+		"filter",
+		"m2m"
+	],
+	"author": "Philleep Florence",
+	"license": "GPL-3.0",
+	"dependencies": {
+		"@directus/extension-toolkit": "^0.0.1",
+		"deep-object-diff": "^1.1.0",
+		"lodash": "^4.17.15",
+		"shortid": "^2.2.15",
+		"vue": "^2.6.11",
+		"vue-hot-reload-api": "^2.3.4"
+	},
+	"devDependencies": {
+		"@vue/component-compiler-utils": "^2.6.0",
+		"cssnano": "^4.1.10",
+		"sass": "^1.17.3",
+		"vue-template-compiler": "^2.6.10"
+	}
+}

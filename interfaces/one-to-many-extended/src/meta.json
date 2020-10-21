@@ -1,9 +1,9 @@
 {
-	"name": "Many to Many Extended",
+	"name": "One to Many Extended",
 	"version": "1.0.0",
 	"types": ["o2m"],
 	"relation": "o2m",
-	"icon": "compare_arrows",
+	"icon": "call_split",
 	"options": {
 		"item_count": {
 			"name": "Items Template",
@@ -41,6 +41,27 @@
 			"comment": "Allow users to select items via the interface",
 			"interface": "switch",
 			"default": true
+		},
+		"sort_field": {
+			"name": "Sort Field",
+			"comment": "Enter the field to use to sort the items",
+			"interface": "text-input",
+			"options": {
+				"placeholder": "E.g.: sort"
+			}
+		},
+		"delete_mode": {
+			"name": "Delete Mode",
+			"comment": "Select the mode of deletion",
+			"interface": "dropdown",
+			"default": "relation",
+			"options": {
+				"choices": {
+					"relation": "Nullify relationship",
+					"item": "Delete related item",
+					"readonly": "Do not delete related item"
+				}
+			}
 		},
 		"filters": {
 			"name": "Filters",
