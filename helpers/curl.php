@@ -41,21 +41,32 @@ class Curl
 				@authentication - boolean: authenticate connection
 				@username - authentication username
 				@password - authentication password
+			],
+			$post = [
+				...data to send
 			]
 	*/
 	
 	public static function Api ($api = [], $post = [])
 	{
 		$ch = curl_init(ArrayUtils::get($api, 'url'));
+		
 		$headers = ArrayUtils::get($api, 'headers') ?: ["Content-Type: application/json"];
 		$headers = is_string($headers) ? explode("\n", $headers) : $headers;
+		
+		# Process paramters
+		
 		$method = ArrayUtils::get($api, 'method') ?: 'GET';
-		$query = ArrayUtils::get($api, 'format') === 'query' ? http_build_query($post) : json_encode($post);
-		$header = ArrayUtils::get($api, 'response') === 'json' ? false : true;
+		$query = ArrayUtils::get($api, 'data_type') === 'query' ? http_build_query($post) : json_encode($post);
+		$header = ArrayUtils::get($api, 'response_type') === 'json' ? false : true;
+		
+		# Set cURL Options
     
 	    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 	    curl_setopt($ch, CURLOPT_HEADER, $header);
 	    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+	    
+	    # Append authentication if applicable
 	    
 	    if (ArrayUtils::get($api, 'authentication') && ArrayUtils::get($api, 'username')) 
 	    {

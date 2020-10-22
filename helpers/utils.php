@@ -6,6 +6,12 @@
 */
 
 namespace Directus\Custom\Helpers;
+
+include_once(dirname(__DIR__) . "/vendor/handlebars/src/Handlebars/Autoloader.php");
+
+\Handlebars\Autoloader::register();
+
+use Handlebars\Handlebars;
 	
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -139,6 +145,20 @@ class Utils
 		}
 		
 		return trim($response);
+	}
+	
+	/*
+		Compile a template string using Handlebars
+		ARGUMENTS:
+			$input - input string
+			$data - data array
+	*/
+	
+	public static function Compile ($input = '', $data = [])
+	{
+		$engine = new Handlebars;
+		
+		return $engine->render($input, $data);
 	}
 	
 	/*

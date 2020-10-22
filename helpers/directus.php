@@ -13,6 +13,7 @@ use Directus\Mail\Message;
 	
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
+use Directus\Util\StringUtils;
 
 use function Directus\base_path;
 use function Directus\generate_uuid4;
@@ -112,6 +113,98 @@ class Directus
 	}
 	
 	/*
+		Send Email Notifications when a comment is made
+		ARGUMENTS:
+			$params
+				action_by - the user that made the comment
+				collection - the commented collection
+				item - the ID of the commented collection item
+	*/
+	
+	public static function Comment ($params, $debug = false)
+	{
+		$collection = ArrayUtils::get($params, 'collection');
+		$item = ArrayUtils::get($params, 'item');
+		$action_by = ArrayUtils::get($params, 'action_by');
+		$comment = ArrayUtils::get($params, 'comment');
+		$collection_url = Server::Host() . '/' . get_api_project_from_request() . "/collections/{$collection}/{$item}";
+		$collection_name = ucwords( StringUtils::underscoreToSpace($collection) );
+		
+		# Get the details for the item
+		
+		$tableGateway = Api::TableGateway($collection, false);
+		$items = $tableGateway->getItems([
+			"fields" => "*",
+			"filter" => [
+				"id" => $item
+			],
+			"single" => 1
+		]);
+		$items = ArrayUtils::get($items, 'data');
+		
+		$item_name = ArrayUtils::get($items, 'headline') ?: ArrayUtils::get($items, 'name') ?: ArrayUtils::get($items, 'title');
+				
+		# Get all roles that can read the collection
+		
+		$tableGateway = Api::TableGateway('directus_permissions', false);
+		$items = $tableGateway->getItems([
+			"fields" => "collection,role,read",
+			"filter" => [
+				"collection" => $collection,
+				"read" => [
+					"neq" => "none"
+				]
+			]
+		]);
+		$items = ArrayUtils::get($items, 'data');
+		
+		$roles = [1];
+		
+		foreach ($items as $item) 
+		{
+			if (!in_array($item['role'], $roles)) 
+			{
+				array_push($roles, $item['role']);
+			}
+		}
+		
+		# Get all users that are in the roles and have signed in before
+		
+		$tableGateway = Api::TableGateway('directus_users', false);
+		$items = $tableGateway->getItems([
+			"fields" => "*",
+			"filter" => [
+				"last_access_on" => [
+					"nnull" => 1
+				],
+				"role" => [
+					"in" => $roles
+				]
+			]
+		]);
+		$items = ArrayUtils::get($items, 'data');
+		
+		# Get the details of the user that initiated the comment
+		
+		foreach ($items as $item) if ($item['id'] == $action_by) $action_by = $item;
+		
+		$data = [
+			"subject" => "New collection Item Comment - {$collection_name}",
+			"template" => "comment.twig",
+			"comment" => $comment,
+			"collection" => $collection_name,
+			"item" => $item_name,
+			"url" => $collection_url,
+			"users" => $items,
+			"sender" => $action_by
+		];
+				
+		if ($debug) return $data;
+		
+		return Directus::Mail($data);
+	}
+	
+	/*
 		Directus internal mailer to API Users
 		ARGUMENTS:
 			$params
@@ -136,7 +229,7 @@ class Directus
 		
 		$maildir = base_path() . '/.cache/' . get_api_project_from_request() . '/mail';
 		$mailURL = Server::Host() . '/app/custom/mail/browser?uuid=';
-		
+				
 		if (is_string($sender))
 		{
 			$sender = Mail::ParseAddress($sender);			
@@ -181,7 +274,7 @@ class Directus
 		       array_push($users, Mail::ParseAddress($email));
 	        }
         }
-        elseif ($users)
+        elseif (is_array($users))
         {        
 	        $tableGateway = Api::TableGateway('directus_users', false);
 	        

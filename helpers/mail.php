@@ -7,12 +7,9 @@
 
 namespace Directus\Custom\Helpers;
 
-include_once(dirname(__DIR__) . "/vendor/handlebars/src/Handlebars/Autoloader.php");
 include_once(dirname(__DIR__) . "/vendor/PHPMailer/src/Exception.php");
 include_once(dirname(__DIR__) . "/vendor/PHPMailer/src/PHPMailer.php");
 include_once(dirname(__DIR__) . "/vendor/PHPMailer/src/SMTP.php");
-
-\Handlebars\Autoloader::register();
 
 use Directus\View\JsonView;
 
@@ -20,8 +17,6 @@ use Directus\Util\ArrayUtils;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-use Handlebars\Handlebars;
 
 use function Directus\base_path;
 use function Directus\generate_uuid4;
@@ -50,8 +45,6 @@ class Mail
 		ARGUMENTS:
 			$input - @Array: Collection Data from App Templates
 			$data - @rray: Form Data to use to compile Template
-		DEPENDENTS:
-			Handlebars
 			
 		@return array
 	*/
@@ -64,14 +57,12 @@ class Mail
 	    $headers = $headers ?: getallheaders();
 	    
 	    if (!$template) return $input;
-	    
-	    $engine = new Handlebars;
-	    
-	    # Compile the template and layout using Handlebars
+	    	    
+	    # Compile the template and layout
 	    
 	    ArrayUtils::set($data, 'headers', $headers);
 	    
-	    $template = $engine->render($template, $data);
+	    $template = Utils::Compile($template, $data);
 	    $plaintext = trim(preg_replace('/\s+/', ' ', strip_tags(str_replace('><', '> <', $template))));
 	    
 	    $data = array_merge($data, [
@@ -81,7 +72,7 @@ class Mail
 		    ]
 	    ]);
 	    
-	    $body = $layout ? $engine->render($layout, $data) : $template;
+	    $body = $layout ? Utils::Compile($layout, $data) : $template;
 	    	    
 	    return [
 		    "html" => $body,

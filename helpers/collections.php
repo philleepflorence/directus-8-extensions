@@ -10,12 +10,6 @@ namespace Directus\Custom\Helpers;
 use Directus\Util\ArrayUtils;
 use Directus\Application\Application;
 
-use function Directus\base_path;
-
-include_once(base_path() . "/public/uploads/app/vendors/handlebars/src/Handlebars/Handlebars.php");
-
-use Handlebars\Handlebars;
-
 class Collections 
 {
 	private static $Format;
@@ -163,9 +157,7 @@ class Collections
 		if ($filter === true) $response = array_filter_recursive($response);
 		
 		if ($process === false) return $response;
-		
-		$engine = new Handlebars;
-		
+				
 		# Compile JSON response into format Application can use
 		
 		$output = [];
@@ -223,7 +215,7 @@ class Collections
 							
 				$processes = ArrayUtils::get($compile, "process");
 				
-				$currow = Collections::Process($currow, $processes, $engine);
+				$currow = Collections::Process($currow, $processes);
 				
 				# Pluck or reduce multi-dimension array into linear
 							
@@ -264,7 +256,7 @@ class Collections
 										
 							$processes = ArrayUtils::get($related, "process");
 							
-							$rel_currow = Collections::Process($rel_currow, $processes, $engine);						
+							$rel_currow = Collections::Process($rel_currow, $processes);						
 							
 							# Append the processed rel_row to the output related object
 							
@@ -678,15 +670,13 @@ class Collections
 		@return array
 	*/
 	
-	private static function Process ($row = [], $processes = NULL, $engine = NULL)
-	{
-		$engine = $engine ?: new Handlebars;
-		
+	private static function Process ($row = [], $processes = NULL)
+	{		
 		if (is_array($processes))
 		{
 			foreach ($processes as $field => $process) 
 			{
-				ArrayUtils::set($row, $field, ( $engine->render($process, $row) ));
+				ArrayUtils::set($row, $field, ( Utils::Compile($process, $row) ));
 			}			
 		}
 		

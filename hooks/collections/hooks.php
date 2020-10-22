@@ -2,6 +2,7 @@
 
 use Directus\Custom\Helpers\Api;
 use Directus\Custom\Helpers\Debugger;
+use Directus\Custom\Helpers\Directus;
 use Directus\Custom\Helpers\FileSystem;
 use Directus\Custom\Helpers\User;
 use Directus\Custom\Helpers\Utils;
@@ -34,6 +35,12 @@ return [
 		        FileSystem::Thumbnailer([], false, $file);	        
 	        }
 	        else FileSystem::Thumbnailer();	  
+        },
+        'item.create.directus_activity:after' => function ($item = []) 
+        {
+	        $action = ArrayUtils::get($item, 'action');
+	        
+	        if ($action === "comment") Directus::Comment($item);  
         }
     ],
     'filters' => [

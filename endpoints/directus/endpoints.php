@@ -3,6 +3,7 @@
 namespace Directus\Custom\Endpoints\Directus;
 
 require __DIR__ . '/controllers/App.php';
+require __DIR__ . '/controllers/Comment.php';
 require __DIR__ . '/controllers/Mail.php';
 require __DIR__ . '/controllers/Metadata.php';
 
@@ -10,6 +11,10 @@ return [
     '/app' => [
         'method' => 'GET',
         'handler' => App::class
+    ],
+    '/comment' => [
+        'method' => 'POST',
+        'handler' => Comment::class
     ],
     '/mail' => [
         'method' => 'POST',

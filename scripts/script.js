@@ -197,7 +197,7 @@
         let title, titles = ['name', 'title'];
 
         for (let field of fields) {
-            if (field && field.getAttribute && titles.includes(field.getAttribute('data-field'))) {
+            if (!input && field && field.getAttribute && titles.includes(field.getAttribute('data-field'))) {
                 input = field.querySelector('.field input');
             }
         }
@@ -492,18 +492,19 @@
 		}
 		
 		let content;
-		
+		let overflow = getComputedStyle(document.body).overflow;
+				
 		if (e.currentTarget.classList.contains('body') && e.currentTarget.scrollHeight > e.currentTarget.offsetHeight) content = e.currentTarget;
 		
 		if (!content) content = e.target.closest('.layout-cards') || e.target.closest('.body') || e.target.closest('.content') || e.target.closest('.interface-icon');
-		
+				
 		if (content && e.type === 'mouseover' && content.scrollHeight > content.offsetHeight) return content.classList.add('scrollbar-active');
 		else if (content && e.type === 'mouseout' && content.scrollHeight > content.offsetHeight) return content.classList.remove('scrollbar-active');
 		
 		let page = e.target.closest('.edit.page-root') || e.target.closest('.settings.page-root') || e.target.closest('.settings-fields.page-root') || e.target.closest('.module-page-root.page-root') || e.target.closest('.collections.page-root');
-		
-		if (page && e.type === 'mouseover') return document.body.classList.add('scrollbar-active');
-		else if (page && e.type === 'mouseout') return document.body.classList.remove('scrollbar-active');
+				
+		if (page && e.type === 'mouseover' && overflow !== "hidden") return document.body.classList.add('scrollbar-active');
+		else if (page && e.type === 'mouseout' && overflow !== "hidden") return document.body.classList.remove('scrollbar-active');
 	};
 
     this.run = function () {
