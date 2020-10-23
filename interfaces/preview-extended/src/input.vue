@@ -23,7 +23,7 @@
 <script>
 	import mixin from '@directus/extension-toolkit/mixins/interface';
 	
-	import { debounce } from 'lodash';
+	import { cloneDeep, debounce } from 'lodash';
 	
 	export default {
 		name: "InterfacePreviewExtended",
@@ -50,21 +50,42 @@
 				if (this.existing || !this.value) this.update();
 				else if (this.value) window.open(this.value, '_blank');
 			},
-			update (newVal, oldVal) {
-				this.value = this.$helpers.micromustache.render(this.template, this.values);
+			async load () {
+				if (!Array.isArray(this.options.parameters)) return this.update(this.values);
+				
+				let values = cloneDeep(this.values);
+				
+				for (const row of this.options.parameters) {
+					const value = this.values[row.property];
+					
+					if (typeof value === "number") {
+						const response = await this.$api.getItem(row.collection, value, {
+							fields: row.fields
+						});
+						
+						values[row.property] = response.data;
+					}
+				}
+				
+				this.update(values);
+			},
+			update (values) {
+				this.value = this.$helpers.micromustache.render(this.template, values);
 				
 				this.$emit('input', this.value);
+				
+				return false;
 			}
 		},
 		created () {
 			this.fields.forEach((field) => {
-				this.$watch(`values.${ field }`, this.update);
+				this.$watch(`values.${ field }`, this.load);
 			});
 		},
 		mounted () {			
 			this.existing = typeof this.values.id === "number";
-			
-			if (this.existing) this.update();		
+						
+			if (this.existing) this.load();		
 		}
 	};
 </script>

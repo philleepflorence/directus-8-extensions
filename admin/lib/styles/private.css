@@ -83,6 +83,10 @@ body .page-root {
 	opacity: 0.5;
 }
 
+.v-textarea {
+	overflow-x: hidden;
+}
+
 .v-input .char-count {
 	opacity: 1 !important;
 }

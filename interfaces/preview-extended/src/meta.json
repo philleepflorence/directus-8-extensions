@@ -28,6 +28,22 @@
 			"interface": "switch",
 			"default": true
 		},
+		"parameters": {
+			"name": "Parameters",
+			"comment": "Additional parameters for related collections",
+			"interface": "json",
+			"advanced": true,
+			"options": {
+				"language": "application/json"
+			},
+			"default": [
+				{
+					"collection": "related collection",
+					"fields": "fields to load",
+					"property": "this.values[property]"
+				}
+			]
+		},
 		"icon": {
 			"name": "Icon",
 			"comment": "Material Icon to display on the left side.",
