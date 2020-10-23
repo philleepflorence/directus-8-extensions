@@ -91,8 +91,8 @@ class Database
 	protected static $schema = [
 		"directus_collections" => "`collection` = '{{collection}}'",
 		"directus_fields" => "`collection` = '{{collection}}'",
-		"directus_permissions" => "`collection` = '{{collection}}'",
-		"directus_relations" => "`collection_one` = '{{collection}}' OR `collection_many` = '{{collection}}'"
+		"directus_collection_presets" => "`collection` = '{{collection}}' AND `user` IS NULL AND `role` IS NULL",
+		"directus_relations" => "`collection_one` = '{{collection}}'"
 	];
 	
 	private static $archive_directory = "/.cache/:project/database/archives";
