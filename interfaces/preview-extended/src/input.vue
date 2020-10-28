@@ -30,8 +30,7 @@
 		mixins: [mixin],
 		data() {
 			return {
-				existing: false,				
-				value: null
+				existing: false
 			};
 		},
 		computed: {
@@ -85,7 +84,7 @@
 		mounted () {			
 			this.existing = typeof this.values.id === "number";
 						
-			if (this.existing) this.load();		
+			if (this.existing && !this.value) this.load();		
 		}
 	};
 </script>

@@ -735,6 +735,7 @@
 		
 		.buttons {
 			display: flex;
+			margin-top: 24px;
 		}
 		
 		.buttons > * {
