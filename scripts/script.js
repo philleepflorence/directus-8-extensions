@@ -19,8 +19,24 @@
     let index = {
 	    tours: 0
     };
-
-    if (window.location.hash === "#/") window.location.hash = "#/app/ext/dashboard";
+    
+    const comments = () => {
+	    let viewed = storage.get("comments.viewed");
+	    let params = {
+		    fields: "id",
+		    limit: 1,
+		    "filter[action][eq]": "comment"
+	    };
+	    
+	    if (viewed) params["filter[action_on][gte]"] = viewed;
+	    	    	    
+	    get(`/${ this.projectKey }/activity`, 
+	    params, 
+	    (response) => {
+		    if (response.data && response.data.length) this.$comments.setAttribute('data-badge', true);
+		    else this.$comments.removeAttribute('data-badge');
+	    });
+    };
 
     const get = function (url, params, done) {
         let request = new XMLHttpRequest();
@@ -51,6 +67,25 @@
         request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         request.send(params);
     };
+    
+    const storage = {
+	    get: (key) => {
+		    if (!window.localStorage) return null;
+				
+			let value = window.localStorage.getItem(key);
+			
+			if (typeof value === 'string') return JSON.parse(value);
+			
+			return null;
+	    },
+	    set: (key, input) => {
+		    if (!window.localStorage) return null;
+				
+			if (input === null) return window.localStorage.removeItem(key);
+			
+			return window.localStorage.setItem(key, JSON.stringify(input));
+	    }
+    };
 
     const projectName = String(getComputedStyle(document.documentElement).getPropertyValue('--project-name')).replace(/"/g, '');
     const projectTagline = String(getComputedStyle(document.documentElement).getPropertyValue('--project-tagline')).replace(/"/g, '');
@@ -61,7 +96,7 @@
 	    TODO - Dispatch Login and Logout Events to replace intervals!
     */
     
-    this.Public = function () {
+    this.Public = () => {
 	    const logo = document.querySelector('.container .logo');
         const submit = document.querySelector('form button[type="submit"]');
 
@@ -95,12 +130,12 @@
 	
 	this.$data = {};
 
-    this.load = function () {
+    this.load = () => {
 	    
 	    this.userID = this.$profile.getAttribute('href').split('/').pop();
 	    this.$tours = null;
         
-        get("/app/custom/directus/app", { user: this.userID }, function (response) {
+        get(`/${ this.projectKey }/custom/directus/app`, { user: this.userID }, function (response) {
 	        if (!response.data) return false; 
 	        
 	        this.$data = response.data;       
@@ -159,7 +194,7 @@
             	Set Active Bookmark!
             */
 
-            if ($title && window.location.hash.indexOf('#/app/collections/') === 0 && collection === Collection) 
+            if ($title && window.location.hash.indexOf(`#/${ this.projectKey }/collections/`) === 0 && collection === Collection) 
             	if (textContent === $title.textContent) 
             		bookmark.classList.add("router-link-active");
         });
@@ -216,7 +251,7 @@
     
     this.logo = () => {
 	    let link = document.createElement("a");
-	        link.href = '#/app/ext/application';
+	        link.href = `#/${ this.projectKey }/ext/application`;
 	        
 		this.$logo.appendChild(link);
     };
@@ -255,6 +290,14 @@
                 if (iframe) this.wysiwyg(iframe);
             }
         }
+    };
+    
+    /*
+	    Pop State Events - Methods to call on history change
+    */
+    
+    this.popstate = (event) => {	    
+	    if (this.$comments) comments();
     };
     
     this.tour = () => {
@@ -396,7 +439,7 @@
 			$button.removeEventListener('click', this.tours.open);
 			$button.addEventListener('click', this.tours.next);
 			
-			post('/app/custom/directus/metadata', {
+			post(`/${ this.projectKey }/custom/directus/metadata`, {
 				user: this.userID,
 				section: 'tour',
 				key: currtour.key,
@@ -471,6 +514,10 @@
         
         this.$page.addEventListener('mouseover', this.scrollbar);
         this.$page.addEventListener('mouseout', this.scrollbar);
+        
+        window.addEventListener('popstate', this.popstate);
+        
+        this.popstate();
 
         this.load();
 
@@ -512,6 +559,8 @@
         let isScrolling;
         let scrollEnd = new Event('scrollend');
         
+        this.projectKey = window.location.hash.replace("#/", "").split("/").shift();
+        
         window.addEventListener('scroll', function (event) {
 
             /*
@@ -542,13 +591,14 @@
 
         timers.loaded = window.setInterval(function () {
 
+            this.$comments = document.querySelector(`.module-bar a.link[href="#/${ this.projectKey }/ext/comments"]`);
             this.$menu = document.querySelector('.main-bar');
             this.$page = document.querySelector('.directus');
             this.$logo = document.querySelector('.module-bar .logo.v-logo');
             this.$profile = document.querySelector('.module-bar a.edit-user');
             this.$logout = document.querySelector('.module-bar button.sign-out');           
                         
-            if (window.location.hash === "#/") window.location.hash = "#/app/ext/dashboard";
+            if (window.location.hash === "#/") window.location.hash = `#/${ this.projectKey }/ext/dashboard`;
 
             if (this.$menu && this.$page && this.$logo && this.$profile) this.loaded();
             

@@ -290,6 +290,24 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 	background: rgba(var(--main-primary-color-rgb), 0.1);
 }
 
+.module-bar a.link[data-badge] span.icon {
+	position: relative;
+}
+
+.module-bar a.link[data-badge] span.icon:after {
+	position: absolute;
+	content: "";
+	width: 12px;
+	height: 12px;
+	border-radius: 8px;
+	background-color: red;
+	top: -5px;
+	right: -5px;
+	z-index: 2;
+	animation: fadeIn 1s;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
 div.settings.page-root header.v-header div.v-header-button.back button.button span.v-icon:after {
 	color: var(--blue-grey-800) !important;
 }
@@ -674,12 +692,27 @@ body div.body * {
 	}
 }
 
-@media (min-width: 1600px) {
+@media (min-width: 1800px) {
 	.form >.full .subgrid {
 		grid-template-columns: repeat(8,120px) !important;
 	}
-	.form >.half .subgrid {
+	.form >.half .subgrid,
+	.form >.half-left .subgrid,
+	.form >.half-right .subgrid,
+	.form >.half-space .subgrid {
 		grid-template-columns: repeat(4,120px) !important;
+	}
+}
+
+@media (min-width: 1440px) {
+	.form >.full .subgrid {
+		grid-template-columns: repeat(6,120px) !important;
+	}
+	.form >.half .subgrid,
+	.form >.half-left .subgrid,
+	.form >.half-right .subgrid,
+	.form >.half-space .subgrid {
+		grid-template-columns: repeat(3,120px) !important;
 	}
 }
 

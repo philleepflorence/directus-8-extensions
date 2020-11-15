@@ -144,9 +144,9 @@
 				return get(translation, input);
 			},
 			get (key) {
-				if (!window.sessionStorage) return null;
+				if (!window.localStorage) return null;
 				
-				let value = window.sessionStorage.getItem(key);
+				let value = window.localStorage.getItem(key);
 				
 				if (typeof value === 'string') return JSON.parse(value);
 				
@@ -189,7 +189,12 @@
 						this.comments = comments;
 					}
 										
-					this.loading = false;					
+					this.loading = false;	
+					
+					let date = new Date();
+					let datetime = date.toISOString().slice(0, 19).replace('T', ' ');	
+					
+					this.set("comments.viewed", datetime);			
 					
 				}).catch((error) => {
 					
@@ -199,11 +204,11 @@
 				});
 			},
 			set (key, input) {
-				if (!window.sessionStorage) return null;
+				if (!window.localStorage) return null;
 				
-				if (input === null) return window.sessionStorage.removeItem(key);
+				if (input === null) return window.localStorage.removeItem(key);
 				
-				return window.sessionStorage.setItem(key, JSON.stringify(input));
+				return window.localStorage.setItem(key, JSON.stringify(input));
 			}
 		},
 		metaInfo() {
