@@ -1,0 +1,29 @@
+{
+	"name": "comments",
+	"version": "1.0.0",
+	"icon": "chat",
+	"types": [
+		"string"
+	],
+	"options": {},
+	"contents": {
+		"en-US": {
+			"title": "Comment",
+			"subtitle": "Comment - Display comments in the Directus Activity Collection",
+			"description": "Display comments in the Directus Activity Collection",
+			"disclaimer": [
+				"All comments are displayed by date in a descending order...",
+				"Only a maximum of 200 comments are returned.",
+				"NOTE: You may not have access to all the collections displayed."
+			],
+			"comments": {
+				"empty": [
+					"There are currently no comments available or comments have been deleted!",
+					"You must have access to the Directus Activity Collection to view or add comments!"
+				],
+				"headline": "Collection Item Comments",
+				"information": "To view or respond to a comment, click on the row to navigate to the collection item - comments are in the right column."
+			}
+		}
+	}
+}
