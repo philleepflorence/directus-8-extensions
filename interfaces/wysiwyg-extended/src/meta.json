@@ -1,6 +1,6 @@
 {
 	"name": "WYSIWYG Extended",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"types": ["string"],
 	"icon": "format_quote",
 	"recommended": {
@@ -20,6 +20,14 @@
 			"interface": "text-input",
 			"length": 100,
 			"placeholder": "app/thumbnails/{{width}}/{{height}}/{{fit}}"
+		},
+		"stylesheet": {
+			"name": "CSS Stylesheet",
+			"comment": "Project CSS Stylesheet to load when interface is rendered",
+			"placeholder": "/admin/lib/styles/wysiwyg.css",
+			"default": "/admin/lib/styles/wysiwyg.css",
+			"interface": "text-input",
+			"length": 100
 		},
 		"toolbar": {
 			"name": "Toolbar Options",

@@ -132,7 +132,7 @@
 	import 'tinymce/plugins/directionality/plugin';
 	
 	import Editor from '@tinymce/tinymce-vue';
-	import { debounce, template, templateSettings } from 'lodash';
+	import { debounce, forEach, template, templateSettings } from 'lodash';
 	
 	function cssVar(name) {
 		return getComputedStyle(document.body).getPropertyValue(name);
@@ -144,7 +144,7 @@
 			Editor
 		},
 		mixins: [mixin],
-		data() {
+		data () {
 			return {
 				buttons: {
 					done: {
@@ -152,7 +152,7 @@
 					}
 				},
 				placeholders: {
-					cdn: "Enter CDN URL and Template - https://cdn.domain.com/app/thumbnails/{{width}}/{{height}}/{{fit}}...",
+					cdn: `Enter CDN URL and Template - https://cdn.domain.com/${ this.projectKey }/thumbnails/{{width}}/{{height}}/{{fit}}...`,
 					size: "Select Image Size and Property..."
 				},
 				fileSizes: false,
@@ -163,11 +163,12 @@
 				selectedName: null,
 				callbackSelect: () => {},
 				sizes: JSON.parse(this.$store.state.settings.values.asset_whitelist),
-				cdnTemplate: null
+				cdnTemplate: null,
+				projectKey: "_"
 			};
 		},
 		computed: {
-			fileInputOptions() {
+			fileInputOptions () {
 				return {
 					viewOptions: {
 						content: 'description',
@@ -178,7 +179,7 @@
 					viewType: 'cards'
 				};
 			},
-			initOptions() {
+			initOptions () {
 				const styleFormats = this.getStyleFormats();
 				let toolbarString = this.options.toolbar.join(' ');
 	
@@ -187,6 +188,11 @@
 				}
 	
 				return {
+					setup: (editor) => {
+						editor.on('init', (e) => {
+							if (editor.iframeElement) this.stylesheet(editor.iframeElement);
+						});
+					},
 					skin: false,
 					skin_url: false,
 					content_css: false,
@@ -207,7 +213,7 @@
 					...this.options.tinymce_options
 				};
 			},
-			contentStyle() {
+			contentStyle () {
 				return `
 			        body {
 			          color: ${cssVar('--input-text-color')};
@@ -355,6 +361,7 @@
 		created () {
 			_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 			
+			this.projectKey = window.location.hash.replace("#/", "").split("/").shift();
 			this.planToUpdateValue = debounce(this.updateValue, 200);
 		},
 		methods: {
@@ -365,6 +372,7 @@
 			updateValue () {
 				const editor = this.$refs.editorElement.editor;
 				const newValue = editor.getContent();
+				
 				this.$emit('input', newValue);
 			},
 			getStyleFormats () {
@@ -380,8 +388,8 @@
 				/*
 					restore tinymce dialog display
 				*/ 
-				
-				document.querySelector('.tox.tox-tinymce-aux').style.display = 'block';
+								
+				this.overlay('block');
 			},
 			onInputCDN (input) {
 				this.cdnTemplate = input.replace(/^\/|\/$/g, '');
@@ -416,7 +424,7 @@
 					filepath = `${ this.options.cdn }/originals/${ this.selectedFile.filename_disk }`;
 				}
 				else if (this.options.cdn && size) {
-					let template = String(this.options.cdn_template || "app/thumbnails/{{width}}/{{height}}/{{fit}}").replace(/^\/+/, '');
+					let template = String(this.options.cdn_template || `${ this.projectKey }/thumbnails/{{ width }}/{{ height }}/{{ fit }}`).replace(/^\/+/, '');
 					let compiled = _.template(template);
 					let path = compiled(size);
 						
@@ -439,8 +447,8 @@
 					Prevents file selection to be hidden by tinymce dialog
 				*/
 				
-				document.querySelector('.tox.tox-tinymce-aux').style.display = 'none';
-				
+				this.overlay('none');
+								
 				this.callbackSelect = (a, b, c) => {
 					
 					/*
@@ -453,7 +461,7 @@
 						Restore tinymce dialog display
 					*/
 					
-					document.querySelector('.tox.tox-tinymce-aux').style.display = 'block';
+					this.overlay('block');
 					
 					/*
 						Empty the selectedfile so the file isn't selected again when you add an additional file
@@ -469,6 +477,28 @@
 				if (preview) preview.innerHTML = `Current Image Size and Fit: ${input}`;
 				
 				this.imageSize = input;
+			},
+			overlay (display) {
+				let overlays = document.querySelectorAll('.tox.tox-tinymce-aux');
+				
+				forEach(overlays, (overlay) => {
+					const form = overlay.querySelector('.tox-form');
+					
+					if (form) overlay.style.display = display;
+				});
+			},
+			stylesheet (iframe) {
+				if (!this.options.stylesheet || !iframe || iframe.getAttribute('data-rendered')) return false;
+
+		        iframe.setAttribute('data-rendered', Date.now());
+		
+		        let StyleSheet = (window.location.origin + this.options.stylesheet);
+		        let link = document.createElement("link");
+			        link.href = StyleSheet;
+			        link.rel = "stylesheet";
+			        link.type = "text/css";
+		
+		        iframe.contentDocument.head.appendChild(link);
 			}
 		}
 	};

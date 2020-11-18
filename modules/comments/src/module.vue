@@ -161,6 +161,7 @@
 				this.$api.getItems('directus_activity', {
 					fields: "id,action,action_by.first_name,action_by.last_name,action_by.email,action_on,collection,item,comment",
 					limit: 200,
+					sort: "-action_on",
 					filter: {
 						action: {
 							eq: "comment"
@@ -178,7 +179,7 @@
 						
 						forEach(response.data, (row) => {
 							comments.push({
-								date: row.action_on,
+								date: new Date(row.action_on).toLocaleString(),
 								author: `${ row.action_by.first_name } ${ row.action_by.last_name }`,
 								collection: this.collection(row.collection),
 								comment: row.comment,
