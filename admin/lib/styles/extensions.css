@@ -291,3 +291,7 @@ body .info-sidebar-section a.info-sidebar-nav.active {
 body .info-sidebar-section a.info-sidebar-nav.active span {
 	color: white !important;
 }
+
+body .interface-many-to-many.interface-many-to-many-extended .buttons.v-ext-display {
+	margin-top: 0 !important;
+}

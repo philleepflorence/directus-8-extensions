@@ -19,6 +19,18 @@
     let index = {
 	    tours: 0
     };
+	
+	let projectKey = "app";
+		
+    const projectName = String(getComputedStyle(document.documentElement).getPropertyValue('--project-name')).replace(/"/g, '');
+    const projectTagline = String(getComputedStyle(document.documentElement).getPropertyValue('--project-tagline')).replace(/"/g, '');
+    const Public = window.location.hash.indexOf('/login') === 1;
+    
+    /*
+	    Initialize the Project Key - if not app
+    */
+    
+    if (!Public) projectKey = window.location.hash.replace("#/", "").split("/").shift();
     
     const comments = () => {
 	    let viewed = storage.get("comments.viewed");
@@ -30,7 +42,7 @@
 	    
 	    if (viewed) params["filter[action_on][gte]"] = viewed;
 	    	    	    
-	    get(`/${ this.projectKey }/activity`, 
+	    get(`/${ projectKey }/activity`, 
 	    params, 
 	    (response) => {
 		    if (response.data && response.data.length) this.$comments.setAttribute('data-badge', true);
@@ -86,10 +98,6 @@
 			return window.localStorage.setItem(key, JSON.stringify(input));
 	    }
     };
-
-    const projectName = String(getComputedStyle(document.documentElement).getPropertyValue('--project-name')).replace(/"/g, '');
-    const projectTagline = String(getComputedStyle(document.documentElement).getPropertyValue('--project-tagline')).replace(/"/g, '');
-    const Public = window.location.hash.indexOf('/login') === 1;
     
     /*
 	    Public Utilities!
@@ -135,7 +143,7 @@
 	    this.userID = this.$profile.getAttribute('href').split('/').pop();
 	    this.$tours = null;
         
-        get(`/${ this.projectKey }/custom/directus/app`, { user: this.userID }, function (response) {
+        get(`/${ projectKey }/custom/directus/app`, { user: this.userID }, function (response) {
 	        if (!response.data) return false; 
 	        
 	        this.$data = response.data;       
@@ -194,7 +202,7 @@
             	Set Active Bookmark!
             */
 
-            if ($title && window.location.hash.indexOf(`#/${ this.projectKey }/collections/`) === 0 && collection === Collection) 
+            if ($title && window.location.hash.indexOf(`#/${ projectKey }/collections/`) === 0 && collection === Collection) 
             	if (textContent === $title.textContent) 
             		bookmark.classList.add("router-link-active");
         });
@@ -251,7 +259,7 @@
     
     this.logo = () => {
 	    let link = document.createElement("a");
-	        link.href = `#/${ this.projectKey }/ext/application`;
+	        link.href = `#/${ projectKey }/ext/application`;
 	        
 		this.$logo.appendChild(link);
     };
@@ -282,12 +290,6 @@
             if (this.$title) {
                 clearTimeout(timers.mutation);
                 timers.mutation = setTimeout(this.header, 500);
-            }
-
-            if (mutation.type === "childList" && mutation.target && mutation.target.classList.contains('interface-wysiwyg')) {
-                let iframe = mutation.target.querySelector('iframe');
-
-                if (iframe) this.wysiwyg(iframe);
             }
         }
     };
@@ -439,7 +441,7 @@
 			$button.removeEventListener('click', this.tours.open);
 			$button.addEventListener('click', this.tours.next);
 			
-			post(`/${ this.projectKey }/custom/directus/metadata`, {
+			post(`/${ projectKey }/custom/directus/metadata`, {
 				user: this.userID,
 				section: 'tour',
 				key: currtour.key,
@@ -454,20 +456,6 @@
 	    else $button.addEventListener('click', this.tours.open);
 	    
 	    return false;
-    };
-
-    this.wysiwyg = (iframe) => {
-        if (!iframe || iframe.getAttribute('data-rendered')) return false;
-
-        iframe.setAttribute('data-rendered', Date.now());
-
-        let StyleSheet = (window.location.origin + "/admin/lib/styles/wysiwyg.css");
-        let link = document.createElement("link");
-	        link.href = StyleSheet;
-	        link.rel = "stylesheet";
-	        link.type = "text/css";
-
-        iframe.contentDocument.head.appendChild(link);
     };
 
     this.styles = function () {
@@ -559,7 +547,7 @@
         let isScrolling;
         let scrollEnd = new Event('scrollend');
         
-        this.projectKey = window.location.hash.replace("#/", "").split("/").shift();
+        projectKey = window.location.hash.replace("#/", "").split("/").shift();
         
         window.addEventListener('scroll', function (event) {
 
@@ -591,14 +579,14 @@
 
         timers.loaded = window.setInterval(function () {
 
-            this.$comments = document.querySelector(`.module-bar a.link[href="#/${ this.projectKey }/ext/comments"]`);
+            this.$comments = document.querySelector(`.module-bar a.link[href="#/${ projectKey }/ext/comments"]`);
             this.$menu = document.querySelector('.main-bar');
             this.$page = document.querySelector('.directus');
             this.$logo = document.querySelector('.module-bar .logo.v-logo');
             this.$profile = document.querySelector('.module-bar a.edit-user');
             this.$logout = document.querySelector('.module-bar button.sign-out');           
                         
-            if (window.location.hash === "#/") window.location.hash = `#/${ this.projectKey }/ext/dashboard`;
+            if (window.location.hash === "#/") window.location.hash = `#/${ projectKey }/ext/dashboard`;
 
             if (this.$menu && this.$page && this.$logo && this.$profile) this.loaded();
             

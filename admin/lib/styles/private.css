@@ -328,8 +328,6 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 	font-family: var(--main-font-accent) !important;
 	font-size: 24px !important;
 	line-height: 24px;
-	display: inline-flex !important;
-	align-items: center;
 	margin-top: -19px !important;
 }
 
@@ -848,6 +846,35 @@ body .v-modal .modal-mask {
 
 body .v-modal #modal-title {
 	color: white !important;
+}
+
+.popover .popover-inner .ctx-menu .button {
+	min-width: 160px;
+}
+
+.new-comment {
+	background-color: var(--sidebar-background-color);
+	min-height: 85px !important;
+	padding-bottom: 5px !important;
+}
+
+.new-comment .textarea {
+	height: calc(100% - 35px) !important;
+}
+
+.new-comment button {
+	position: relative !important;
+	opacity: 1 !important;
+	bottom: 0 !important;
+	right: 0 !important;
+	margin-top: 2px;
+	display: block;
+	width: 100%;
+	padding: 5px;
+}
+
+.v-activity:before {
+	top: 105px !important;
 }
 
 @media (min-width: 1000px) {		
