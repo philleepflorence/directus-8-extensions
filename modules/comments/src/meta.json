@@ -1,6 +1,6 @@
 {
 	"name": "comments",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "chat",
 	"types": [
 		"string"
@@ -14,15 +14,20 @@
 			"disclaimer": [
 				"All comments are displayed by date in a descending order...",
 				"Only a maximum of 200 comments are returned.",
-				"NOTE: You may not have access to all the collections displayed."
+				"NOTE: You may not have access to all the collections displayed.",
+				"To view or respond to a comment, click on the row to navigate to the collection or item.",
+				"To edit a comment, double click or tap on the comment and begin typing..."
 			],
 			"comments": {
 				"empty": [
 					"There are currently no comments available or comments have been deleted!",
 					"You must have access to the Directus Activity Collection to view or add comments!"
-				],
-				"headline": "Collection Item Comments",
-				"information": "To view or respond to a comment, click on the row to navigate to the collection item - comments are in the right column."
+				]
+			},
+			"form": {
+				"reply": {
+					"hint": "Enter the reply to the comment and click the submit button to send."
+				}
 			}
 		}
 	}

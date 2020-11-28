@@ -102,6 +102,10 @@ blockquote:after {
 	color: rgba(255, 255, 255, 0.5);
 }
 
+blockquote a {
+	color: white !important;
+}
+
 blockquote p:last-child {
 	margin-bottom: 0 !important;
 }

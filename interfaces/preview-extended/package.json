@@ -1,6 +1,6 @@
 {
 	"name": "preview-extended",
-	"version": "1.0.0",
+	"version": "1.2.0",
 	"description": "Preview a collection item by compiling the URL from one or more fields",
 	"main": "",
 	"scripts": {

@@ -5,15 +5,22 @@
 <p>A new comment has been added for an item in the collection: <b><a href="{{ form.url }}">{{ form.collection }} &mdash; {{ form.item }}</a></b></p>
 
 <blockquote>
+	{% if form.reply %}
+	<p class="blockquote">{{ form.reply }}</p>
+	{% endif %}
 	<p>{{ form.comment }}</p>
 	<h6>&mdash; {{ form.sender.first_name }} {{ form.sender.last_name }}</h6>
 </blockquote>
 
 <p>If you are tagged in the comment, you would need to respond as soon as you can!</p>
 
-<p>To respond, click on the link above or copy and paste the link below:</p>
+<p>To respond, click on the link below or copy and paste the link below:</p>
 
 <p><b>{{ form.url }}</b></p>
+
+<p>To view all comments and replies, or to view the details of this comment, click on the link below or copy and paste the link below::</p>
+
+<p><b>{{ form.comments_url }}</b></p>
 
 <p>Love,<br>{{ settings.project_name }} &mdash; {{ settings.project_tagline }}</p>
 {% endblock %}

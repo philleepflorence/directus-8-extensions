@@ -12,7 +12,7 @@ body[data-page-root="modules-modules page-root"] {
 	min-height: calc(100vh - 140px) !important;
 }
 
-@media (min-width: 1919px) {
+@media (min-width: 1954px) {
 	body:not(.info-active):not(.info-wide-active) .module-page-root {
 		min-height: calc(100vh - 140px) !important;
 	}

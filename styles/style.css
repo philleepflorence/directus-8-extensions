@@ -127,8 +127,11 @@ body {
 	--module-background-color-active: var(--blue-grey-800) !important;
 	
 	--link-active-background: rgba(0, 0, 0, 0.5) !important;
+	--input-background-color: rgba(33, 33, 33, 0.5) !important;
+	--page-background-color: rgba(33, 33, 33, 0.5) !important;
+	--input-border-color-focus: var(--main-primary-color-active) !important;
 	
-	--page-root-max-width: 1440px !important;
+	--page-root-max-width: 1600px !important;
 	--header-height-expanded: 108px !important;
 }
 

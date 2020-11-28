@@ -72,6 +72,12 @@ body .page-root {
 	background-color: var(--main-primary-color) !important;
 	color: white !important;
 	border-radius: 50% !important;
+	opacity: 0 !important;
+}
+
+.body .row:hover button.remove {
+	animation: fadeIn 450ms ease-in;
+	opacity: 1 !important;
 }
 
 .tooltip-inner {
@@ -91,8 +97,20 @@ body .page-root {
 	opacity: 1 !important;
 }
 
+.v-input input {
+	text-overflow: ellipsis;
+}
+
 .v-input input[readonly="readonly"] ~ .char-count {
 	background-color: var(--input-background-color-disabled);
+}
+
+.v-input input.charactercount {
+	padding-right: 3rem !important;
+}
+
+.v-input.icon-left input.charactercount {
+	padding-right: 4rem !important;
 }
 
 .v-upload.uploader .dropzone .buttons {
@@ -128,6 +146,11 @@ body .page-root {
 
 .v-input.icon-right .char-count {
 	right: 40px;
+}
+
+.v-header, 
+.page-root {
+	background-color: rgba(33, 33, 33, 0.8) !important;
 }
 
 .v-header .v-header-button:last-of-type {
@@ -324,17 +347,37 @@ div.settings.page-root header.v-header div.v-header-button.back button.button sp
 	font-family: var(--main-font-accent) !important;
 }
 
-.v-details summary {
-	font-family: var(--main-font-accent) !important;
-	font-size: 24px !important;
-	line-height: 24px;
-	margin-top: -19px !important;
+form.schema details,
+form.options details.advanced, 
+.v-details.break {
+	padding-top: 50px !important;
 }
 
-.v-details summary:after {
+form.schema details summary,
+form.options details.advanced summary,
+.v-details summary {
+	background: transparent !important;
+	color: var(--blue-grey-300) !important;
 	font-size: 24px !important;
-	line-height: 24px !important;
-	text-transform: lowercase !important;
+	margin: -2.75rem 0 0 0 !important;
+}
+
+form.schema details summary:after, 
+form.options details.advanced summary:after,
+.v-details summary:after {
+	content: "Click to expand details" !important;
+	display: block !important;
+	float: none !important;
+	font-family: var(--main-font-body) !important;
+	font-size: 1rem !important;
+	width: auto !important;
+	margin: 1rem 0 0 0 !important;
+}
+
+form.schema details[open] summary:after,  
+form.options details.advanced[open] summary:after,
+.v-details[open] summary:after {
+	content: "Click to collapse details" !important;
 }
 
 .notice.warning {
@@ -692,25 +735,25 @@ body div.body * {
 
 @media (min-width: 1800px) {
 	.form >.full .subgrid {
-		grid-template-columns: repeat(8,120px) !important;
+		grid-template-columns: repeat(8, 135px) !important;
 	}
 	.form >.half .subgrid,
 	.form >.half-left .subgrid,
 	.form >.half-right .subgrid,
 	.form >.half-space .subgrid {
-		grid-template-columns: repeat(4,120px) !important;
+		grid-template-columns: repeat(4, 135px) !important;
 	}
 }
 
 @media (min-width: 1440px) {
 	.form >.full .subgrid {
-		grid-template-columns: repeat(6,120px) !important;
+		grid-template-columns: repeat(6, 135px) !important;
 	}
 	.form >.half .subgrid,
 	.form >.half-left .subgrid,
 	.form >.half-right .subgrid,
 	.form >.half-space .subgrid {
-		grid-template-columns: repeat(3,120px) !important;
+		grid-template-columns: repeat(3, 135px) !important;
 	}
 }
 
@@ -823,6 +866,11 @@ body figure.bg-pattern {
 	max-width: 50% !important;
 }
 
+html body .table .body .row div.field-preview:nth-last-child(2):last-of-type {
+	flex-grow: 1;
+	max-width: calc(50% - 2.5rem) !important;
+}
+
 [data-field="files"] .interface-many-to-many[input-name="files"] .table .body .row div:not(.sort-column) {
 	flex-grow: 1;
 	max-width: calc(50% - 24px) !important;
@@ -852,17 +900,19 @@ body .v-modal #modal-title {
 	min-width: 160px;
 }
 
-.new-comment {
-	background-color: var(--sidebar-background-color);
+.v-activity.activity form.new-comment {
+	background-color: rgba(0, 0, 0, 0.2);
+	height: calc(4 * var(--input-height)) !important;;
 	min-height: 85px !important;
-	padding-bottom: 5px !important;
+	margin: -20px -20px 20px -20px;
+	padding: 20px 20px 25px 20px !important;
 }
 
-.new-comment .textarea {
+.v-activity.activity form.new-comment .textarea {
 	height: calc(100% - 35px) !important;
 }
 
-.new-comment button {
+.v-activity.activity form.new-comment button {
 	position: relative !important;
 	opacity: 1 !important;
 	bottom: 0 !important;
@@ -870,11 +920,19 @@ body .v-modal #modal-title {
 	margin-top: 2px;
 	display: block;
 	width: 100%;
-	padding: 5px;
+	padding: 8px 5px;
+	color: white !important;
+	background-color: var(--main-primary-color) !important;
 }
 
-.v-activity:before {
-	top: 105px !important;
+.v-activity.activity form.new-comment button[disabled="disabled"] {
+	background-color: var(--blue-grey-700) !important;
+	color: var(--blue-grey-500) !important;
+}
+
+.v-activity.activity:before {
+	top: 210px !important;
+	height: calc(100% - 235px) !important;
 }
 
 @media (min-width: 1000px) {		
@@ -908,7 +966,7 @@ body .v-modal .buttons .v-button:only-child {
 	}
 }
 
-@media (min-width: 1919px) {
+@media (min-width: 1954px) {
 	body:not(.info-active):not(.info-wide-active) div.directus {
 		padding-top: 15px !important;
 		padding-bottom: 15px !important;

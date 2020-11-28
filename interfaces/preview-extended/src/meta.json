@@ -1,6 +1,6 @@
 {
 	"name": "Preview Extended",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"types": [
 		"string"
 	],
@@ -40,7 +40,7 @@
 				{
 					"collection": "related collection",
 					"fields": "fields to load",
-					"property": "this.values[property]"
+					"property": "name of interface - this.values[property]"
 				}
 			]
 		},

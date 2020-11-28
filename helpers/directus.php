@@ -123,12 +123,27 @@ class Directus
 	
 	public static function Comment ($params, $debug = false)
 	{
+		$id = ArrayUtils::get($params, 'id');
 		$collection = ArrayUtils::get($params, 'collection');
 		$item = ArrayUtils::get($params, 'item');
 		$action_by = ArrayUtils::get($params, 'action_by');
 		$comment = ArrayUtils::get($params, 'comment');
 		$collection_url = Server::Host() . '/' . get_api_project_from_request() . "/collections/{$collection}/{$item}";
+		$comments_url = Server::Host() . '/' . get_api_project_from_request() . "/ext/comments/?item={$item}";
 		$collection_name = ucwords( StringUtils::underscoreToSpace($collection) );
+		
+		# Get the details for the comment
+		
+		$tableGateway = Api::TableGateway('directus_activity', false);
+		$items = $tableGateway->getItems([
+			"fields" => "*.*",
+			"filter" => [
+				"id" => $id
+			],
+			"single" => 1
+		]);
+		$items = ArrayUtils::get($items, 'data');		
+		$reply = ArrayUtils::get($items, 'reply.comment');
 		
 		# Get the details for the item
 		
@@ -195,8 +210,10 @@ class Directus
 			"collection" => $collection_name,
 			"item" => $item_name,
 			"url" => $collection_url,
+			"comments_url" => $comments_url,
 			"users" => $items,
-			"sender" => $action_by
+			"sender" => $action_by,
+			"reply" => $reply
 		];
 				
 		if ($debug) return $data;

@@ -25,12 +25,26 @@
     const projectName = String(getComputedStyle(document.documentElement).getPropertyValue('--project-name')).replace(/"/g, '');
     const projectTagline = String(getComputedStyle(document.documentElement).getPropertyValue('--project-tagline')).replace(/"/g, '');
     const Public = window.location.hash.indexOf('/login') === 1;
+    const hash = window.location.hash.replace("#/", "").split("/");
+    
+    const queryParams = (str) => {
+	    return str.replace(/(^\?)/,'').split("&").map(function(n){return n = n.split("="),this[n[0]] = n[1],this}.bind({}))[0];
+    };
+    
+    if (window.location.hash.includes("?")) {
+	    const path = window.location.hash.split("?");
+	    const params = queryParams(path[1]);
+	    const index = path[0].replace('#/', '');
+	    
+	    window.GET = {};
+	    window.GET[index] = params;
+    }
     
     /*
 	    Initialize the Project Key - if not app
     */
     
-    if (!Public) projectKey = window.location.hash.replace("#/", "").split("/").shift();
+    if (!Public && hash.length > 1) projectKey = hash.shift();
     
     const comments = () => {
 	    let viewed = storage.get("comments.viewed");
@@ -586,7 +600,7 @@
             this.$profile = document.querySelector('.module-bar a.edit-user');
             this.$logout = document.querySelector('.module-bar button.sign-out');           
                         
-            if (window.location.hash === "#/") window.location.hash = `#/${ projectKey }/ext/dashboard`;
+            if (window.location.hash === "#/") return window.location.assign(`${ window.location.origin }/admin/#/${ projectKey }/ext/dashboard`);
 
             if (this.$menu && this.$page && this.$logo && this.$profile) this.loaded();
             
