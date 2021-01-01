@@ -5,6 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Upright:wght@300;400;500;600;700&display=swap');
 
 :root {
+	--project-key: 'app';
 	--project-name: 'Philleep Florence';
 	--project-tagline: 'PhilleepEdit - An API, Content, and Database Admin Tool';
 

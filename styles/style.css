@@ -127,7 +127,7 @@ body {
 	--module-background-color-active: var(--blue-grey-800) !important;
 	
 	--link-active-background: rgba(0, 0, 0, 0.5) !important;
-	--input-background-color: rgba(33, 33, 33, 0.5) !important;
+	--input-background-color: rgba(33, 33, 33, 1) !important;
 	--page-background-color: rgba(33, 33, 33, 0.5) !important;
 	--input-border-color-focus: var(--main-primary-color-active) !important;
 	

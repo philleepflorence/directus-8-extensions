@@ -816,6 +816,7 @@ class RelationalTableGateway extends BaseTableGateway
         // Apply Status and Limit from Parent
         // TODO: Allow relational parameters via Collection - E.G: relations.<collection>.limit or relations.<collection>.status
         $limit = ArrayUtils::pull($params, 'limit');
+        $relations = ArrayUtils::pull($params, 'relations');
         
         if (!$limit && $defaultLimit) {
 	        $limit = $defaultLimit;
@@ -825,6 +826,9 @@ class RelationalTableGateway extends BaseTableGateway
         }
         
         ArrayUtils::set($parameters, 'limit', intval($limit));
+        
+        if ($relations === false) ArrayUtils::set($parameters, 'limit', -1);
+        elseif (is_numeric($relations)) ArrayUtils::set($parameters, 'limit', intval($relations));
         
 		if (!$hasStatusField) {
 		    if (ArrayUtils::get($parameters, 'status')) unset($parameters['status']);

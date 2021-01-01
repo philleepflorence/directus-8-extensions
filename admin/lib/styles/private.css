@@ -354,7 +354,7 @@ form.options details.advanced,
 }
 
 form.schema details summary,
-form.options details.advanced summary,
+form.options details.advanced > summary,
 .v-details summary {
 	background: transparent !important;
 	color: var(--blue-grey-300) !important;
@@ -363,7 +363,7 @@ form.options details.advanced summary,
 }
 
 form.schema details summary:after, 
-form.options details.advanced summary:after,
+form.options details.advanced  > summary:after,
 .v-details summary:after {
 	content: "Click to expand details" !important;
 	display: block !important;
@@ -375,9 +375,18 @@ form.options details.advanced summary:after,
 }
 
 form.schema details[open] summary:after,  
-form.options details.advanced[open] summary:after,
+form.options details.advanced[open] > summary:after,
 .v-details[open] summary:after {
 	content: "Click to collapse details" !important;
+}
+
+.v-prompt .v-details {
+	margin-top: 50px;
+	padding-top: 20px !important;
+}
+
+.form .field .medium-style p {
+	max-width: 960px !important;
 }
 
 .notice.warning {

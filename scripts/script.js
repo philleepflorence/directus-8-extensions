@@ -13,23 +13,36 @@
         logo: 0,
         mutation: 0,
         submit: 0,
-        logout: 0
+        logout: 0,
+        login: 0
     };
     
     let index = {
 	    tours: 0
     };
-	
-	let projectKey = "app";
-		
-    const projectName = String(getComputedStyle(document.documentElement).getPropertyValue('--project-name')).replace(/"/g, '');
-    const projectTagline = String(getComputedStyle(document.documentElement).getPropertyValue('--project-tagline')).replace(/"/g, '');
-    const Public = window.location.hash.indexOf('/login') === 1;
-    const hash = window.location.hash.replace("#/", "").split("/");
+    			
+    const projectKey = String(getComputedStyle(document.documentElement).getPropertyValue('--project-key') || 'app').replace(/"/g, '').trim();
+    const projectName = String(getComputedStyle(document.documentElement).getPropertyValue('--project-name')).replace(/"/g, '').trim();
+    const projectTagline = String(getComputedStyle(document.documentElement).getPropertyValue('--project-tagline')).replace(/"/g, '').trim();  
     
+    const redirect = !window.location.hash.includes('#/login') && !window.location.hash.includes(`#/${ projectKey }/`) ? `${ window.location.origin }/admin/#/${ projectKey }/ext/dashboard` : null;
+    
+    /*
+	    If there is no valid hash, redirect to the login page or to the dashboard!
+    */
+    
+    if (redirect) window.location.replace(`${ window.location.origin }/admin/#/${ projectKey }/ext/dashboard`); 
+    
+    const Public = !window.location.hash.includes(`#/${ projectKey }`);
+    const hash = window.location.hash.replace("#/", "").split("/");
+        
     const queryParams = (str) => {
+	    str = str || window.location.href.split("?").pop();
+	    
 	    return str.replace(/(^\?)/,'').split("&").map(function(n){return n = n.split("="),this[n[0]] = n[1],this}.bind({}))[0];
     };
+    
+    const appPopState = new Event('app:pop:state');
     
     if (window.location.hash.includes("?")) {
 	    const path = window.location.hash.split("?");
@@ -39,12 +52,6 @@
 	    window.GET = {};
 	    window.GET[index] = params;
     }
-    
-    /*
-	    Initialize the Project Key - if not app
-    */
-    
-    if (!Public && hash.length > 1) projectKey = hash.shift();
     
     const comments = () => {
 	    let viewed = storage.get("comments.viewed");
@@ -113,31 +120,36 @@
 	    }
     };
     
-    /*
-	    Public Utilities!
-	    TODO - Dispatch Login and Logout Events to replace intervals!
-    */
-    
-    this.Public = () => {
-	    const logo = document.querySelector('.container .logo');
-        const submit = document.querySelector('form button[type="submit"]');
-
-        if (!logo || !submit) return false;
-        
-        if (this.$hash && this.$hash !== window.location.hash) return window.location.reload();
-        
-        clearInterval(timers.logo);
-
-        document.title = `${ projectName } - ${ projectTagline }`;
-
-        logo.href = window.location.href;
-        logo.target = "_self";
-        
-        logo.addEventListener('click', function () {
-            return window.location.reload();
-        });
-
-        submit.addEventListener('click', this.run);
+    const analytics = {
+	    initialize: () => {
+		    let params = queryParams() || {};
+			let UUID = this.$data.settings.google_analytics_id;
+			let debug = this.$data.settings.google_analytics_debug ? true : params.analytics === "debug";
+			let urlpath = debug ? 'analytics_debug' : 'analytics';
+			let hash = window.location.hash.replace("#/", "");
+			
+            if (UUID) {
+	            (function (i, s, o, g, r, a, m) {
+					i['GoogleAnalyticsObject'] = r;
+					i[r] = i[r] ||
+						function () {
+							(i[r].q = i[r].q || []).push(arguments)
+						}, i[r].l = 1 * new Date();
+					a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+					a.async = 1;
+					a.src = g;
+					m.parentNode.insertBefore(a, m)
+				})(window, document, 'script', `https://www.google-analytics.com/${ urlpath }.js`, 'ga');
+	
+				ga('create', UUID, 'auto');	
+				ga('send', 'pageview', hash);
+            }	            
+		},
+		pageview: (e) => {
+			let hash = window.location.hash.replace("#/", "");
+			
+			ga('send', 'pageview', hash);
+		}
     };
 
     /*
@@ -160,7 +172,9 @@
         get(`/${ projectKey }/custom/directus/app`, { user: this.userID }, function (response) {
 	        if (!response.data) return false; 
 	        
-	        this.$data = response.data;       
+	        this.$data = response.data;  
+	        
+	        if (this.$data.settings.google_analytics_id) analytics.initialize();      
 	        
             this.collections();
             
@@ -287,6 +301,8 @@
 
         if (this.$hash !== hash) setTimeout(this.tour, 3550);
 
+        if (this.$hash !== hash) window.dispatchEvent(appPopState, { path: hash });
+
         this.$hash = hash;
         this.$title = this.$page.querySelector('.page-root header.v-header .title .type-title');
         
@@ -312,7 +328,9 @@
 	    Pop State Events - Methods to call on history change
     */
     
-    this.popstate = (event) => {	    
+    this.popstate = (event) => {	
+	    if (window.ga) analytics.pageview();
+	        
 	    if (this.$comments) comments();
     };
     
@@ -517,7 +535,7 @@
         this.$page.addEventListener('mouseover', this.scrollbar);
         this.$page.addEventListener('mouseout', this.scrollbar);
         
-        window.addEventListener('popstate', this.popstate);
+        window.addEventListener('app:pop:state', this.popstate);
         
         this.popstate();
 
@@ -555,14 +573,51 @@
 		if (page && e.type === 'mouseover' && overflow !== "hidden") return document.body.classList.add('scrollbar-active');
 		else if (page && e.type === 'mouseout' && overflow !== "hidden") return document.body.classList.remove('scrollbar-active');
 	};
+	
+	/*
+	    Public and Private Utilities!
+    */
+    
+    this.Public = (authenticated) => {
+	    const logo = document.querySelector('.container .logo');
 
-    this.run = function () {
+        if (!logo) return false;
+        
+        if (this.$hash && this.$hash !== window.location.hash) return window.location.reload();
+        
+        clearInterval(timers.logo);
+
+        document.title = `${ projectName } - ${ projectTagline }`;
+
+        logo.href = window.location.href;
+        logo.target = "_self";
+        
+        logo.addEventListener('click', function () {
+            return window.location.reload();
+        });
+
+        document.body.addEventListener('click', this.login, true);
+    };
+    
+    this.login = (e) => {
+	    if (e.target.getAttribute("type") === "submit") {
+		    document.body.removeEventListener('click', this.login, true);
+	   
+		    timers.login = setInterval(function () {
+			    let login = window.location.hash.includes('#/login');
+
+			    if (!login) clearInterval(timers.login);
+			    
+				if (!redirect && !login && !Public) window.history.go(-2);
+		    }, 1000);
+	    }	    
+    };
+
+    this.run = (authenticated) => {
 
         let isScrolling;
         let scrollEnd = new Event('scrollend');
-        
-        projectKey = window.location.hash.replace("#/", "").split("/").shift();
-        
+                
         window.addEventListener('scroll', function (event) {
 
             /*
@@ -607,7 +662,20 @@
         }, 1000);
     }; 
     
-
-    if (!Public) this.run();    
+    /*
+	    Make sure the user is authenticated on the API before running!
+    */
+    
+    this.authenticate = () => {
+	    get(`/${ projectKey }/users/me`, { fields: "id,email" }, function (response) {
+		    let user = response.data || {};
+		    let authenticated = user.id && document.body.classList.contains("private");
+		    
+		    if (authenticated) this.run(authenticated);
+		    else this.Public(authenticated);
+        });
+    };
+        
+    if (!Public) this.authenticate();    
     else if (Public) timers.logo = window.setInterval(this.Public, 1000);
 })();

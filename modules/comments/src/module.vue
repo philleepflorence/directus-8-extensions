@@ -27,7 +27,7 @@
 					<summary>{{ title }}</summary>
 					<div class="content">
 						<div class="v-activity">
-							<article class="activity-item" v-for="item in items" v-bind:ref="item.id">
+							<article class="activity-item" v-for="item in items" v-bind:ref="item.id" v-bind:data-id="item.id" v-bind:data-item="item.item" v-bind:data-collection="item.collection">
 								<span class="indicator"></span>
 								<div class="container">
 									<div class="content">
@@ -307,8 +307,8 @@
 				});
 			},
 			render () {
-				const item = get(this.params, "item");
-				const element = item ? this.$refs[item][0] : null;
+				const comment = get(this.params, "comment");
+				const element = comment && this.$refs[comment] ? this.$refs[comment][0] : null;
 				
 				if (element) {
 					element.classList.add('active');
@@ -449,8 +449,7 @@
 									}
 									
 									.comment {
-										display: flex;
-										align-items: center;
+										display: block;
 										margin: 5px 0;
 										
 										.comment {
@@ -472,8 +471,10 @@
 										}
 										
 										.reply {
-											border-left: 2px solid var(--blue-grey-600);
+											border-left: 2px solid var(--blue-grey-800);
 											color: var(--blue-grey-600);
+											font-size: 0.875rem;
+											margin-top: 5px;
 											padding: 0 10px 0 5px;
 										}
 									}

@@ -128,8 +128,8 @@ class Directus
 		$item = ArrayUtils::get($params, 'item');
 		$action_by = ArrayUtils::get($params, 'action_by');
 		$comment = ArrayUtils::get($params, 'comment');
-		$collection_url = Server::Host() . '/' . get_api_project_from_request() . "/collections/{$collection}/{$item}";
-		$comments_url = Server::Host() . '/' . get_api_project_from_request() . "/ext/comments/?item={$item}";
+		$collection_url = Server::Host() . '/admin/#/' . get_api_project_from_request() . "/collections/{$collection}/{$item}";
+		$comments_url = Server::Host() . '/admin/#/' . get_api_project_from_request() . "/ext/comments/?comment={$id}";
 		$collection_name = ucwords( StringUtils::underscoreToSpace($collection) );
 		
 		# Get the details for the comment
