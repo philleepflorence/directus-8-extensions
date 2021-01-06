@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-module">
+	<div class="modules-notifications module-page-root">
 		
 		<v-header 
 			:title="getContent('title')" 
@@ -448,7 +448,7 @@
 </script>
 
 <style lang="scss">
-	.modules-module {
+	.modules-notifications {
 		padding: var(--page-padding);
 		
 		.modules-module-content {

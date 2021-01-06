@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-module module-page-root">
+	<div class="modules-guides module-page-root">
 		
 		<v-header 
 			:title="content('title')" 
@@ -35,7 +35,19 @@
 		
 		<div class="modules-module-content modules-content animated fadeIn" v-else-if="loaded">
 			
-			<div class="modules-module-markdown" :ref="`markdown`" v-html="html" @click.stop.prevent="onClickContentLink" v-if="html"></div>
+			<section class="modules-module-markdown modules-module-section" :ref="`section`" v-if="section">
+				<h1 class="modules-module-section" :id="section.slug" v-html="section.headline"></h1>
+				<p class="text-muted modules-module-section" v-html="section.description"></p>
+				<hr>
+				<p v-for="(link, slug) in section.nav">
+				<a class="info-sidebar-nav" href="#" :data-href="link" :data-curl="section.curl" @click.stop.prevent="onClickNavigation($event, link)">
+					<span class="info-sidebar-nav-icon"><v-icon :name="getIcon(slug, group)" left></span>
+					<span class="info-sidebar-nav-text">{{ formatStartCase(slug) }}</span>
+				</a>
+				</p>
+			</section>
+			
+			<div class="modules-module-markdown" :ref="`markdown`" v-html="html" @click.stop.prevent="onClickContentLink" v-else-if="html"></div>
 			
 			<div class="modules-module-markdown" v-else-if="results">
 				<ol class="modules-module-results">
@@ -52,9 +64,9 @@
 			<section class="info-sidebar-section">
 				<h2 class="font-accent">{{ content('title') }}</h2>
 				<p class="p">{{ content('description') }}</p>
-				<p class="p">{{ content('disclaimer') }}</p>
+				<p class="p" v-for="disclaimer in content('disclaimer')" v-html="disclaimer"></p>
 			</section>
-			<section class="info-sidebar-section">
+			<section class="info-sidebar-section info-sidebar-search">
 				<h2 class="font-accent">{{ content('form.search.headline') }}</h2>								
 				<div class="info-sidebar-row">
 					<v-input
@@ -87,20 +99,22 @@
 					</v-button>
 				</div>
 			</section>
-			<nav class="info-sidebar-section info-sidebar-nav" v-for="(section, group) in navigation">
-				<h2 class="font-accent">{{ section.headline }}</h2>
-				<a class="info-sidebar-nav" href="#" :data-href="link" v-for="(link, slug) in section.nav" @click.stop.prevent="onClickNavigation($event, link)">
-					<span class="info-sidebar-nav-icon"><v-icon :name="getIcon(slug, group)" left></span>
-					<span class="info-sidebar-nav-text">{{ formatStartCase(slug) }}</span>
-				</a>
-			</nav>			
+			<section class="info-sidebar-navigation" v-if="navigation">
+				<nav class="info-sidebar-section info-sidebar-nav" v-for="(section, group) in navigation" v-if="section.nav" :data-section="group">
+					<h2 class="font-accent" @click.stop.prevent="onClickNavigation($event, `/${ group }`)">{{ section.headline }}</h2>
+					<a class="info-sidebar-nav" href="#" :data-href="link" v-for="(link, slug) in section.nav" :data-curl="section.curl" @click.stop.prevent="onClickNavigation($event, link)">
+						<span class="info-sidebar-nav-icon"><v-icon :name="getIcon(slug, group)" left></span>
+						<span class="info-sidebar-nav-text">{{ formatStartCase(slug) }}</span>
+					</a>
+				</nav>	
+			</section>		
 		</v-info-sidebar>
 		
 	</div>
 </template>
 
 <script>
-	import { forEach, get, set, size, startCase, trimStart } from 'lodash';
+	import { cloneDeep, forEach, get, set, size, startCase, trimStart } from 'lodash';
 	import marked from 'marked';
 	import sbd from 'sbd';
 	
@@ -112,10 +126,15 @@
 			return {
 				cache: {},
 				contents: $meta.contents,
+				curr: {
+					nav: null,
+					path: null
+				},
 				html: null,
+				section: null,
 				query: null,
 				icon: $meta.icon,
-				navigation: $meta.github.navigation,
+				navigation: null,
 				menu: {},
 				loading: false,
 				loaded: false,
@@ -196,6 +215,18 @@
 			locale () {
 				return get(this.$store.state, 'settings.values.default_locale');
 			},
+			params () {
+				const path = window.location.hash.split("?");
+				
+				return new URLSearchParams(path.pop());
+			},
+			url () {
+				return [
+					window.location.origin,
+					window.location.pathname,
+					"#"
+				].join('');
+			},
 			viewresults () {
 				return this.results && this.query && this.html;
 			}			
@@ -204,12 +235,24 @@
 			get (path, params, callback) {
 				this.loading = true;
 				
-				let cache = get(this.cache, path.split('.').shift());
+				let fragments = trimStart(path, '/').replace('.md', '').split('/');
+				let key = `/${ fragments.join('/') }`;
+				let cache = get(this.cache, key);
+				
+				if (fragments.length === 1) {
+					this.loading = false;
+					
+					let section = get(this.navigation, fragments[0]);
+					
+					section = {...{ slug: fragments[0] }, ...section};
+					
+					return callback(null, section);
+				}
 				
 				if (cache) {
 					this.loading = false;
 					
-					return callback(cache);
+					return callback(cache, null);
 				}
 				
 				this.$api.api.get('/custom/curl/content', params).then((response) => {
@@ -221,7 +264,7 @@
 					
 					this.loading = false;
 					
-					return callback(html);
+					return callback(html, null);
 					
 				}).catch((error) => {
 					
@@ -232,7 +275,7 @@
 				});
 			},
 			getIcon (slug, group) {
-				let icon = get($meta.github.navigation, `${ group }.icons.${ slug }`);
+				let icon = get(this.navigation, `${ group }.icons.${ slug }`);
 				
 				if (icon) return icon;
 				
@@ -247,24 +290,50 @@
 			formatStartCase (input) {
 				return startCase(input);
 			},
-			load (path, element, cache) {				
+			loadItems () {				
+				let item = this.params.get("item");
+					item = item ? `/${ item.replace('.md', '/').replace('.', '/') }` : $meta.github.index;
+				
+				this.$api.getItems('contents_faqs', {
+					filter: {
+						application: "directus"
+					},
+					fields: "question,slug,answer,category,icon"
+				})
+				.then((response) => {					
+					this.renderMenu(response.data, item);			
+										
+					this.loadDocs(item, null, true);									
+				})
+				.catch((error) => {
+					this.error = error;
+					
+					this.renderMenu(null, item);
+					
+					this.loadDocs(item, null, true);
+				});
+			},
+			loadDocs (path, element, cache) {				
 				let route = {
 					path: path,
 					element: element
 				};
 				
+				this.curr.path = path;
+				
 				window.scrollTo(0, 0);
 				
 				if (!this.$back && !this.$forward) this.routes.push(route);
 				
-				this.processMenu(path);
+				this.processMenu();
 				
 				let url = $meta.github.baseURL + path;
 								
 				this.get(path, {
 					url: url
 				}, 
-				(html) => {
+				(html, section) => {
+					this.section = section;
 					this.html = html;				
 					
 					this.loaded = true;
@@ -281,6 +350,8 @@
 					
 					this.renderButtons();
 					
+					this.processMenu(path);
+										
 					if (cache) this.loadPages(1);
 				});
 			},
@@ -309,15 +380,18 @@
 					});
 				});					
 			},
-			onClickNavigation (e, link) {				
+			onClickNavigation (e, link) {								
 				if (this.$back) this.routes = this.routes.splice(0, this.$index);
-				
-				this.load(link);
+								
+				this.loadDocs(link);
 			},
 			onClickContentLink (e) {
 				let href = e.target.href.replace(window.location.origin, '');
 				
 				if (!href) return false;
+				
+				if (href.indexOf('/admin/') === 0) return window.location.assign(href);
+				else if (href.indexOf('#/app/') === 0) return this.$router.push(href.replace('#/', '/'));
 				
 				let path = e.target.getAttribute('href');
 				let fragments = trimStart(this.$path.path, '/').split('/');
@@ -328,7 +402,7 @@
 					href = href.replace('.html', '.md');
 					href = href.split('#');
 					
-					this.load(href[0], href[1]);					
+					this.loadDocs(href[0], href[1]);					
 				}
 				else window.open(e.target.href);				
 			},
@@ -345,7 +419,7 @@
 				
 				if (!route || !route.path) return false;			
 												
-				this.load(route.path, route.element);
+				this.loadDocs(route.path, route.element);
 			},	
 			onInputSearch (input) {
 				this.query = input;
@@ -353,7 +427,7 @@
 				if (input === '') {
 					this.query = null;
 					
-					this.load($meta.github.index);
+					this.loadDocs($meta.github.index);
 				}
 			},		
 			onSubmitSearch (input) {			
@@ -374,6 +448,7 @@
 				forEach(this.menu, (path) => {
 					let url = $meta.github.baseURL + path;
 					
+					
 					this.get(path, {
 						url: url
 					}, 
@@ -388,13 +463,13 @@
 			},
 			processMenu (path) {
 				if (path) {
-					if (this.$nav) this.$nav.classList.remove('active');
+					if (this.curr.nav) this.curr.nav.classList.remove('active');
 				
-					this.$nav = this.$el.querySelector(`[data-href="${ path }"]`);
+					this.curr.nav = this.$el.querySelector(`.info-sidebar-nav [data-href="${ path }"]`);
 					
-					if (this.$nav) this.$nav.classList.add('active');
+					if (this.curr.nav) this.curr.nav.classList.add('active');
 				}
-				else if (!path && this.$nav) this.$nav.classList.remove('active');
+				else if (!path && this.curr.nav) this.curr.nav.classList.remove('active');
 			},			
 			render (input) {
 				this.markdown.patterns.forEach((pattern) => {
@@ -420,6 +495,26 @@
 					id = `modules-guides-${ id }`.replace(/-{2,}/g, '-');
 				
 				return `<h${ level } id="${ id }">${ text }</h${ level }>`;
+			},
+			renderMenu (items, path) {
+				this.navigation = cloneDeep($meta.github.navigation);
+				
+				if (items) {
+					forEach(items, (item) => {
+						set(this.cache, `/${ item.category }/${ item.slug }`, item.answer);
+						
+						set(this.navigation, `${ item.category }.icons.${ item.slug }`, item.icon);
+						set(this.navigation, `${ item.category }.nav.${ item.slug }`, `/${ item.category }/${ item.slug }`);
+					});
+				}
+				
+				forEach(this.navigation, (section) => {
+					forEach(section.nav, (value, key) => {
+						set(this.menu, key, value);
+					});
+				});
+				
+				if (path) this.processMenu(path);
 			},
 			renderSearch () {
 				
@@ -477,25 +572,21 @@
 				title: this.content('subtitle')
 			};
 		},
-		mounted () {
+		mounted () {	
 			this.markdown.options.renderer.heading = this.renderHeading;
 			
-			forEach(this.navigation, (section) => {
-				forEach(section.nav, (value, key) => {
-					set(this.menu, key, value);
-				});
-			});
-			
-			this.load($meta.github.index, null, true);
+			this.loadItems();
 		},
 		updated () {
 			if (this.element) this.scrollElement();
+			
+			if (this.curr.path && !this.curr.nav) this.processMenu(this.curr.path);
 		}
 	}
 </script>
 
 <style lang="scss">
-	.modules-module {
+	.modules-guides {
 		position: relative;
 		padding: var(--page-padding);
 		
@@ -514,18 +605,27 @@
 			}
 		}
 		
+		.info-sidebar-nav {
+			h2 {
+				cursor: pointer;
+			}
+		}
+		
+		.info-sidebar-search {
+			background: var(--blue-grey-850);
+			border-bottom: 2px solid var(--input-border-color);
+			padding: 20px 20px 30px 20px;
+			margin: 0 -20px;
+		}
+		
 		.modules-module-content {
 			display: flex;
-			align-items: center;
 			padding-top: 0 !important;
 		
 			.modules-module-markdown {
-				border: 1px solid var(--blue-grey-800);
 				font-size: 1rem;
 				width: 100%;
 				max-width: 960px;
-				margin: 0 auto;
-				padding: var(--page-padding);
 				
 				h1, .h1 {
 					font-size: 2.5rem;
@@ -647,6 +747,7 @@
 					    
 					    &:first-child:not(:only-child):not(:last-child):not(:empty) {
 						    font-family: var(--main-font-accent);
+						    font-size: 1.5rem;
 						    font-weight: 500;
 					    }
 					    
@@ -697,6 +798,26 @@
 						p {
 							line-height: 1.2rem;
 							margin-bottom: 0;
+						}
+					}
+				}
+				
+				&.modules-module-section {
+					h1.modules-module-section {
+						margin-bottom: 0 !important;
+					}
+					
+					p.modules-module-section {
+						font-size: 1.25rem !important;
+					}
+					
+					a {
+						display: flex;
+						align-items: center;
+						text-decoration: none;
+						
+						span.info-sidebar-nav-icon {
+							line-height: 24px !important;
 						}
 					}
 				}

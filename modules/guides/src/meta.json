@@ -1,6 +1,6 @@
 {
 	"name": "guides",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"icon": "book",
 	"types": [
 		"string"
@@ -8,11 +8,14 @@
 	"options": {},
 	"contents": {
 		"en-US": {
-			"title": "Guides",
+			"title": "Guides and Documentation",
 			"subtitle": "Guides - Directus App Guides and Documentation",
 			"description": "Directus App Guides and Documentation",
 			"navigation": "Guides",
-			"disclaimer": "To navigate between guides, click on any guide below or use the forward and back buttons on the left.",
+			"disclaimer": [
+				"To navigate between guides, click on any guide below or use the forward and back buttons on the left.",
+				"To get more information on each section, click on the headline of each guides section."
+			],
 			"exit": "To exit Guides, click on any navigation item!",
 			"form": {
 				"search": {
@@ -43,20 +46,50 @@
 		}
 	],
 	"github": {
-		"baseURL": "https://raw.githubusercontent.com/directus/docs/master",
+		"baseURL": "https://raw.githubusercontent.com/philleepflorence/directus-8-docs/master",
 		"index": "/getting-started/introduction.md",
 		"navigation": {
 			"getting-started": {
 				"headline": "Getting Started",
+				"description": "Novice Oriented. <br>For an introduction to the platform and what you must know to get started.",
+				"curl": true,
 				"icons": {
-					"introduction": "short_text"
+					"introduction": "short_text",
+					"use-cases": "zoom_in"
 				},
 				"nav": {
-					"introduction": "/getting-started/introduction.md"
+					"introduction": "/getting-started/introduction.md",
+					"use-cases": "/getting-started/use-cases.md"
 				}
+			},
+			"collection": {
+				"headline": "Working with Collections",
+				"description": "Learning Oriented. <br>For understanding the collections."
+			},
+			"concept": {
+				"headline": "Concepts",
+				"description": "Learning Oriented. <br>For understanding the platform."
+			},
+			"faqs": {
+				"headline": "Frequently Asked Questions",
+				"description": "Learning Oriented. <br>Look up common tasks and questions."
+			},
+			"guide": {
+				"headline": "How To Guides",
+				"description": "Problem Oriented. <br>Follow along with steps while working."
+			},
+			"reference": {
+				"headline": "Reference",
+				"description": "Information Oriented. <br>Look up info and specifications while working."
+			},
+			"tutorial": {
+				"headline": "Tutorials",
+				"description": "Learning Oriented. <br>Follow along case studies while working."
 			},
 			"guides": {
 				"headline": "Guides",
+				"description": "Problem Oriented. <br>Follow along with steps while working.",
+				"curl": true,
 				"icons": {
 					"user-guide": "account_circle",
 					"admin-guide": "supervised_user_circle",

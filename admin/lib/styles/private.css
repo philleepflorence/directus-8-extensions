@@ -723,6 +723,13 @@ body div.body * {
 	font-weight: 600 !important;
 }
 
+.form .type-note a {
+	color: var(--main-primary-color) !important;
+	border-bottom: 1px solid var(--main-primary-color);
+	font-weight: 500 !important;
+	text-decoration: none;
+}
+
 .form .field .v-button.launch {
 	width: 100%;
 }
@@ -942,6 +949,10 @@ body .v-modal #modal-title {
 .v-activity.activity:before {
 	top: 210px !important;
 	height: calc(100% - 235px) !important;
+}
+
+body .layout-options .draggable .checkbox {
+	max-width: 215px;
 }
 
 @media (min-width: 1000px) {		

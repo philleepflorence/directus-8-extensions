@@ -12,6 +12,11 @@ body[data-page-root="modules-modules page-root"] {
 	min-height: calc(100vh - 140px) !important;
 }
 
+.module-page-root .modules-module-loading {
+	position: relative;
+	border-bottom: 2px solid var(--blue-grey-900);
+}
+
 @media (min-width: 1954px) {
 	body:not(.info-active):not(.info-wide-active) .module-page-root {
 		min-height: calc(100vh - 140px) !important;
@@ -40,6 +45,10 @@ body[data-page-root="modules-modules page-root"] {
 .module-page-root h6 {
 	color: var(--main-primary-color);
 	font-family: var(--main-font-accent);
+}
+
+.module-page-root .text-muted {
+	color: var(--blue-grey-500) !important;
 }
 
 .modules-grid-title {

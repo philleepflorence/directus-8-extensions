@@ -1,6 +1,6 @@
 {
 	"name": "modules",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"icon": "extension",
 	"contents": {
 		"en-US": {
@@ -14,8 +14,8 @@
 			},
 			"modules": {
 				"guides": {
-					"title": "Guides and Documentation",
-					"description": "Guides and Documentation on using the Directus App",
+					"title": "Documentation and Guides",
+					"description": "Guides and Documentation on working with the Directus App and API",
 					"path": "/app/ext/guides",
 					"icon": "book",
 					"analytics": "Guides"
@@ -53,13 +53,6 @@
 					"description": "CDN Static Assets and Documents",
 					"path": "/app/ext/cdn",
 					"icon": "cloud",
-					"analytics": "Items"
-				},
-				"faqs": {
-					"title": "Help and FAQs",
-					"description": "Get help with common tasks and more",
-					"path": "/app/ext/help",
-					"icon": "question_answer",
 					"analytics": "Items"
 				},
 				"icons": {

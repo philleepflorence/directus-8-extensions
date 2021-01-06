@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-modules module-page-root">
+	<div class="modules-analytics module-page-root">
 		
 		<v-header 
 			:title="getContent('subtitle')" 
@@ -127,7 +127,7 @@
 </script>
 
 <style lang="scss" scoped>
-	.modules-modules {
+	.modules-analytics {
 		padding: 1rem;
 		
 		.modules-modules-content {

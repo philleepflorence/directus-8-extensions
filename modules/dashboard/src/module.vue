@@ -12,7 +12,7 @@
 			<v-progress-linear background-color="--main-primary-color" color="--blue-grey-700" indeterminate>
 		</div>
 		
-		<div class="modules-dashboard-content modules-content">
+		<div class="modules-dashboard-content modules-content" v-else>
 			
 			<div v-for="(row, index) in getContent('modules')"
 				:class="`modules-dashboard-grid modules-dashboard-${index} animated fadeInUpSmall a-delay`" 				 

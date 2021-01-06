@@ -147,11 +147,8 @@
 			},
 			params () {
 				const path = window.location.hash.split("?");
-				const index = path[0].replace('#/', '');
 				
-				if (window.GET) return window.GET[index];
-				
-				return null;
+				return new URLSearchParams(path.pop());
 			},
 			url () {
 				return [
@@ -307,7 +304,7 @@
 				});
 			},
 			render () {
-				const comment = get(this.params, "comment");
+				const comment = this.params.get("comment");
 				const element = comment && this.$refs[comment] ? this.$refs[comment][0] : null;
 				
 				if (element) {

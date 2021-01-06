@@ -390,18 +390,6 @@ For now, use this repository as a guide on creating your own extensions.
 │   │   └── src
 │   │       ├── meta.json
 │   │       └── module.vue
-│   ├── help
-│   │   ├── dist
-│   │   │   ├── meta.json
-│   │   │   ├── module.css
-│   │   │   ├── module.js
-│   │   │   └── module.js.map
-│   │   ├── package-lock.json
-│   │   ├── package.json
-│   │   ├── readme.md
-│   │   └── src
-│   │       ├── meta.json
-│   │       └── module.vue
 │   ├── icons
 │   │   ├── dist
 │   │   │   ├── meta.json

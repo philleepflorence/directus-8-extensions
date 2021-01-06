@@ -99,7 +99,9 @@ body {
 	--blue-grey-500: var(--grey-500) !important;
 	--blue-grey-600: var(--grey-600) !important;
 	--blue-grey-700: var(--grey-700) !important;
+	--blue-grey-750: #535353 !important;
 	--blue-grey-800: var(--grey-800) !important;
+	--blue-grey-850: #303030 !important;
 	--blue-grey-900: var(--grey-900) !important;
 	
 	--modal-header-background-color: var(--main-primary-color) !important;

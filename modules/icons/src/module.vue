@@ -1,5 +1,5 @@
 <template>
-	<div class="modules-icons">
+	<div class="modules-icons module-page-root">
 		<v-header 
 			:title="content('title')" 
 			:breadcrumb="breadcrumb" 

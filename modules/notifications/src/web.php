@@ -48,7 +48,7 @@ if (file_exists($maintenanceFlagPath)) {
 	$content = file_get_contents($maintenanceFlagPath);
 	$content = $content ? json_decode($content, true) : [];
 	
-	$message = $content[$mode] ?? 'The API is currently down for maintenance. Please try again later.';
+	$admin = $content[$mode] ?? 'The API is currently down for maintenance. Please try again later.';
 	$redirect = $content['redirect'];
 	
 	if ($redirect && $mode === "api") {

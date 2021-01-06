@@ -1,6 +1,6 @@
 {
 	"name": "Comments",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Display all comments in the Directus Activity Collection",
 	"main": "",
 	"scripts": {

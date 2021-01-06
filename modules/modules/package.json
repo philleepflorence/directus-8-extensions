@@ -1,6 +1,6 @@
 {
 	"name": "Modules",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"description": "Collection of all custom modules available to the Directus application",
 	"main": "",
 	"scripts": {

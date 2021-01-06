@@ -1,6 +1,6 @@
 {
 	"name": "dashboard",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"description": "Collection of all modules available in the Directus App - Landing Page",
 	"main": "",
 	"scripts": {

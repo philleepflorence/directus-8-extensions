@@ -12,10 +12,11 @@
 			<v-progress-linear background-color="--main-primary-color" color="--blue-grey-700" indeterminate>
 		</div>
 		
-		<div class="modules-modules-content modules-content animated fadeIn">
+		<div class="modules-modules-content modules-content animated fadeIn" v-else>
 			
 			<div v-for="(row, index) in getContent('modules')"
-				:class="`modules-modules-grid modules-modules-${index} animated fadeInUpSmall a-delay`" 				 
+				:class="`modules-modules-grid modules-modules-${index} animated fadeInUpSmall a-delay`" 
+				:data-module="index"				 
 				@click="onClick(row.path)">
 				<div class="flex-item">
 					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
@@ -128,6 +129,10 @@
 				position: relative;
 				overflow: hidden;
 				animation-duration: 600ms;
+				
+				&[data-module="guides"] {
+					grid-column: 1/3!important;
+				}
 				
 				.flex-item {
 					flex-grow: 1;
