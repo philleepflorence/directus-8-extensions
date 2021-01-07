@@ -1,11 +1,11 @@
 {
 	"name": "Guides",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"description": "Directus App Guides and Documentation",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/guides",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/guides",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/guides",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/guides",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [

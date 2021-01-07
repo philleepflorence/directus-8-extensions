@@ -4,8 +4,8 @@
 	"description": "Send a request to an endpoint from an collection item details page",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/xhr",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/xhr",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/xhr",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/xhr",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [],

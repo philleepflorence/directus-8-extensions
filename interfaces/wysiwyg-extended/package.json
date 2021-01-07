@@ -4,8 +4,8 @@
 	"description": "Renders a wysiwyg interface that allows the use of thumbnails",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/wysiwyg-extended",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/wysiwyg-extended",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/wysiwyg-extended",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/wysiwyg-extended",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [

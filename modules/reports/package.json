@@ -4,8 +4,8 @@
 	"description": "Data insights, reporting, and analytics",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/reports",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/reports",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/reports",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/reports",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [

@@ -4,8 +4,8 @@
 	"description": "Collection of all modules available in the Directus App - Landing Page",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/dashboard",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/dashboard",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/dashboard",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/dashboard",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [

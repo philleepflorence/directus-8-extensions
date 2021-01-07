@@ -4,8 +4,8 @@
 	"description": "Renders a Many to One Interface that allows for displaying HTML and Filtering",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/many-to-one-extended",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/many-to-one-extended",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/many-to-one-extended",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/many-to-one-extended",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [

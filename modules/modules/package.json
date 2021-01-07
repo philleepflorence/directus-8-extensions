@@ -4,8 +4,8 @@
 	"description": "Collection of all custom modules available to the Directus application",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/modules",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/modules",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/modules",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/modules",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [

@@ -4,8 +4,8 @@
   "description": "Renders a Text Field for displaying HTML Snippets",
   "main": "",
   "scripts": {
-    "build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/text-input-html",
-    "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/text-input-html",
+    "build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/text-input-html",
+    "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/text-input-html",
     "dist": "directus-extensions build --input ./src --output ./dist"
   },
   "keywords": [

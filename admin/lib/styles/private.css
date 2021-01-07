@@ -145,7 +145,7 @@ body .page-root {
 }
 
 .v-input.icon-right .char-count {
-	right: 40px;
+	right: 40px !important;
 }
 
 .v-header, 
@@ -716,6 +716,7 @@ body div.body * {
 
 .form .type-note {
 	font-style: normal;
+	line-height: 1.6;
 }
 
 .form .type-note strong {
@@ -749,18 +750,6 @@ body div.body * {
 	}
 }
 
-@media (min-width: 1800px) {
-	.form >.full .subgrid {
-		grid-template-columns: repeat(8, 135px) !important;
-	}
-	.form >.half .subgrid,
-	.form >.half-left .subgrid,
-	.form >.half-right .subgrid,
-	.form >.half-space .subgrid {
-		grid-template-columns: repeat(4, 135px) !important;
-	}
-}
-
 @media (min-width: 1440px) {
 	.form >.full .subgrid {
 		grid-template-columns: repeat(6, 135px) !important;
@@ -770,6 +759,21 @@ body div.body * {
 	.form >.half-right .subgrid,
 	.form >.half-space .subgrid {
 		grid-template-columns: repeat(3, 135px) !important;
+	}
+}
+
+@media (min-width: 1800px) {
+	.form >.full .subgrid {
+		grid-template-columns: repeat(7, 135px) !important;
+	}
+	.form >.full .subgrid[input-name="status"] {
+		grid-template-columns: repeat(8, 125px) !important;
+	}
+	.form >.half .subgrid,
+	.form >.half-left .subgrid,
+	.form >.half-right .subgrid,
+	.form >.half-space .subgrid {
+		grid-template-columns: repeat(4, 135px) !important;
 	}
 }
 
@@ -953,6 +957,12 @@ body .v-modal #modal-title {
 
 body .layout-options .draggable .checkbox {
 	max-width: 215px;
+}
+
+body [data-field="2fa_secret"] button {
+	display: block;
+	margin-top: 1rem;
+	width: 200px;
 }
 
 @media (min-width: 1000px) {		

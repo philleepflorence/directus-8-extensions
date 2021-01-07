@@ -114,7 +114,7 @@
 </template>
 
 <script>
-	import { cloneDeep, forEach, get, set, size, startCase, trimStart } from 'lodash';
+	import { cloneDeep, forEach, get, kebabCase, set, size, startCase, trimStart } from 'lodash';
 	import marked from 'marked';
 	import sbd from 'sbd';
 	
@@ -128,8 +128,10 @@
 				contents: $meta.contents,
 				curr: {
 					nav: null,
-					path: null
+					path: null,
+					scrolled: null
 				},
+				div: null,
 				html: null,
 				section: null,
 				query: null,
@@ -350,9 +352,9 @@
 					
 					this.renderButtons();
 					
-					this.processMenu(path);
+					this.processMenu(path);					
 										
-					if (cache) this.loadPages(1);
+					if (cache) this.loadPages(1, element);					
 				});
 			},
 			loadPages (loaded) {			
@@ -378,7 +380,7 @@
 						
 						if (loaded >= len) this.processing = 0;
 					});
-				});					
+				});			
 			},
 			onClickNavigation (e, link) {								
 				if (this.$back) this.routes = this.routes.splice(0, this.$index);
@@ -461,6 +463,19 @@
 					});
 				});					
 			},
+			processHTML (input) {
+				this.div.innerHTML = input;
+				
+				let headers = this.div.querySelectorAll("h1, h2, h3, h4, h5, h6");
+				
+				forEach(headers, (header) => {
+					if (!header.id) header.id = kebabCase(header.textContent);
+				});	
+				
+				if (size(headers)) return this.div.innerHTML;	
+				
+				return input;
+			},
 			processMenu (path) {
 				if (path) {
 					if (this.curr.nav) this.curr.nav.classList.remove('active');
@@ -476,7 +491,7 @@
 					input = input.replace(pattern.pattern, pattern.text)
 				});
 				
-				return input;
+				return this.processHTML(input);
 			},
 			renderButtons () {
 				let max = this.routes.length - 1;
@@ -501,7 +516,9 @@
 				
 				if (items) {
 					forEach(items, (item) => {
-						set(this.cache, `/${ item.category }/${ item.slug }`, item.answer);
+						const html = this.processHTML(item.answer);
+						
+						set(this.cache, `/${ item.category }/${ item.slug }`, html);
 						
 						set(this.navigation, `${ item.category }.icons.${ item.slug }`, item.icon);
 						set(this.navigation, `${ item.category }.nav.${ item.slug }`, `/${ item.category }/${ item.slug }`);
@@ -547,15 +564,19 @@
 				if (!this.results) this.html = this.content('form.search.empty');
 				else this.html = null;
 			},
-			scrollElement () {
-				let element = document.getElementById(`modules-guides-${ this.element }`);
+			scrollElement (element) {
+				let $element = document.getElementById(element);
+				console.log("debug - development: scrollElement", element, $element);
 				
-				if (!element) return false;
+				if (!$element) return false;
+				
+				$element.classList.add('active');
+				
+				this.curr.scrolled = element;
 				
 				setTimeout(() => {
-					window.scrollTo({
-						top: element.offsetTop + window.scrollY - 100,
-						behavior: 'smooth'
+					$element.scrollIntoView({
+						block: "center"
 					});
 				}, 300);
 			},
@@ -574,13 +595,16 @@
 		},
 		mounted () {	
 			this.markdown.options.renderer.heading = this.renderHeading;
+			this.div = document.createElement("div");
 			
 			this.loadItems();
 		},
-		updated () {
-			if (this.element) this.scrollElement();
-			
+		updated () {			
 			if (this.curr.path && !this.curr.nav) this.processMenu(this.curr.path);
+			
+			let element = this.params.get("id");
+			
+			if (element && this.curr.scrolled !== element) this.scrollElement(element);
 		}
 	}
 </script>
@@ -658,7 +682,22 @@
 					margin-bottom: 0.5em;
 					
 					&:not(:first-child) {
-						margin-top: 1.5em;
+						margin-top: 1.75em;
+					}
+					
+					&.active {
+						color: var(--main-primary-color) !important;
+					}
+					
+					& + hr {
+						margin-top: 0 !important;
+						margin-bottom: 0.5rem !important;
+						
+						& + p {
+							color: var(--blue-grey-500);
+							font-size: 1.3rem;
+							font-weight: 300;
+						}
 					}
 				}
 				

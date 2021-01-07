@@ -4,8 +4,8 @@
 	"description": "Preview a collection item by compiling the URL from one or more fields",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/preview-extended",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/preview-extended",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/preview-extended",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/preview-extended",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [],

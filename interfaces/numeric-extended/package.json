@@ -4,8 +4,8 @@
   "description": "Extends the numeric interface to allow for min, max, and length",
   "main": "",
   "scripts": {
-    "build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/numeric-extended",
-    "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/numeric-extended",
+    "build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/numeric-extended",
+    "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/numeric-extended",
     "dist": "directus-extensions build --input ./src --output ./dist"
   },
   "keywords": [

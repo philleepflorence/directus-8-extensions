@@ -4,8 +4,8 @@
 	"description": "Send Push, SMS, or Email Notifications or Messages to Application Users or Email Messages to Directus Users",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/notifications",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/notifications",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/notifications",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/notifications",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [

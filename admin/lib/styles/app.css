@@ -33,4 +33,8 @@
 		min-width: 540px;
 		text-align: right;
 	}
+	
+	body.public:after {
+		font-size: 2.02vw;
+	}
 }

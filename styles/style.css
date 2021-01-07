@@ -135,6 +135,8 @@ body {
 	
 	--page-root-max-width: 1600px !important;
 	--header-height-expanded: 108px !important;
+	
+	--input-note-margin: 8px !important;
 }
 
 @media (min-width: 1440px) {

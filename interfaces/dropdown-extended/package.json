@@ -4,8 +4,8 @@
 	"description": "Renders a dropdown interface that pulls values from a field in a collection",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/dropdown-extended",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/interfaces/dropdown-extended",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/dropdown-extended",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/dropdown-extended",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [

@@ -4,8 +4,8 @@
 	"description": "Analytics of the Application Visitors and Demographics",
 	"main": "",
 	"scripts": {
-		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/analytics",
-		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/suite/public/extensions/custom/modules/analytics",
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/analytics",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/analytics",
 		"dist": "directus-extensions build --input ./src --output ./dist"
 	},
 	"keywords": [
