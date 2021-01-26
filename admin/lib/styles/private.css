@@ -473,6 +473,20 @@ button.not-managed {
 	letter-spacing: 0.5px !important;
 }
 
+.tox-menu,
+.tox-menu .tox-collection__group,
+.tox-menu .tox-collection__group .tox-menu-nav__js,
+.tox-menu .tox-collection__group .tox-menu-nav__js .tox-collection__item-label,
+.tox-menu .tox-collection__group .tox-menu-nav__js .tox-collection__item-label p {
+	background-color: var(--blue-grey-800) !important;
+	border: none !important;
+	border-radius: 0 !important;
+}
+
+.tox-menu .tox-collection__group .tox-menu-nav__js + .tox-menu-nav__js {
+	border-top: 3px var(--blue-grey-700) solid !important;
+}
+
 .interface-wysiwyg .tox .tox-editor-container .tox-edit-area iframe {
 	font-family: var(--main-font-main) !important;
 }
@@ -767,7 +781,7 @@ body div.body * {
 		grid-template-columns: repeat(7, 135px) !important;
 	}
 	.form >.full .subgrid[input-name="status"] {
-		grid-template-columns: repeat(8, 125px) !important;
+		grid-template-columns: repeat(8, 115px) !important;
 	}
 	.form >.half .subgrid,
 	.form >.half-left .subgrid,

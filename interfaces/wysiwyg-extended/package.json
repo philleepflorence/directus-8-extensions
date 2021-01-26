@@ -1,6 +1,6 @@
 {
 	"name": "wysiwyg-extended",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Renders a wysiwyg interface that allows the use of thumbnails",
 	"main": "",
 	"scripts": {

@@ -25,6 +25,16 @@ p, ul, ol, blockquote, li {
 	font-size: 1rem !important;
 }
 
+p.lead {
+	font-size: 1.3rem !important;
+	font-weight: 300 !important;
+}
+
+p.small {
+	font-size: 0.875rem !important;
+	font-weight: 500 !important;
+}
+
 figure.image {
 	margin: 0.5rem -20px;
 	width: calc(100% + 40px) !important;

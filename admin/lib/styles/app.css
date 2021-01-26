@@ -35,6 +35,6 @@
 	}
 	
 	body.public:after {
-		font-size: 2.02vw;
+		font-size: 2.02vw !important;
 	}
 }
