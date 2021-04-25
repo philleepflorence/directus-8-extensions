@@ -2,7 +2,7 @@
 	<div class="modules-dashboard module-page-root">
 		
 		<v-header 
-			:title="getContent('title')" 
+			:title="content('title')" 
 			:breadcrumb="breadcrumb" 
 			:icon="icon" 
 			settings>
@@ -11,27 +11,55 @@
 		<div class="modules-module-loading" v-if="loading">
 			<v-progress-linear background-color="--main-primary-color" color="--blue-grey-700" indeterminate>
 		</div>
-		
-		<div class="modules-dashboard-content modules-content" v-else>
 			
-			<div v-for="(row, index) in getContent('modules')"
-				:class="`modules-dashboard-grid modules-dashboard-${index} animated fadeInUpSmall a-delay`" 				 
-				@click="onClick(row.path)">
-				<div class="flex-item">
-					<span class="v-icon icon"><i>{{ row.icon }}</i></span>
-					<h3 class="font-accent modules-grid-title" v-html="row.title"></h3>
-					<p class="lead modules-grid-description" v-html="row.description"></p>
-					<div class="modules-dashboard-analytics">
-						<v-spinner
-							v-show="loading"
-							line-fg-color="var(--blue-grey-300)"
-							line-bg-color="var(--blue-grey-200)"
-							class="spinner">
-						</v-spinner>
-						<p class="lead animated fadeIn" v-if="analytics[index]"><span class="font-accent">{{ analytics[index].total }}</span><span>{{ row.analytics }}</span></p>
-					</div>
-				</div>
-			</div>
+		<div class="modules-dashboard-content modules-content animated fadeIn" v-else>
+			
+			<header class="modules-dashboard-header modules-header">
+				<h2 v-html="header.title"></h2>
+				<p v-html="header.description"></p>
+			</header>
+			
+			<v-details 
+				:title="content('titles.modules')" 
+				type="break" 
+				open>
+				<nav class="module-nav">
+					<ul class="module-ul">
+						<v-card
+							v-for="(row, key, index) in content('modules')"
+							element="li"
+							:title="row.title"
+							:subtitle="subtitle(row, key)"
+							color="main-primary-color"
+							:to="row.path"
+							:icon="row.icon">	
+							/*
+								Use the title slot and v-tooltip to show the description.
+							*/
+						</v-card>				
+					</ul>
+				</nav>
+			</v-details>
+			
+			<v-details 
+				v-for="listing in collections"
+				:title="listing.title" 
+				type="break" 
+				open>
+				<nav class="module-nav">
+					<ul class="module-ul">
+						<v-card
+							v-for="collection in listing.collections"
+							element="li"
+							:title="collection.title"
+							:subtitle="collection.subtitle"
+							color="main-primary-color"
+							:to="collection.path"
+							:icon="collection.icon">	
+						</v-card>				
+					</ul>
+				</nav>
+			</v-details>
 			
 		</div>
 		
@@ -40,138 +68,118 @@
 	</div>
 </template>
 
-<script>
-	import { get } from 'lodash';
-	
+<script>	
 	import $meta from './meta.json';
+	import $mixins from "./mixins/modules/analytics.js";
 	
 	export default {
 		name: 'Dashboard',	
+		mixins: [
+			$mixins
+		],
 		data () {
 			return {
-				analytics: {},
 				contents: $meta.contents,
-				icon: $meta.icon,
-				loading: true
+				icon: $meta.icon
 			};
 		},	
 		computed: {
 			breadcrumb () {
 				return [];
 			},
-			locale () {
-				return get(this.$store.state, 'settings.values.default_locale');
-			}
-		},
-		methods: {
-			getContent (input) {
-				let translation = get(this.contents, this.locale);
-					translation = translation || get(this.contents, 'en-US');
-
-				return get(translation, input);
+			header () {
+				return {
+					title: `Hello ${ this.user.first_name } ${ this.user.last_name }`,
+					description: this.content('description')
+				};
 			},
-			loadAnalytics () {
-				this.loading = true;
-												
-				this.$api.api.get('/custom/analytics/dashboard').then((response) => {
-					
-					this.loading = false;
-					
-					this.analytics = response;
-					
-				}).catch((error) => {
-					
-					this.error = error;
-					
-					this.loading = false;
-				});
-			},
-			onClick (path) {
-				this.$router.push(path);
+			modules () {
+				return this.$store.state.extensions.modules;
 			}
 		},
 		metaInfo() {
 			return {
-				title: this.getContent('subtitle')
+				title: this.content('subtitle')
 			};
 		},
-		mounted () {
-			this.loadAnalytics();
+		created () {
+			/*
+				Send a list of collections to pull the items count from the analytics endpoint for the dashboard and application modules...
+				Application can have last edited, comments, et al...
+			*/
+			this.load('dashboard');			
 		}
 	}
 </script>
 
-<style lang="scss" scoped>
-	.modules-dashboard {
+<style lang="scss">
+	.module-page-root {
 		padding: 1rem;
 		
-		.modules-dashboard-content {
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			grid-gap: 1rem;
+		.modules-dashboard-content 
+		{
+			padding: 1rem;
 			
-			.modules-dashboard-grid {
-				background-color: rgba(white, 0.1);
-				cursor: pointer;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				position: relative;
-				overflow: hidden;
-				animation-duration: 600ms;
+			.modules-dashboard-header
+			{
+				padding-bottom: 4rem;
 				
-				&.modules-dashboard-modules {
-					grid-column: 1/1 !important;
-					grid-row: 1/3 !important;
+				h2 {
+					color: var(--heading-text-color);
+					font-family: var(--main-font-body);
+					font-size: 28px;
+					line-height: 32px;
+					font-weight: 300;
+					margin-bottom: 12px;
 				}
 				
-				&.modules-dashboard-project {
-					grid-column: 2/4 !important;
+				p {
+					color: var(--note-text-color);
+					font-size: var(--input-font-size);
+					max-width: 768px;
 				}
-				
-				.flex-item {
-					flex-grow: 1;
-					text-align: center;
-					color: var(--page-text-color);
-					padding: 1.5rem;
-					
-					h3 {
-						font-size: 1.5rem;
-						margin: 0 auto;
-					}
-					
-					.lead {
-						font-size: 1rem;
-						
-					}
-					
-					.icon {
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						width: 50px;
-						height: 50px;
-						background-color: var(--main-primary-color);
-						margin: 0 auto 1rem auto;
-						border-radius: 50%;						
-					}
-					
-					.modules-dashboard-analytics {
-						position: relative;
-						padding: 0.5rem 1rem;
-						
-						p.lead {
-							color: var(--blue-grey-500);
-							font-size: 1.5rem !important;
-							font-weight: 400 !important;
-							text-align: center;
-						
-							span + span {
-								color: var(--blue-grey-600);
-								font-size: 0.875rem;
-								font-weight: 500 !important;
-								text-transform: lowercase;
+			}
+			
+			.v-details 
+			{
+				.content 
+				{
+					.module-nav 
+					{
+						.module-ul 
+						{
+							padding: 0;
+							display: grid;
+							grid-template-columns: repeat(auto-fill, var(--card-size));
+							grid-gap: var(--card-horizontal-gap);
+							
+							.v-card {
 								display: block;
+								
+								a 
+								{
+									.body 
+									{
+										.title {
+											color: var(--blue-grey-300);
+											font-family: var(--main-font-body);
+										}
+										
+										.subtitle {
+											font-style: normal;
+										}
+									}
+								}
+								
+								@for $i from 1 through 10
+								{
+									&:nth-child(#{$i})
+									{
+										.header {
+											background: rgba(var(--main-primary-color-rgb), (0.75 - ($i * 0.05))) !important;
+										}
+									}
+								}
 							}
 						}
 					}
@@ -181,21 +189,5 @@
 	}
 	.v-spinner {
 		margin: auto;
-	}
-	.icon {
-		i {
-			font-size: 24px;
-		    font-family: Material Icons;
-		    font-weight: 400;
-		    font-style: normal;
-		    display: inline-block;
-		    line-height: 1;
-		    text-transform: none;
-		    letter-spacing: normal;
-		    word-wrap: normal;
-		    white-space: nowrap;
-		    font-feature-settings: "liga";
-		    vertical-align: middle;
-		}
 	}
 </style>

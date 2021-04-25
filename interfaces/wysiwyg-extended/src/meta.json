@@ -34,7 +34,7 @@
 			"comment": "Show, hide, and reorder toolbar options",
 			"interface": "checkboxes",
 			"default": [
-				"undo", "redo", "bold", "italic", "underline", "bullist", "numlist", "blockquote", "h1", "h2", "h3", "h4", "h5", "h6", "link", "unlink", "image", "media", "hr", "strikethrough", "subscript", "superscript", "indent", "table", "selectall", "copy", "cut", "paste", "removeformat", "remove", "code", "fullscreen"
+				"fullscreen", "undo", "redo", "bold", "italic", "underline", "bullist", "numlist", "blockquote", "h1", "h2", "h3", "h4", "h5", "h6", "link", "unlink", "image", "media", "hr", "strikethrough", "subscript", "superscript", "indent", "table", "selectall", "copy", "cut", "paste", "remove", "code", "codesample", "removeformat"
 			],
 			"options": {
 				"choices": {

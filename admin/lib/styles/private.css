@@ -934,6 +934,13 @@ body .v-modal #modal-title {
 	min-width: 160px;
 }
 
+.v-activity .content .comment {
+	word-wrap: break-word;
+	word-break: break-all;
+	hyphens: auto;
+	white-space: pre-wrap;
+}
+
 .v-activity.activity form.new-comment {
 	background-color: rgba(0, 0, 0, 0.2);
 	height: calc(4 * var(--input-height)) !important;;

@@ -1,6 +1,6 @@
 {
 	"name": "Many to One Extended",
-	"version": "1.4.0",
+	"version": "1.6.0",
 	"types": ["m2o"],
 	"relation": "m2o",
 	"icon": "call_merge",
@@ -12,6 +12,13 @@
 			"options": {
 				"placeholder": "{{title}} — {{author}}"
 			}
+		},
+		"display_value": {
+			"name": "Display Value",
+			"comment": "The content to display when a value is not present",
+			"interface": "text-input",
+			"default": "--",
+			"length": 30
 		},
 		"visible_fields": {
 			"name": "Visible Fields",
@@ -41,12 +48,21 @@
 			"interface": "json",
 			"advanced": true,
 			"options": {
-				"language": "application/json"
+				"language": "application/json",
+				"template": [{
+					"field": "field",
+					"operator": "operator",
+					"value": "value"
+				}]
 			},
 			"default": [{
 				"field": "field",
 				"operator": "operator",
 				"value": "value"
+			}, {
+				"field": "field",
+				"operator": "operator",
+				"data": "field"
 			}]
 		},
 		"parameters": {
@@ -55,7 +71,14 @@
 			"interface": "json",
 			"advanced": true,
 			"options": {
-				"language": "application/json"
+				"language": "application/json",
+				"template": {
+					"limit": "limit",
+					"offset": "offset",
+					"fields": "fields",
+					"q": "search query",
+					"status": "status"
+				}
 			},
 			"default": {
 				"sort": "-id"

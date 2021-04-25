@@ -1,5 +1,6 @@
 Icon
 .DS_Store
+.alias
 *.log
 .cache
 .vscode

@@ -6,7 +6,8 @@
 	"scripts": {
 		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/application",
 		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/modules/application",
-		"dist": "directus-extensions build --input ./src --output ./dist"
+		"dist": "directus-extensions build --input ./src --output ./dist",
+		"mixins": "rsync -rv ~/Sites/Directus/v8/extensions/mixins src && ls -al src/mixins"
 	},
 	"keywords": [
 		"custom",

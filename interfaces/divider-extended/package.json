@@ -1,0 +1,33 @@
+{
+	"name": "divider-extended",
+	"version": "1.2.0",
+	"description": "Extends the Divider Interface to allow for dynamic content loading with the overlay component, item configuration, and tools",
+	"main": "",
+	"scripts": {
+		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/divider-extended",
+		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/divider-extended",
+		"dist": "directus-extensions build --input ./src --output ./dist",
+		"mixins": "rsync -rv ~/Sites/Directus/v8/extensions/mixins src && ls -al src/mixins"
+	},
+	"keywords": [
+		"html",
+		"menu",
+		"previews",
+		"templates"
+	],
+	"author": "Philleep Florence",
+	"license": "GPL-3.0",
+	"dependencies": {
+		"@directus/extension-toolkit": "0.0.1",
+		"lodash": "^4.17.19",
+		"vue": "^2.6.11",
+		"vue-hot-reload-api": "^2.3.4",
+		"vuex": "^3.5.1"
+	},
+	"devDependencies": {
+		"@vue/component-compiler-utils": "^2.6.0",
+		"cssnano": "^4.1.10",
+		"sass": "^1.26.9",
+		"vue-template-compiler": "^2.6.12"
+	}
+}

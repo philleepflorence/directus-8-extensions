@@ -1,0 +1,34 @@
+{
+    "name": "text-input-extended",
+    "version": "1.2.0",
+    "description": "Renders a Text Field for parsing mustache templates and additional utilities",
+    "main": "",
+    "scripts": {
+        "build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/text-input-extended",
+        "dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/text-input-extended",
+        "dist": "directus-extensions build --input ./src --output ./dist",
+        "@migrations": "rsync -rv src/migrations ~/Sites/Directus/v8/extensions/migrations/text-input-extended",
+        "@components": "rsync -rv ~/Sites/Directus/v8/extensions/components src && ls -al src/components",
+        "@mixins": "rsync -rv ~/Sites/Directus/v8/extensions/mixins src && ls -al src/mixins"
+    },
+    "keywords": [
+        "html",
+        "code",
+        "snippet",
+        "templates"
+    ],
+    "author": "Philleep Florence",
+    "license": "GPL-3.0",
+    "dependencies": {
+        "@directus/extension-toolkit": "^0.0.1",
+        "lodash": "^4.17.21",
+        "vue": "^2.6.12",
+        "vue-hot-reload-api": "^2.3.4"
+    },
+    "devDependencies": {
+        "@vue/component-compiler-utils": "^2.6.0",
+        "cssnano": "^4.1.10",
+        "sass": "^1.17.3",
+        "vue-template-compiler": "^2.6.10"
+    }
+}

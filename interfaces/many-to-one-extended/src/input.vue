@@ -17,28 +17,31 @@
 					:disabled="readonly"
 					:value="valuePK"
 					:icon="options.icon"
-					@input="$emit('input', $event)"
-				/>
+					@input="$emit('input', $event)">
+				</v-select>
 			</div>
 			
 			<div 
 				class="many-to-one-extended-value">
-				<span class="no-wrap" v-html="displayValue"></span>
+				<span 
+					class="no-wrap" 
+					v-html="displayValue">					
+				</span>
 			</div>
 
 			<button
 				v-if="button"
 				class="interface-many-to-one-extended"
 				type="button"
-				@click="listingActive = true"
-			></button>
+				@click="listingActive = true">
+			</button>
 
 			<v-spinner
 				v-show="loading"
 				line-fg-color="var(--blue-grey-300)"
 				line-bg-color="var(--blue-grey-200)"
-				class="spinner"
-			></v-spinner>
+				class="spinner">
+			</v-spinner>
 
 			<v-item-select
 				v-if="listingActive"
@@ -49,8 +52,8 @@
 				:value="stagedValue || valuePK"
 				@input="stageValue"
 				@done="closeListing"
-				@cancel="cancelListing"
-			/>
+				@cancel="cancelListing">
+			</v-item-select>
 		</template>
 	</div>
 </template>
@@ -62,7 +65,7 @@
 	export default {
 		name: "InterfaceManyToOneExtended",
 		mixins: [mixin],
-		data() {
+		data () {
 			return {
 				button: true,
 				loading: false,
@@ -76,7 +79,7 @@
 			};
 		},
 		computed: {
-			displayValue() {
+			displayValue () {
 				let PK = this.relatedPrimaryKeyField;
 				let property = this.value && this.value[PK] ? this.value[PK] : this.value;
 				
@@ -85,12 +88,14 @@
 					return this.selectOptions[property];
 				}
 	
-				return null;
+				const displayValue = this.options.display_value || '--';
+	
+				return `<em>${ displayValue }</em>`;
 			},
 			/*
 				The parameters to use when loading items from the related collections
 			*/
-			parameters() {
+			parameters () {
 				let parameters = this.options.parameters || {};
 				
 				/*
@@ -104,7 +109,7 @@
 			/*
 				The filters to use when loading items from the related collections
 			*/
-			filters() {
+			filters () {
 				let filters = this.options.filters || [];
 				
 				/*
@@ -119,14 +124,14 @@
 				If the relationship is fully setup. 
 				If not, we can stop everything else and prevent a bunch of js errors
 			*/
-			relationSetup() {
+			relationSetup () {
 				if (!this.relation) return false;
 				return true;
 			},
 			/*
 				The name of the field that holds the primary key in the related collection
 			*/
-			relatedPrimaryKeyField() {
+			relatedPrimaryKeyField () {
 				return find(this.relation.collection_one.fields, {
 					primary_key: true
 				}).field;
@@ -138,7 +143,7 @@
 				This will extract that. 
 				If the value is already a primary key, we return that.
 			*/
-			valuePK() {
+			valuePK () {
 				if (isObject(this.value)) return this.value[this.relatedPrimaryKeyField];
 	
 				return this.value;
@@ -148,7 +153,7 @@
 				Will be based on the visible_fields option in the interface settings. 
 				NOTE: if that settings hasn't been configured, it will fallback on the fields that are in the dropdown template option
 			*/
-			relatedFields() {
+			relatedFields () {
 				let visibleFields = this.options.visible_fields;
 				
 				if (!visibleFields) return null;
@@ -161,7 +166,7 @@
 				a v-select component to render the dropdown
 			*/ 
 			
-			selectOptions() {
+			selectOptions () {
 				if (this.items.length === 0) return {};
 				
 				const render = this.$helpers.micromustache.compile(this.options.template);
@@ -174,7 +179,7 @@
 			}
 		},
 		watch: {
-			relation() {
+			relation () {
 				if (this.relationSetup) {
 					this.fetchItems();
 				}
@@ -203,7 +208,7 @@
 				We keep a local to-be-actually-staged copy of the value that's selected in the item-select component. 
 				This means that we can ignore saving this and set this back to null once the user closes the modal without selecting everything
 			*/ 
-			stageValue(primaryKey) {
+			stageValue (primaryKey) {
 				this.stagedValue = primaryKey;
 			},
 			/*
@@ -215,7 +220,7 @@
 				instead of the full nested object. 
 				In order to be able to render the preview of the selected item, we need to fetch its data.
 			*/ 
-			fetchItems() {
+			fetchItems () {
 				if (this.relation == null) return;
 	
 				const collection = this.relation.collection_one.collection;
@@ -254,7 +259,7 @@
 				Happens when the user clicks "done" in the item select modal. 
 				This will stage the pre-staged value and close the modal
 			*/ 
-			closeListing() {
+			closeListing () {
 				this.$emit("input", this.stagedValue);
 	
 				/*
@@ -287,7 +292,7 @@
 			/*
 				Ignore the pre-staged value and close the modal. Don't stage any value
 			*/ 
-			cancelListing() {
+			cancelListing () {
 				this.stagedValue = null;
 				this.listingActive = false;
 			}
@@ -296,89 +301,96 @@
 </script>
 
 <style lang="scss">
-	.interface-many-to-one.interface-many-to-one-extended {
-		position: relative;
-		max-width: var(--width-medium);
-	}
-	
-	.interface-many-to-one-extended .v-select {
-		margin-top: 0;
-	}
-	
-	.interface-many-to-one-extended .select-loading {
-		opacity: 0.5;
-	}
-	
-	.interface-many-to-one-extended .many-to-one-extended-value {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		background: transparent;
-	}
-	
-	.interface-many-to-one-extended .many-to-one-extended-value span {
-		display: flex;
-		align-items: center;
-		padding: 10px 10px 10px 38px;
-		height: 100%;
-		width: 100%;
-	}
-	
-	.interface-many-to-one-extended .many-to-one-extended-select .value .no-wrap {
-		display: none;
-	}
-	
-	.interface-many-to-one-extended button {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		background: transparent;
-		border: var(--input-border-width) solid var(--input-border-color);
-		border-radius: var(--border-radius);
-		transition: border var(--fast) var(--transition);
-	
-		&:hover {
-			transition: none;
-			border-color: var(--input-border-color-hover);
-		}
-	}
-	
-	.interface-many-to-one-extended .spinner {
-		position: absolute;
-		left: 0;
-		right: 0;
-		margin: 0 auto;
-		top: 12px;
-	}
-	
-	.interface-many-to-one-extended .search {
-		position: sticky;
-		left: 0;
-		top: 0;
-		z-index: 2;
-		background-color: var(--page-background-color);
-		&-input {
-			border-bottom: 1px solid var(--modal-header-background-color);
-			padding: 12px;
-	
-			& >>> input {
-				border-radius: 0;
-				border: none;
-				padding-left: var(--page-padding);
-				height: var(--header-height);
-	
-				&::placeholder {
-					color: var(--input-placeholder-color);
+	.interface-many-to-one {
+		&.interface-many-to-one-extended {
+			position: relative;
+			max-width: var(--width-medium);
+			
+			.v-select {
+				margin-top: 0;
+			}
+			
+			.select-loading {
+				opacity: 0.5;
+			}
+			
+			.many-to-one-extended-value {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background: transparent;
+				
+				span {
+					display: flex;
+					align-items: center;
+					padding: 10px 10px 10px 38px;
+					height: 100%;
+					width: 100%;
 				}
 			}
-		}
-	}
-	
-	.interface-many-to-one-extended .items {
-		height: calc(100% - var(--header-height) - 1px);
+			
+			.many-to-one-extended-select {
+				.value {
+					.no-wrap {
+						display: none;
+					}
+				}
+			}
+			
+			button {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background: transparent;
+				border: var(--input-border-width) solid var(--input-border-color);
+				border-radius: var(--border-radius);
+				transition: border var(--fast) var(--transition);
+			
+				&:hover {
+					transition: none;
+					border-color: var(--input-border-color-hover);
+				}
+			}
+			
+			.spinner {
+				position: absolute;
+				left: 0;
+				right: 0;
+				margin: 0 auto;
+				top: 12px;
+			}
+			
+			.search {
+				position: sticky;
+				left: 0;
+				top: 0;
+				z-index: 2;
+				background-color: var(--page-background-color);
+				
+				&-input {
+					border-bottom: 1px solid var(--modal-header-background-color);
+					padding: 12px;
+			
+					& >>> input {
+						border-radius: 0;
+						border: none;
+						padding-left: var(--page-padding);
+						height: var(--header-height);
+			
+						&::placeholder {
+							color: var(--input-placeholder-color);
+						}
+					}
+				}
+			}
+			
+			.items {
+				height: calc(100% - var(--header-height) - 1px);
+			}
+		}		
 	}
 </style>

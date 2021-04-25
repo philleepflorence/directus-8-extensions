@@ -451,6 +451,10 @@
 										
 										.comment {
 											cursor: text;
+											word-wrap: break-word;
+											word-break: break-word;
+											hyphens: auto;
+											white-space: pre-wrap;
 																					
 											&[contenteditable] {
 												color: var(--main-primary-color) !important;
@@ -473,6 +477,10 @@
 											font-size: 0.875rem;
 											margin-top: 5px;
 											padding: 0 10px 0 5px;
+											word-wrap: break-word;
+											word-break: break-word;
+											hyphens: auto;
+											white-space: pre-wrap;
 										}
 									}
 									

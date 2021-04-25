@@ -1,6 +1,6 @@
 {
 	"name": "analytics",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"icon": "pie_chart",
 	"types": [
 		"string"
@@ -9,8 +9,8 @@
 	"contents": {
 		"en-US": {
 			"title": "Analytics",
-			"subtitle": 'Analytics - Report of the Application Visitors',
-			"description": 'Analytics Report of the Application Visitors',
+			"subtitle": "Analytics - Report of the Application Visitors",
+			"description": "Analytics Report of the Application Visitors",
 			"form": {
 				"empty": {
 					"message": "Oooops! <br>No analytics data was downloaded for the start and end dates. <br>Please try adjusting the start and end dates."

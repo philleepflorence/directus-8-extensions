@@ -1,12 +1,13 @@
 {
 	"name": "dropdown-extended",
-	"version": "1.0.0",
+	"version": "1.3.0",
 	"description": "Renders a dropdown interface that pulls values from a field in a collection",
 	"main": "",
 	"scripts": {
 		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/dropdown-extended",
 		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/dropdown-extended",
-		"dist": "directus-extensions build --input ./src --output ./dist"
+		"dist": "directus-extensions build --input ./src --output ./dist",
+		"mixins": "rsync -rv ~/Sites/Directus/v8/extensions/mixins src && ls -al src/mixins"
 	},
 	"keywords": [
 		"dropdown",

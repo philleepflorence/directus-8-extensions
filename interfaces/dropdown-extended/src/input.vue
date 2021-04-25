@@ -1,5 +1,5 @@
 <template>
-	<div class="interface-dropdown interface-dropdown-extended" :key="keys.element">
+	<div class="interface-dropdown interface-dropdown-extended">
 		
 		<small v-if="parseError" class="notice">
 			<v-icon name="warning" />
@@ -37,17 +37,16 @@
 
 <script>
 	import mixin from '@directus/extension-toolkit/mixins/interface';
-	import { kebabCase, startCase } from 'lodash';
+	import formatter from "./mixins/formatter.js";
 	
 	export default {
 		name: "InterfaceDropdownExtended",
-		mixins: [mixin],
+		mixins: [
+			formatter,
+			mixin
+		],
 		data() {
 			return {
-				keys: {
-					element: 100,
-					select: 0
-				},
 				loading: true,
 				dropdown: null,
 				messageError: 'Unable to load options...',
@@ -74,18 +73,14 @@
 				return choices;
 			}
 		},
-		created () {
-			this.fetchItems();
-		},
 		methods: {
 			input (value) {
-				if (this.options.format_value) value = kebabCase(value);
+				if (this.options.format_value) value = this.formatter(value, this.options.format_value);
 
 				this.value = value;
+				
+				this.$emit('input', this.value);	
 			},
-			/*
-				Parse the Filter Array into an Object
-			*/
 			formatFilters (filters) {
 				const parsedFilters = {};
 				
@@ -98,10 +93,6 @@
 			
 				return parsedFilters;
 			},
-			/*
-				Fetch additional dropdown options and merge - if applicable
-				TODO - After there is GROUP BY, remove limit and add GROUP BY
-			*/
 			fetchItems () {
 				if (!this.options.collection || !this.options.field) return;
 		
@@ -138,6 +129,9 @@
 						this.loading = false;
 					});
 			}
+		},
+		created () {
+			this.fetchItems();
 		}
 	};
 </script>

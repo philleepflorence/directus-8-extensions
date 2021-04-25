@@ -222,6 +222,52 @@ class Directus
 	}
 	
 	/*
+		Divider Interface Content Loader - Only a single item is loaded!
+		ARGUMENTS:
+			$params
+				collection - @string: defaults to contents_faqs
+				fields - @string: CSV of fields to load
+				filter - @array: filter to use to load item
+	*/
+	
+	public static function Divider ($params, $debug = false)
+	{
+		$collection = ArrayUtils::get($params, 'collection', 'contents_faqs');
+		$filter = ArrayUtils::get($params, 'filter', [
+			"category" => "collection",
+			"slug" => "pages"
+		]);
+		$fields = ArrayUtils::get($params, 'fields', 'question,answer,updated');
+		$options = [
+			"title" => "question",
+			"body" => "answer",
+			"updated" => "updated"
+		];
+				
+		$tableGateway = Api::TableGateway($collection, NULL);
+		$items = $tableGateway->getItems([
+			"fields" => $fields,
+			"filter" => $filter,
+			"single" => 1
+		]);
+		$item = ArrayUtils::get($items, "data", []);
+		$response = [];
+		
+		foreach ($options as $option => $field) $response[$option] = ArrayUtils::get($item, $field);
+		
+		return $response;
+	}
+	
+	/*
+		Directus internal mailer to API Users
+		ARGUMENTS:
+			$params
+				template - @String: Filename of twig mail template - src/mail
+				subject - @String: Subject sprinf template (project name variable is required!)
+				users - @Array: User Array
+	*/
+	
+	/*
 		Directus internal mailer to API Users
 		ARGUMENTS:
 			$params

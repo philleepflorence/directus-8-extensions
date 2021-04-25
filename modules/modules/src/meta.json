@@ -1,73 +1,95 @@
 {
 	"name": "modules",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"icon": "extension",
 	"contents": {
 		"en-US": {
 			"title": "Modules",
 			"subtitle": "Modules - Collection of Custom Modules",
-			"description": "Collection of Custom Modules",
-			"headlines": {
-				"analytics": "Analytics - Reports",
-				"assets": "Assets - Application",
-				"guides": "Guides - Tools"
-			},
+			"description": "Collection of Custom Modules - Documentation, Reports, and Tools",
 			"modules": {
-				"guides": {
-					"title": "Documentation and Guides",
-					"description": "Guides and Documentation on working with the Directus App and API",
-					"path": "/app/ext/guides",
-					"icon": "book",
-					"analytics": "Guides"
+				"communication": {
+					"title": "Communication and Collaboration",
+					"modules": {
+						"comments": {
+							"title": "Collection Item Comments",
+							"description": "View and Reply to comments from the Directus Activity Collection",
+							"path": "/app/ext/comments",
+							"icon": "chat",
+							"analytics": "Comments"
+						},
+						"notifications": {
+							"title": "Notifications and Messages",
+							"description": "Send Notifications to Application Users or Email Messages to Directus Users",
+							"path": "/app/ext/notifications",
+							"icon": "send",
+							"analytics": "Users"
+						}
+					}
 				},
-				"analytics": {
-					"title": "Application Analytics",
-					"description": "Application Visitors and Performance Analytics",
-					"path": "/app/ext/analytics",
-					"icon": "pie_chart",
-					"analytics": "Sessions"
+				"tools": {
+					"title": "Tools and Utilities",
+					"modules": {
+						"cdn": {
+							"title": "CDN",
+							"description": "CDN Static Assets and Documents",
+							"path": "/app/ext/cdn",
+							"icon": "cloud",
+							"analytics": "Items"
+						},
+						"search": {
+							"title": "Search",
+							"description": "Search all visible collection items",
+							"path": "/app/ext/search",
+							"icon": "search",
+							"analytics": "Collections"
+						}
+					}
+				},
+				"guides": {
+					"title": "Help and Guides",
+					"modules": {
+						"guides": {
+							"title": "Documentation and Guides",
+							"description": "Guides and Documentation on working with the Directus App and API",
+							"path": "/app/ext/guides",
+							"icon": "book",
+							"analytics": "Guides"
+						}
+					}
 				},
 				"reports": {
-					"title": "Application Reports",
-					"description": "Application Data and Modules Reports",
-					"path": "/app/ext/reports",
-					"icon": "bar_chart",
-					"analytics": "Reports"
-				},
-				"notifications": {
-					"title": "Send Notifications",
-					"description": "Send Push, SMS, or Email Notifications to Application Users or Email Messages to Directus Users",
-					"path": "/app/ext/notifications",
-					"icon": "send",
-					"analytics": "Users"
-				},
-				"collections": {
-					"title": "Collections",
-					"description": "Project Data Collections Relationships and Insights",
-					"path": "/app/ext/collections",
-					"icon": "account_tree",
-					"analytics": "Insights"
-				},
-				"cdn": {
-					"title": "CDN",
-					"description": "CDN Static Assets and Documents",
-					"path": "/app/ext/cdn",
-					"icon": "cloud",
-					"analytics": "Items"
-				},
-				"icons": {
-					"title": "Icons",
-					"description": "Icons available to the applications",
-					"path": "/app/ext/icons",
-					"icon": "insert_emoticon",
-					"analytics": "Icons"
-				},
-				"search": {
-					"title": "Search",
-					"description": "Search all visible collection items",
-					"path": "/app/ext/search",
-					"icon": "search",
-					"analytics": "Collections"
+					"title": "Analytics and Reports",
+					"modules": {
+						"analytics": {
+							"title": "Application Analytics",
+							"description": "Application Visitors and Performance Analytics",
+							"path": "/app/ext/analytics",
+							"icon": "pie_chart",
+							"analytics": "Sessions"
+						},
+						"reports": {
+							"title": "Application Reports",
+							"description": "Application Data and Modules Reports",
+							"path": "/app/ext/reports",
+							"icon": "bar_chart",
+							"analytics": "Reports"
+						},
+						"icons": {
+							"title": "Application Icons",
+							"description": "Icons available to the applications",
+							"path": "/app/ext/icons",
+							"icon": "insert_emoticon",
+							"analytics": "Icons"
+						},
+						"collections": {
+							"title": "Collections Insights",
+							"description": "Project Data Collections Relationships and Insights",
+							"path": "/app/ext/collections",
+							"icon": "account_tree",
+							"analytics": "Insights"
+						}
+					}
 				}
 			}
 		}

@@ -1,12 +1,15 @@
 {
 	"name": "many-to-one-extended",
-	"version": "1.5.0",
-	"description": "Renders a Many to One Interface that allows for displaying HTML and Filtering",
+	"version": "1.6.0",
+	"description": "Renders a Many to One Interface that allows for displaying HTML, Filtering, Validations, and Utilities",
 	"main": "",
 	"scripts": {
 		"build": "directus-extensions build --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/many-to-one-extended",
 		"dev": "directus-extensions watch --input ./src --output ~/Sites/Directus/v8/suite/public/extensions/custom/interfaces/many-to-one-extended",
-		"dist": "directus-extensions build --input ./src --output ./dist"
+		"dist": "directus-extensions build --input ./src --output ./dist",
+		"@migrations": "rsync -rv src/migrations ~/Sites/Directus/v8/extensions/migrations/many-to-one-extended",
+		"@components": "rsync -rv ~/Sites/Directus/v8/extensions/components src && ls -al src/components",
+		"@mixins": "rsync -rv ~/Sites/Directus/v8/extensions/mixins src && ls -al src/mixins"
 	},
 	"keywords": [
 		"many-to-one",

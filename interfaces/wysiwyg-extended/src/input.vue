@@ -181,7 +181,7 @@
 			},
 			initOptions () {
 				const styleFormats = this.getStyleFormats();
-				let toolbarString = this.options.toolbar.join(' ');
+				let toolbarString = typeof this.options.toolbar === "string" ? this.options.toolbar : this.options.toolbar.join(' ');
 	
 				if (styleFormats) {
 					toolbarString += ' styleselect';

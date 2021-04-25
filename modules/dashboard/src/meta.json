@@ -1,6 +1,6 @@
 {
 	"name": "dashboard",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"icon": "view_quilt",
 	"types": [
 		"string"
@@ -8,23 +8,19 @@
 	"options": {},
 	"contents": {
 		"en-US" : {
-			"title": "Dashboard",
-			"subtitle": 'Dashboard - Modules Snapshot',
-			"description": 'Directus Core &amp; Custom Modules',
+			"title": "Project Dashboard",
+			"subtitle": "Dashboard - Project Snapshot",
+			"description": "Directus Core &amp; Custom Modules and Project Collections &amp; Tools",
+			"titles": {
+				"modules": "Project Modules"
+			},
 			"modules": {
 				"modules": {
-					"title": "Modules",
-					"description": "Assets, analytics, reports, guides, and tools",
+					"title": "Tools",
+					"description": "Assets, Analytics, Reports, Guides, and Tools",
 					"path": "/app/ext/modules",
 					"icon": "view_module",
 					"analytics": "Modules"
-				},
-				"project": {
-					"title": "Project",
-					"description": "View, &amp; Edit Project Collections and Items",
-					"path": "/app/ext/application",
-					"icon": "view_module",
-					"analytics": "Project Collections"
 				},
 				"collections": {
 					"title": "Collections",
@@ -47,19 +43,19 @@
 					"icon": "cloud_done",
 					"analytics": "Files"
 				},
-				"settings": {
-					"title": "Settings",
-					"description": "View &amp; Edit Directus Settings",
-					"path": "/app/settings",
-					"icon": "more_horiz",
-					"analytics": "Settings"
-				},
 				"notifications": {
 					"title": "Notifications",
 					"description": "View Directus Notifications &amp; Activity",
 					"path": "/app/activity",
 					"icon": "notifications",
 					"analytics": "Notifications"
+				},
+				"settings": {
+					"title": "Settings",
+					"description": "View &amp; Edit Directus Settings",
+					"path": "/app/settings",
+					"icon": "more_horiz",
+					"analytics": "Configuration Items"
 				}
 			}						
 		}				

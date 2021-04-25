@@ -1,6 +1,6 @@
 {
 	"name": "Dropdown Extended",
-	"version": "1.0.0",
+	"version": "1.3.0",
 	"types": ["string"],
 	"icon": "arrow_drop_down_circle",
 	"recommended": {
@@ -46,6 +46,32 @@
 			"default": "Click to select an option...",
 			"length": 200
 		},
+		"format_value": {
+			"name": "Format Value",
+			"comment": "Select the type of format to apply to the value before saving",
+			"interface": "dropdown",
+			"options": {
+				"choices": {
+					"camelCase": "Camel Case (camelCase)",
+					"kebabCase": "Kebab Case (kebab-case)",
+					"lowerCase": "Lower Case (lower case)",
+					"pascalCase": "Pascal Case (PascalCase)",
+					"capitalize": "Sentence Case (Sentence case)",
+					"snakeCase": "Snake Case (snake_case)",
+					"startCase": "Start Case (Start Case)",
+					"titleCase": "Title Case (Title a Case)"
+				}
+			},
+			"length": 15,
+			"default": "startCase"
+		},
+		"formatting": {
+			"name": "Show Display Text",
+			"comment": "Show a Title Case Text (Key) instead of the Value (Option)",
+			"interface": "switch",
+			"type": "boolean",
+			"default": true
+		},
 		"allow_other": {
 			"name": "Allow Other",
 			"comment": "Allow the user to add a new value other than the pre-defined key:value options",
@@ -53,20 +79,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"formatting": {
-			"name": "Show Display Text",
-			"comment": "Show the Text (Key) instead of the Value (Option)",
-			"interface": "switch",
-			"type": "boolean",
-			"default": true
-		},
-	    "format_value": {
-			"name": "Format Value",
-			"comment": "Convert the display value to Title Case and value to Kebab Case",
-			"interface": "switch",
-			"type": "boolean",
-			"default": true
-	    },
 		"filters": {
 			"name": "Filters",
 			"comment": "The filters to use when loading from the collection",

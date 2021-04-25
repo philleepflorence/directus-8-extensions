@@ -1,0 +1,158 @@
+{
+	"name": "Divider Extended",
+	"version": "1.3.0",
+	"types": ["alias"],
+	"icon": "horizontal_split",
+	"hideLabel": true,
+	"recommended": {
+		"required": false
+	},
+	"contents": {
+		"en-US": {
+			"modal": {
+				"error": "Something went wrong, unable to load content!",
+				"close": "Close Modal Overlay"
+			}
+		}
+	},
+	"options": {
+		"style": {
+			"name": "Divider Style",
+			"comment": "The size of the divider interface",
+			"default": "large",
+			"interface": "dropdown",
+			"options": {
+				"choices": {
+					"small": "Small",
+					"medium": "Medium",
+					"large": "Large"
+				}
+			}
+		},
+		"title": {
+			"name": "Divider Title",
+			"comment": "The title or headline of the divider interface",
+			"interface": "text-input",
+			"default": "Hello {{ user.first_name }} {{ user.last_name }}"
+		},
+		"description": {
+			"name": "Divider Description",
+			"comment": "The description of the divider interface to display always, accepts basic markdown",
+			"interface": "text-input",
+			"default": "Please review the available documentation, guides, notes, and tools."
+		},	
+		"template": {
+			"name": "Item Template",
+			"comment": "Enter the fields to show with the Item Preview",
+			"interface": "text-input",
+			"type": "string",
+			"placeholder": "id or filter"
+		},
+		"previews": {
+			"name": "Item Previews",
+			"comment": "Enter the field and field parameter for the Item Preview and Item Template",
+			"interface": "key-value",
+			"type": "JSON",
+			"options": {
+				"keyInterface": "text-input",
+				"keyType": "string",
+				"keyOptions": {
+					"placeholder": "field",
+					"monospace": false
+				},
+				"valueInterface": "text-input",
+				"valueType": "string",
+				"valueOptions": {
+					"placeholder": "field, field.field, ...",
+					"monospace": false
+				}
+			}
+		},
+		"descriptions": {
+			"name": "Description Templates",
+			"comment": "Override the description in the order sorted",
+			"interface": "key-value",
+			"type": "JSON",
+			"options": {
+				"keyInterface": "text-input",
+				"keyType": "string",
+				"keyOptions": {
+					"placeholder": "Template String",
+					"monospace": false
+				},
+				"valueInterface": "text-input",
+				"valueType": "string",
+				"valueOptions": {
+					"placeholder": "create,read,update",
+					"monospace": false
+				}
+			},
+			"default": {
+				"You are currently editing the item: {{ fields.name }}...": "update",
+				"You are creating a new item for the collection: {{ collection.name }}...": "create",
+				"Please review the available documentation, guides, notes, templates, and tools...": "create,update"
+			}
+		},		
+		"steps": {
+			"name": "Guide and Instructions",
+			"comment": "The steps the user should take, hints to editing an item",
+			"interface": "key-value",
+			"type": "JSON",
+			"options": {
+				"keyInterface": "text-input",
+				"keyType": "string",
+				"keyOptions": {
+					"placeholder": "Title",
+					"monospace": false
+				},
+				"valueInterface": "text-input",
+				"valueType": "string",
+				"valueOptions": {
+					"placeholder": "Description",
+					"monospace": false
+				}
+			}
+		},	
+		"menu": {
+			"name": "Menu and Navigation",
+			"comment": "Override the names of the menu items",
+			"interface": "key-value",
+			"type": "JSON",
+			"options": {
+				"keyInterface": "text-input",
+				"keyType": "string",
+				"keyOptions": {
+					"placeholder": "Menu",
+					"monospace": false
+				},
+				"valueInterface": "text-input",
+				"valueType": "string",
+				"valueOptions": {
+					"placeholder": "Menu Text",
+					"monospace": false
+				}
+			},
+			"default": {
+				"preview": "Item Preview",
+				"template": "View Template",
+				"guide": "View Instructions",
+				"documentation": "View Documentation",
+				"tools": "View Tools"
+			}
+		},	
+		"hr": {
+			"name": "Horizontal Line",
+			"comment": "Option to display a horizontal line below the title of the divider interface",
+			"interface": "switch",
+			"type": "BOOLEAN",
+			"default": true
+		},
+		"margin": {
+			"name": "Vertical Margin",
+			"comment": "Option to display an extra margin above the divider interface",
+			"interface": "switch",
+			"type": "BOOLEAN",
+			"default": false
+		}
+	}
+}

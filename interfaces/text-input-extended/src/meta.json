@@ -1,0 +1,156 @@
+{
+	"name": "Text Input Extended",
+	"description": "Renders a Text Field for displaying HTML snippets and rendering templates",
+	"version": "1.2.0",
+	"icon": "code",
+	"types": ["string"],
+	"recommended": {
+		"length": 200
+	},
+	"options": {
+		"placeholder": {
+			"name": "$t:placeholder",
+			"comment": "$t:placeholder_comment",
+			"interface": "text-input",
+			"length": 200
+		},
+		"display_value": {
+			"name": "$t:display_value",
+			"comment": "$t:display_value_comment",
+			"interface": "text-input",
+			"default": "--",
+			"length": 30
+		},
+		"format_value": {
+			"name": "Format Value",
+			"comment": "Select the type of format to apply to the value before saving",
+			"interface": "dropdown",
+			"options": {
+				"choices": {
+					"camelCase": "Camel Case (camelCaseWords)",
+					"kebabCase": "Kebab Case (kebab-case-words)",
+					"lowerCase": "Lower Case (lower case words)",
+					"pascalCase": "Pascal Case (PascalAllWords)",
+					"capitalize": "Sentence Case (Sentence case)",
+					"snakeCase": "Snake Case (snake_case)",
+					"startCase": "Start Case (Start Case)",
+					"titleCase": "Title Case (Title a Case)"
+				}
+			},
+			"length": 15,
+			"default": "capitalize"
+		},
+		"template": {
+			"name": "$t:template",
+			"comment": "$t:template_comment",
+			"placeholder": "$t:template_placeholder",
+			"interface": "text-input",
+			"length": 200,
+			"advanced": true
+		},
+		"mirrored": {
+			"name": "$t:mirrored",
+			"comment": "$t:mirrored_comment",
+			"interface": "tags",
+			"length": 200,
+			"advanced": true
+		},
+		"trim": {
+			"name": "$t:trim",
+			"comment": "$t:trim_comment",
+			"interface": "switch",
+			"default": true
+		},
+		"showCharacterCount": {
+			"name": "$t:char_count",
+			"comment": "$t:char_count_comment",
+			"interface": "switch",
+			"default": true
+		},
+		"override": {
+			"name": "$t:override",
+			"comment": "$t:override_comment",
+			"interface": "switch",
+			"default": false,
+			"advanced": true
+		},
+		"grammar": {
+			"name": "$t:grammar",
+			"comment": "$t:grammar_comment",
+			"interface": "switch",
+			"default": false,
+			"advanced": true
+		},
+		"dropdowns": {
+			"name": "$t:dropdowns",
+			"comment": "$t:dropdowns_comment",
+			"interface": "switch",
+			"default": false,
+			"advanced": true
+		},
+		"iconLeft": {
+			"name": "$t:icon_left",
+			"comment": "$t:icon_left_comment",
+			"interface": "icon",
+			"advanced": true
+		},
+		"iconRight": {
+			"name": "$t:icon_right",
+			"comment": "$t:icon_right_comment",
+			"interface": "icon",
+			"advanced": true
+		},
+		"parameters": {
+			"name": "$t:parameters",
+			"comment": "$t:parameters_comment",
+			"interface": "json",
+			"default": [],
+			"advanced": true,
+			"options": {
+				"language": "application/json",
+				"template": [{
+						"field": "mirrored field",
+						"find": "mirrored field value",
+						"replace": "new mirrored field value"
+					}
+				]
+			}
+		}
+	},
+	"translation": {
+		"en-US": {
+			"input": "Text Input HTML",
+			"placeholder": "Placeholder",
+			"placeholder_comment": "Enter placeholder text",
+			"display_value": "Display Placeholder",
+			"display_value_comment": "Enter placeholder text for the display when empty",
+			"format_value": "Format Value",
+			"format_value_comment": "Select the type of format to apply to the value before saving",
+			"trim": "Trim",
+			"trim_comment": "Trim surrounding whitespace from the value before saving",
+			"char_count": "Show Character Count",
+			"char_count_comment": "Show the remaining characters available",
+			"icon_left": "Icon Left",
+			"icon_left_comment": "Choose an optional icon to display on the left of the input",
+			"icon_right": "Icon Right",
+			"icon_right_comment": "Choose an optional icon to display on the right of the input",
+			"override": "Allow Override",
+			"override_comment": "Allow manual override or updates",
+			"grammar": "Parse Template String",
+			"grammar_comment": "Parse the rendered string - See [LanguageTool HTTP JSON API](https://languagetool.org/api/v2)",
+			"template": "Template String",
+			"template_comment": "Enter a template string using the mustache format",
+			"template_placeholder": "Enter a template string or leave blank to require manual input",
+			"mirrored": "Mirrored Fields",
+			"mirrored_comment": "The fields to use to render the template if saving in the DB",
+			"parameters": "Mirrored Fields Parameters",
+			"parameters_comment": "Additional parameters to use when processing values of mirrored fields",
+			"dropdowns": "Dropdown Options",
+			"dropdowns_comment": "Load the choices for dropdown fields",
+			"auto": "Automatic",
+			"small": "Small",
+			"medium": "Medium",
+			"large": "Large"
+		}
+	}
+}

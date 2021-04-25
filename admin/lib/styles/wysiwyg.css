@@ -26,11 +26,13 @@ p, ul, ol, blockquote, li {
 }
 
 p.lead {
+	color: rgba(255, 255, 255, 0.8) !important;
 	font-size: 1.3rem !important;
 	font-weight: 300 !important;
 }
 
 p.small {
+	color: rgba(255, 255, 255, 0.5) !important;
 	font-size: 0.875rem !important;
 	font-weight: 500 !important;
 }
